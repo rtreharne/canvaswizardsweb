@@ -49,7 +49,7 @@ services:
       sh -c "celery -A app worker -l INFO"
     volumes:
       - ./app:/app
-    container_name: celery
+    container_name: celery-secure
     environment:
       - SECRET_KEY=${SECRET_KEY}
     depends_on:
