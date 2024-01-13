@@ -34,11 +34,11 @@ services:
     depends_on:
       - app
     ports:
-      - 80:8000
+      - 80:80
       - 443:443
     volumes:
-      - static-data:/vol/static
       - certbot-web:/vol/www
+      - static-data:/vol/static
       - proxy-dhparams:/vol/proxy
       - certbot-certs:/etc/letsencrypt
     environment:
