@@ -26,8 +26,7 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASS}
-      
-    
+        
   proxy:
     build:
       context: ./docker/proxy
@@ -58,29 +57,6 @@ services:
     depends_on:
       - proxy
     
-  # Redis
-  redis:
-    image: redis:alpine
-    container_name: redis
-    environment:
-      - SECRET_KEY=${SECRET_KEY}    
-
-  # Celery
-  celery:
-    restart: always
-    build:
-      context: .
-    command: >
-      sh -c "celery -A app worker -l INFO"
-    volumes:
-      - static-data:/vol/web/
-    container_name: celery
-    environment:
-      - SECRET_KEY=${SECRET_KEY}
-    depends_on:
-      - db
-      - redis
-      - app
   
 volumes:
   postgres-data:

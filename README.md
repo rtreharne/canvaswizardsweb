@@ -1,4 +1,4 @@
-# django-docker-compose-deployment
+# HiPyWeb
 
 This is a template dockerised Django project configured for use with:
 
@@ -94,7 +94,7 @@ sudo yum install git
 
 Install docker
 ```bash
-sudo amazon-linux-extras install docker -y
+sudo yum instlal docker -y
 ```
 
 Enable Docker and start
