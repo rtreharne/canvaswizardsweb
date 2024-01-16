@@ -135,7 +135,7 @@ Go to your GitHub repo's Settings/Deploy keys. Create a new deploy key and copy 
 
 Clone the repo using the SSH URL.
 ```bash
-git clone git@github.com:rtreharne/django-docker-compose-deployment.git
+git clone git@github.com:hipylivadmin/hipyweb.git
 ```
 
 cd into the project directory.
@@ -150,6 +150,10 @@ vi into the file and set your env parameters. Make sure they're different from t
 Make sure you set `ALLOWED_HOSTS` to the IPv4 URL.
 
 Build and deploy.
+
+```bash
+docker-compose -f docker-compose-deploy.yml run --rm certbot /opt/certify-init.sh
+```
 
 
 ```bash

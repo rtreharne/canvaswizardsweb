@@ -45,4 +45,41 @@ def portal(human, check=None):
         
     return random_integer_string
 
+def rocket(human, check=None):
+    # seed random using human slug
+    random.seed(str(human.slug))
+
+    random_numbers = []
+    for i in range(10000):
+        random_numbers.append(random.randint(100000, 999999))
+
+    if check:
+        # Add all numbers in random_numbers
+        total = 0
+        for number in random_numbers:
+            if fizzbuzzcheck(number):
+                total += number
+     
+        if check == total:
+            return True
+
+    # format random_numbers into a string. Put each number on a new line.
+    random_numbers_string = ""
+    for number in random_numbers:
+        random_numbers_string += f"{number}\n"
+    
+    return random_numbers_string
+
+# Write a "FizzBuzz" checker. Return True if number is divisible by 3, 5, or both.
+def fizzbuzzcheck(value):
+    if value % 3 == 0 and value % 5 == 0:
+        return True
+    elif value % 3 == 0:
+        return True
+    elif value % 5 == 0:
+        return True
+    else:
+        return False
+    
+
     

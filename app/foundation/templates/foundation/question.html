@@ -27,7 +27,7 @@
                 {% if message %}
                     <div class="message-block">
                         <h3>Oops!</h3>
-                        <p>{{ message }}</p>
+                        <p>{{ message|safe }}</p>
                     </div>
                     <br>
                 {% endif %}
@@ -50,7 +50,7 @@
                         To being with, <u><a href="/foundation/{{ human.slug }}/question/{{ question.id }}/input" target="_blank">download your puzzle input</a>.</u></p>
                     </p>
                     {% if complete %}
-                    <p><strong>Well done! You have completed this part.</strong></p>
+                    <p><strong>Well done! You have completed this part. Your input was {{ answer.submitted }}.</strong></p>
                     {% else %}
                         <form method="POST" action="">
                             {% csrf_token %}
@@ -109,21 +109,58 @@
                             {% endfor %}
                         </tbody>
                     </table>
+
                 </div>
+                </div>
+                <br><br>
+                <h3>My Stats ({{ human.slug }})</h3>
+                <hr style="border: none; height: 2px; background-color: white;">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>Rank</th>
+                                <th>Score</th>
+                                <th>Mistakes</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th>Overall</th>
+                                <td class="right">{{ stats.rank }}</td>
+                                <td class="right">{{ stats.score }}</td>
+                                <td class="right">{{ stats.mistakes }}</td>
+                            </tr>
+                            <tr>
+                                <th>This part</th>
+                                <td class="right">{{ stats_part.rank }}</td>
+                                <td class="right">{{ stats_part.score }}</td>
+                                <td class="right">{{ stats_part.mistakes }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>  
             </div>
         </div>
 
         <br>
         <br>
         
+        
+
+    </section>
+</div>
+<div class="page-section" id="padding">
+    <section class="container">
         {% if question.image %}
         <div class="image-block"></div>
             <img class="event-thumb reg" src="{{ question.image.url }}" alt="question-image">
         </div>
-          
-            
         {% endif %}
-
     </section>
 </div>
 

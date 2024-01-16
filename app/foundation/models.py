@@ -29,6 +29,7 @@ class Answer(models.Model):
     correct = models.BooleanField(default=False)
     time_submitted = models.DateTimeField(auto_now_add=True)
     score = models.IntegerField(default=0)
+    submitted = models.BigIntegerField(default=0)
 
     def __str__(self):
         return f"{self.human} - {self.question} - {self.correct}"

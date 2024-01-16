@@ -26,10 +26,12 @@ def get_leaderboard_question(context):
 def get_leaderboard_overall(context):
     humans = Human.objects.all()
     score_dict = {}
+
     for human in humans:
         answers = Answer.objects.filter(human=human, correct=True)
         score = sum([x.score for x in answers])
-        score_dict[human.slug] = score
+        if score > 0:
+            score_dict[human.slug] = score
     
     sorted_score_dict = sorted(score_dict.items(), key=lambda x: x[1], reverse=True)
     top_scores = sorted_score_dict[:10]
@@ -45,8 +47,51 @@ def get_leaderboard_overall(context):
 
     return context
 
+def get_rank(human, question=None):
 
-  
+    humans = Human.objects.all()
+    score_dict = {}
+
+    if question:
+        if len(Answer.objects.filter(human=human, correct=True, question=question)) == 0:
+            return {"rank": "--", "score": "--", "mistakes": "--"}
+        else:
+            incorrect_answers = Answer.objects.filter(human=human, correct=False, question=question)
+    else:
+        if len(Answer.objects.filter(human=human, correct=True)) == 0:
+            return {"rank": "--", "score": "--", "mistakes": "--"}
+        else:
+            incorrect_answers = Answer.objects.filter(human=human, correct=False)
+    
+    
+
+    for h in humans:
+        if question:
+            answers = Answer.objects.filter(human=h, correct=True, question=question)
+            
+        else:
+            answers = Answer.objects.filter(human=h, correct=True)
+        score = sum([x.score for x in answers])
+        print(h, score)
+        if score > 0:
+            score_dict[h.slug] = score
+    
+    print("SCORE-DICT", score_dict)
+    sorted_score_dict = sorted(score_dict.items(), key=lambda x: x[1], reverse=True)
+
+    # determine rank of human
+    rank = 0
+    print("SORTED-SCORE-DICT", sorted_score_dict)
+    for i, x in enumerate(sorted_score_dict):
+        rank += 1
+        if x[0] == human.slug:
+            break  
+    return {
+        "rank": rank,
+        "score": score_dict[human.slug],
+        "mistakes": len(incorrect_answers)
+    }
+
 
 def start(request):
 
@@ -55,8 +100,8 @@ def start(request):
     if request.method == 'POST':
         form = HumanForm(request.POST)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
+            human = form.save()
+            return HttpResponseRedirect(f'{human.slug}')
         
     context["form"] = HumanForm()
     
@@ -69,6 +114,8 @@ def question(request, slug, question_id=None):
     context["human"] = human
     answer_form = IntegerInputForm()
     context["answer_form"] = answer_form
+    context["stats"] = get_rank(human)
+    
 
     
     if question_id:
@@ -77,8 +124,10 @@ def question(request, slug, question_id=None):
         if len(answers) > 0:
             context["complete"] = True
             context["question"] = question
+            context["answer"] = answers[0]
             context = get_leaderboard_question(context)
             context = get_leaderboard_overall(context)
+            context["stats_part"] = get_rank(human, question=context["question"])
             return render(request, 'foundation/question.html', context)
     
 
@@ -97,6 +146,7 @@ def question(request, slug, question_id=None):
         question = answer.question.next
 
     context["question"] = question
+    context["stats_part"] = get_rank(human, question=context["question"])
     context = get_leaderboard_question(context)
     context = get_leaderboard_overall(context)
 
@@ -106,8 +156,8 @@ def question(request, slug, question_id=None):
             incorrect_answers = Answer.objects.filter(human=human, correct=False, question=question)
             # If datetime now - datetime of most recent answer is less than 3 minutes, then return error.
             if incorrect_answers and len(incorrect_answers) > 0:
-                if datetime.datetime.now(datetime.timezone.utc) - answers[0].time_submitted < datetime.timedelta(minutes=3):
-                    context["message"] = f"Sorry, you must wait 3 minutes before answering this question again."
+                if datetime.datetime.now(datetime.timezone.utc) - answers[0].time_submitted < datetime.timedelta(minutes=1):
+                    context["message"] = f"Sorry, you must wait 1 minute before answering this question again."
                     return render(request, 'foundation/question.html', context)
 
 
@@ -115,7 +165,7 @@ def question(request, slug, question_id=None):
             answer.human = human
             answer.question = question
             
-            answer.number = answer_form.cleaned_data['number']
+            answer.submitted = answer_form.cleaned_data['number']
             answer.save()
 
             # Get the function from the question.
@@ -123,7 +173,7 @@ def question(request, slug, question_id=None):
             function = getattr(foundation, function_name)
 
             # Run the function with the human as the argument.
-            result = function(human, check=answer.number)
+            result = function(human, check=answer.submitted)
 
             # If the result is True, then the answer is correct.
             if result == True:
@@ -145,7 +195,13 @@ def question(request, slug, question_id=None):
                 answer.correct = False
                 answer.save()
 
-                context["message"] = f"Sorry, that is not the correct answer. Please wait 3 minutes before trying again."
+                context["message"] = f"Sorry, that is not the correct answer. Please wait 1 minute before trying again. "
+
+                # Look for answers with the same submitted value.
+                matching_answers = Answer.objects.filter(question=question, correct=True, submitted=answer.submitted)
+                if len(matching_answers) > 0:
+                    print("AAAAAAAA")
+                    context["message"] += f"Curiously, the human <strong>{matching_answers[0].human.slug}</strong> submitted the same answer and got it correct. What are the odds, eh?"
 
             render(request, 'foundation/question.html', context)
 

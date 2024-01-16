@@ -14,8 +14,12 @@ class QuestionAdmin(admin.ModelAdmin):
 
 class AnswerAdmin(admin.ModelAdmin):
     
-        list_display = ("human", "event", "question", "correct", "time_submitted", "score")
-        search_fields = ["human", "event", "question", "correct", "time_submitted", "score"]
+        list_display = ("human_slug", "event", "question", "correct", "time_submitted", "score", "submitted")
+        search_fields = ["human_slug", "event", "question", "correct", "time_submitted", "score"]
+
+        # add human.slug to list_display
+        def human_slug(self, obj):
+            return obj.human.slug
   
 admin.site.register(Human, HumanAdmin)
 admin.site.register(Question, QuestionAdmin)
