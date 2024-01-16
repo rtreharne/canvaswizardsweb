@@ -1,0 +1,60 @@
+{% extends "front/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<header class="jumbotron page-section" id="home">
+    {% if thanks %}
+        <span></span><h2 class="thanks">{{ thanks }}</h2></span>
+    {% endif %}
+    <div class="container" >
+        <img class="logo" src="{% static 'img/navbar-logo.png' %}" alt="HiPy Logo">
+        <br>
+        <span>
+            <h3>Learn to code</h3>
+            <h1 class="title">HiPy_2.0</h3>
+            <h2 class="subtitle">HiPy is a community driven coding initiative, created by benevolent AI overlords, based at the University of Liverpool.</h2>
+            <!-- Events button-->
+            <p><a href="#events" class="btn btn-primary">Register for Events</a></p>
+            <p><a class="twitter-link" href="https://twitter.com/hipyliv" target="_blank">Follow us on X</a></p>
+        </span>
+    </div>
+</header>
+
+{% if events %}
+
+<div class="page-section" id="events">
+    <section class="container">
+        <p><strong>There is <u>FREE coffee</u> at all our events. But you must bring your own mug.</p></strong>
+        <div class="row">
+            {% for event in events %}
+            
+            <div class="col-md-4 event">
+                <div class="event-item">
+                <span class="thumb-span">
+                    <a href = "/register/{{ event.id }}">
+                    <img class="event-thumb-img" src="{{ event.image.url }}" alt="{{ event.name }}">
+                    </a>
+                </span>
+                <div class="event-summary">
+                    <h2><a href="/register/{{ event.id }}">{{ event.name }}</a></h2>
+                    <p>{{ event.short_description }}</p>
+                    <p><strong>Next Event: {{ event.date }}, {{ event.time }}</strong></p>
+                    <p><strong>Location: {{ event.location }}</strong></p>
+                    <p><strong>Duration: {{ event.duration }} hrs</strong></p>
+
+
+                    <p><a href="/register/{{ event.id }}">More Info</a> | <a href="/register/{{ event.id }}">Register</a></p>
+                </div>
+                </div>
+            </div>
+            
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+{% endif %}
+
+
+{% endblock %}

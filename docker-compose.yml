@@ -8,6 +8,7 @@ services:
       - POSTGRES_DB=devdb
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=changeme
+    container_name: hipyweb-db
 
   app:
     build:
@@ -30,32 +31,8 @@ services:
       - DB_PASS=changeme
     depends_on:
       - db
-      - redis
-    container_name: app
-  
-  # Redis
-  redis:
-    image: redis:alpine
-    container_name: redis
-    environment:
-      - SECRET_KEY=${SECRET_KEY}    
+    container_name: hipyweb-app
 
-  # Celery
-  celery:
-    restart: always
-    build:
-      context: .
-    command: >
-      sh -c "celery -A app worker -l INFO"
-    volumes:
-      - ./app:/app
-    container_name: celery-secure
-    environment:
-      - SECRET_KEY=${SECRET_KEY}
-    depends_on:
-      - db
-      - redis
-      - app
 
 
 

@@ -1,0 +1,273 @@
+body {
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    margin: 0; /* Add margin: 0 to remove default body margin */
+}
+
+th, td {
+    padding-right: 10px;
+}
+
+th.right, td.right {
+    text-align: right;
+}
+
+
+.code-block {
+    background-color: #303030;
+    color: #f8f8f2;
+    font-family: 'Courier New', monospace;
+    padding: 10px;
+    border-radius: 5px;
+    white-space: pre-wrap;
+}
+
+.success-block, .message-block {
+    background-color: #303030;
+    color: #f8f8f2;
+    padding: 10px;
+    border-radius: 5px;
+    white-space: pre-wrap;
+}
+
+.jumbotron {
+    background-color: #000000;
+    color: #ffffff;
+    margin: 0;
+    height: 100vh; /* Set height to 100vh for full page */
+    display: flex; /* Add display: flex to center content vertically */
+    align-items: center; /* Add align-items: center to center content vertically */
+    justify-content: center; /* Add justify-content: center to center content horizontally */
+    border-radius: 0px; /* Remove border-radius to remove rounded corners */
+}
+
+.title {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 8em;
+    line-height: 100%;
+    margin-bottom: 25px;
+}
+
+.subtitle {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 2em;
+    line-height: 130%;
+    max-width: 800px;
+    margin-bottom: 25px;
+}
+
+.bg-light {
+    background-color: white !important;
+}
+
+.btn-primary {
+    /* transparent, white text, rounded courners, white border */
+    background-color: transparent;
+    color: white;
+    border-radius: 5px;
+    border: 2px solid white;
+}
+
+.btn-primary:hover{
+    /* white, black text, rounded courners, white border */
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    border: 2px solid white;
+}
+
+/* btn-primary make clicked color off-white */
+.btn-primary:active, .btn-primary:focus, .btn-primary:not(:disabled):not(.disabled):active, .btn-primary.focus {
+    background-color: #cccccc;
+    color: black;
+    border-radius: 5px;
+    border: 2px solid white;
+}
+
+a.twitter-link {
+    /* white, underlined, do nothing on hover */
+    color: white;
+    text-decoration: underline;
+    font-size: 1em;
+}
+.navbar {
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    color: #ffffff;
+}
+
+.navbar-brand img{
+    /* Limit size of img within to 100px */
+    max-width: 75px;
+
+}
+
+.nav-link{
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+
+
+
+/* Make all p tags align left */
+p {
+    text-align: left;
+}
+
+
+.event-thumb {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+footer {
+    text-align: center;
+    background-color: black;
+    color: white;
+}
+
+
+.page-section {
+    padding-top: 100px;
+    padding-bottom: 100px;
+    background-color: black;
+}
+
+
+.custom-navbar {
+    transition: background-color 0.5s ease;
+}
+
+.navbar .nav-item .active {
+    color: #0a0056;
+
+}
+
+.event {
+    max-width: 30%;
+    border: 2px solid white;
+    padding: 0px;
+    margin: calc((100% - (3 * 30%)) / 6);
+}
+.event .event-summary {
+    padding: 20px;
+}
+
+.thanks {
+    background-color: #0a0056;
+    border-radius: 10px;
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    color:white;
+}
+
+/* Make all a tags white */
+a {
+    color: white;
+}
+
+/* Make all a:hover tags off-white */
+a:hover {
+    color: #cccccc;
+}
+
+
+.thumb-span img {
+    width:100%;
+    max-width: 400px;
+}
+
+input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    margin-bottom: 20px;
+
+    /* rounded boxes? */
+    border-radius: 5px;
+
+}
+
+.event-thumb {
+    width: 100%;
+    max-width:400px;
+    border-bottom: 2px solid white;
+}
+
+img.reg {
+    border-bottom: 0px;
+    border: 2px solid white;
+}
+
+img.logo {
+    width: 100px;
+    /* don't permit anything after it onthe same line */
+    display: block;
+    padding-bottom: 50px;
+}
+
+/* Make a media query for screens less than 768px wide */
+@media (max-width: 994px) {
+    .title {
+        font-size: 4em;
+    }
+
+    .subtitle {
+        font-size: 1.5em;
+    }
+
+    .navbar {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    .navbar-brand img{
+        /* Limit size of img within to 100px */
+        max-width: 50px;
+
+    }
+
+    .nav-link{
+        font-size: 15px;
+    }
+
+    .event {
+        text-align: center;
+        max-width: 90%;
+        margin: calc((100% - (90%)) / 4);
+    }
+
+    .event-thumb-img {
+        width: 100%;
+        max-width: 300px;
+        border: none
+    }
+
+    .thumb-span img {
+        align-items: center;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .thanks {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .page-section {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+
+    .jumbotron {
+        height: 100%;
+    }}
