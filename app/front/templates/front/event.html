@@ -65,7 +65,9 @@
                     <p><strong>Location: </strong>{{ event.location }}</p>
                     <p><strong>Duration: </strong>{{ event.duration }} hrs</p>
                     <p><strong>Registrations: </strong>{{ event.registrations }} (In Person), {{ event.registrations_online }} (Online)</p>
+                    {% if event.resources %}
                     <p><strong>Resources: </strong><u><a href="{{ event.resources }}" target="_blank">{{ event.resources }}</a></u></p>
+                    {% endif %}
                     {% if event.playlist %}
                         <p><strong>Playlist: </strong><u><a href="{{ event.playlist }}" target="_blank">{{ event.playlist|truncatechars:40 }}</a></u></p>
                     {% endif %}

@@ -25,13 +25,10 @@ def register(request, event_id):
     event = Event.objects.get(id=event_id)
     context = {"event": event}
 
-    print("EVENT DATE: ", event.date)
-
     # If event is in the past, redirect to index
     if event.date < datetime.date.today():
         return redirect('front:index')
-    
-    print("GETTING FORM")
+
 
     if request.method == 'POST':
         print("POSTING FORM")
