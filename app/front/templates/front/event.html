@@ -12,7 +12,9 @@
         <br>
         <br>
         {% if not thanks %}
-        <h3>Register for ...</h3>
+            {% if form %}
+            <h3>Register for ...</h3>
+            {% endif %}
         {% endif %}
         <div class="row">
 
@@ -77,24 +79,23 @@
 
             {% if not thanks %}
 
-            <div class="col-md-6">
-
-                
-                <div class="event-summary">
+            
+                {% if form %}
+                <div class="col-md-6">
 
                     
-                        <form class="registration-form" method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            {{ form|crispy }}
-                            <br>
-                            <button type="submit" class="btn btn-primary">Register</button>
-                        </form>
-                
-              </div>
+                    <div class="event-summary">
 
-              
-                
-            </div>
+                        
+                            <form class="registration-form" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {{ form|crispy }}
+                                <br>
+                                <button type="submit" class="btn btn-primary">Register</button>
+                            </form>
+                    
+                </div>
+                {% endif %}
 
             {% endif %}
             

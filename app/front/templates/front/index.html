@@ -32,29 +32,61 @@
             <div class="col-md-4 event">
                 <div class="event-item">
                 <span class="thumb-span">
+                    {% if event.in_progress %}
+                        <a href = "/past/{{ event.id }}">
+                    {% else %}
                     <a href = "/register/{{ event.id }}">
+                    {% endif %}
                     <img class="event-thumb-img" src="{{ event.image.url }}" alt="{{ event.name }}">
                     </a>
                 </span>
                 <div class="event-summary">
-                    <h2><a href="/register/{{ event.id }}">{{ event.name }}</a></h2>
+                    {% if event.in_progress %}
+                        <h2><a href="/past/{{ event.id }}">{{ event.name }}</a></h2>
+                    {% else %}
+                        <h2><a href="/register/{{ event.id }}">{{ event.name }}</a></h2>
+                    {% endif %}
                     <p>{{ event.short_description }}</p>
+                    {% if event.in_progress %}
+                        <p class="flash-slowly"><strong>**Event in progress**</strong></p>
+                    {% endif %}
                     <p><strong>Next Event: {{ event.date }}, {{ event.time }}</strong></p>
                     <p><strong>Location: {{ event.location }}</strong></p>
                     <p><strong>Duration: {{ event.duration }} hrs</strong></p>
                     <p><small>Registrations: {{ event.registrations|add:event.registrations_online }}</small></p>
 
-
+                    {% if event.in_progress %}
+                        <p><a href="/past/{{ event.id }}">More Info</a></p>
+                    {% else %}
                     <p><a href="/register/{{ event.id }}">More Info</a> | <a href="/register/{{ event.id }}">Register</a></p>
+                    {% endif %}
                 </div>
                 </div>
             </div>
             
             {% endfor %}
         </div>
+
+        
+
     </section>
 </div>
 
+{% endif %}
+
+{% if past_events %}
+<div class="page-section" id="events">
+    <section class="container">
+            <h3>Past Events</h3>
+            <hr style="border: none; height: 2px; background-color: white;">
+
+            {% for event in past_events %}
+            <p>{{ event.date }}, <u><a href="/past/{{ event.id}}">{{ event.name }}</a></u></p>
+            {% endfor %}
+                
+            
+    </section>
+</div>
 {% endif %}
 
 

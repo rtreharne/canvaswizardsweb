@@ -1,0 +1,52 @@
+{% extends "front/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<header class="jumbotron page-section" id="home">
+    <div class="container" >
+        <a href="/">
+        <img class="logo" src="{% static 'img/navbar-logo.png' %}" alt="HiPy Logo">
+        </a>
+        <br>
+        <div class="row">
+            <div class="col-md-8">
+                <span>
+                    <h3>Learn to code</h3>
+                    
+                    <h1 class="title">HiPy_2.0</h3>
+                    <h2 class="subtitle">HiPy is a community driven coding initiative, created by benevolent AI overlords, based at the University of Liverpool.</h2>
+                    <h3>All humans welcome.</h3>
+                    <br>
+                    <a href="/"><img class="promo-qr" src="{% static 'img/hipy-qr.png' %}" alt="HiPy QR Code"></a>
+                    <br>
+                    <br>
+                    <!-- Events button-->
+                    <p><a href="#events" class="btn btn-primary">Register now at <u>www.hipy.org.uk</u></a></p>
+                    <p>Follow us on X: <a class="twitter-link" href="https://twitter.com/hipyliv" target="_blank">@hipyliv</a></p>
+                </span>
+            </div>
+
+            <div class="col-md-4 event">
+                <div class="event-item">
+                <span class="thumb-span">
+                    <img class="event-thumb-img" src="{{ event.image.url }}" alt="{{ event.name }}">
+                </span>
+                <div class="event-summary">
+                    {% if event.in_progress %}
+                        <h2><a href="/past/{{ event.id }}">{{ event.name }}</a></h2>
+                    {% else %}
+                        <h2><a href="/register/{{ event.id }}">{{ event.name }}</a></h2>
+                    {% endif %}
+                    <p>{{ event.short_description }}</p>
+                    <p><strong>Next Event: {{ event.date }}, {{ event.time }}</strong></p>
+                    <p><strong>Location: {{ event.location }}</strong></p>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+{% endblock %}
+

@@ -23,6 +23,7 @@ class Event(models.Model):
     registrations_online = models.IntegerField(default=0)
     reddit = models.URLField(null=True, blank=True)
     playlist = models.URLField(null=True, blank=True)
+    in_progress = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

@@ -7,6 +7,13 @@ import random
 from .forms import RegistrationForm
 from .models import Event, Registration
 
+def promo(request, event_id):
+
+    event = Event.objects.get(id=event_id)
+    context = {"event": event}
+
+    return render(request, 'front/promo.html', context)
+
 def index(request):
 
     context = {}
@@ -18,6 +25,21 @@ def index(request):
 
     context["events"] = events
 
+    # Update any events in progress
+    for event in events:
+        start = datetime.datetime.combine(event.date, event.time)
+        finish = start + datetime.timedelta(hours=event.duration)
+        if start <= datetime.datetime.now() <= finish:
+            event.in_progress = True
+            event.save()
+
+    # Get past events
+    past_events = [event for event in Event.objects.all().order_by('-date') if datetime.datetime.combine(event.date, event.time) < datetime.datetime.now()]
+    context["past_events"] = past_events
+
+
+    print("PAST EVENTS", past_events)
+
     return render(request, 'front/index.html', context)
 
 def register(request, event_id):
@@ -26,8 +48,8 @@ def register(request, event_id):
     context = {"event": event}
 
     # If event is in the past, redirect to index
-    if event.date < datetime.date.today():
-        return redirect('front:index')
+    if event.date < datetime.datetime.now().date():
+        return render(request, 'front/event.html', context)
 
 
     if request.method == 'POST':

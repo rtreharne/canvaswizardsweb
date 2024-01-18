@@ -9,5 +9,7 @@ app_name = 'front'
 urlpatterns = [
     path('', views.index, name='index'),
     path('register/<int:event_id>/', views.register, name='register'),
+    path('past/<int:event_id>/', views.register, name='past'),
+    path('promo/<int:event_id>/', views.promo, name='promo'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
