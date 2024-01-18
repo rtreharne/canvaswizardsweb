@@ -18,6 +18,8 @@ class Question(models.Model):
     question_success = models.TextField()
     image = models.FileField(upload_to='questions/', null=True, blank=True)
     function_name = models.CharField(max_length=200, null=True, blank=True)
+    reddit = models.URLField(null=True, blank=True)
+    resources = models.URLField(null=True, blank=True)
     
     def __str__(self):
         return f"{self.title}"

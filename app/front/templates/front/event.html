@@ -7,7 +7,7 @@
 
 <div class="page-section" id="event">
     <section class="container">
-        <img class="logo" src="{% static 'img/navbar-logo.png' %}" alt="HiPy Logo">
+        <a href="/"><img class="logo" src="{% static 'img/navbar-logo.png' %}" alt="HiPy Logo"></a>
         <a href="/">< Back</a>
         <br>
         <br>
@@ -54,6 +54,10 @@
                     <p><strong>Date: </strong> {{ event.date }}, {{ event.time }}</p>
                     <p><strong>Location: </strong>{{ event.location }}</p>
                     <p><strong>Duration: </strong>{{ event.duration }} hrs</p>
+                    <p><strong>Resources: </strong><u><a href="{{ event.resources }}" target="_blank">{{ event.resources }}</a></u></p>
+                    {% if event.playlist %}
+                        <p><strong>Playlist: </strong><u><a href="{{ event.playlist }}" target="_blank">{{ event.playlist|truncatechars:40 }}</a></u></p>
+                    {% endif %}
                 </div>
                 
             </div>
@@ -69,6 +73,7 @@
                         <form class="registration-form" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             {{ form|crispy }}
+                            <br>
                             <button type="submit" class="btn btn-primary">Register</button>
                         </form>
                 
@@ -85,6 +90,16 @@
         <br>
         <div>
             <img class="event-thumb reg" src="{{ event.image.url }}" alt="{{ event.name }}">
+            <br>
+            <br>
+            {% if tracks %}
+                <h3>Event Playlist</h3>
+                <hr style="border: none; height: 2px; background-color: white;">
+
+                {% for track in tracks %}
+                    <p>{{ forloop.counter }}. {{ track }}</p>
+                {% endfor %}
+            {% endif %}
         </div>
 
     </section>

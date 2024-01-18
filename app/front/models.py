@@ -18,6 +18,9 @@ class Event(models.Model):
     location = models.CharField(max_length=100)
     resources = models.URLField(null=True, blank=True)
     long_description = models.TextField(null=True, blank=True)
+    registrations = models.IntegerField(default=0)
+    reddit = models.URLField(null=True, blank=True)
+    playlist = models.URLField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -42,6 +45,8 @@ class Registration(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     organization = models.CharField(max_length=100, null=True, blank=True)
+    track = models.CharField(max_length=100, null=True, blank=True)
+    mailing_list = models.BooleanField(default=False, verbose_name="Join our mailing list for info on future events?")
 
     def __str__(self):
         return self.name

@@ -12,6 +12,32 @@ th.right, td.right {
     text-align: right;
 }
 
+.checkboxinput {
+    transform: scale(2.0); /* Makes the checkbox 50% larger */
+    vertical-align: middle; /* Aligns the checkbox vertically with the label */
+    margin-right: 0px; /* Adds some space between the checkbox and the label */
+}
+
+
+.alert-block ul {
+    list-style-type: none;
+    padding-left: 0px;
+    margin-left: 0px;
+    
+}
+
+.alert-block {
+    padding-left: 0px;
+    padding-top: 25px;
+    font-weight: bold;
+}
+
+input[type=checkbox] {
+    box-sizing: border-box;
+    width: 20px;
+    margin-top: 15px;
+    margin-right: 10px;
+}
 
 .code-block {
     background-color: #303030;
@@ -20,6 +46,11 @@ th.right, td.right {
     padding: 10px;
     border-radius: 5px;
     white-space: pre-wrap;
+}
+
+.help-block {
+    font-size: 0.8em;
+    margin-top: -10px;
 }
 
 .success-block, .message-block {
