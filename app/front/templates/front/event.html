@@ -27,11 +27,21 @@
                         <h3>{{ thanks }}</h3>
                         <p>You're all registered.</p>
                         <p>We won't send you an email confirmation. We won't bug you with annoying reminder emails. We expect competent humans to make a note of the date, time and location and arrive in style on the day.</p>
-                        <p>A few bits of advice:</p>
+                        <p>Keep an eye on our <u><a href="https://twitter.com/hipyliv" target="_blank">X feed</a></u> for any extra information ahead of the event.</p>
+
+                        {% if event.online_info %}
+                            <p>If you're attending online, here is the information you need (make a note of it and keep it safe, you won't be sent this!):</p>
+                            
+                                <p class="code-block">{{ event.online_info|urlize }}</p>
+                                <button class="copy-button btn-primary" onclick="copyToClipboard('.code-block')">Copy</button>
+                                
+                                <br>
+                                <br>
+                        {% endif %}
+                        <p>If you're attending in person:</p>
                         <ul>
                             <li>Bring your own laptop (and charger) if you have one</li>
                             <li>Bring a mug for tea/coffee</li>
-                            <li>Keep an eye on our <u><a href="https://twitter.com/hipyliv" target="_blank">X feed</a></u> for any extra information ahead of the event</li>
                         </ul>
                         <p>The benevolent AI overlords look forward to meeting you on the day (if we haven't met you already).</p>
                         <p>See you there!</p>
@@ -54,6 +64,7 @@
                     <p><strong>Date: </strong> {{ event.date }}, {{ event.time }}</p>
                     <p><strong>Location: </strong>{{ event.location }}</p>
                     <p><strong>Duration: </strong>{{ event.duration }} hrs</p>
+                    <p><strong>Registrations: </strong>{{ event.registrations }} (In Person), {{ event.registrations_online }} (Online)</p>
                     <p><strong>Resources: </strong><u><a href="{{ event.resources }}" target="_blank">{{ event.resources }}</a></u></p>
                     {% if event.playlist %}
                         <p><strong>Playlist: </strong><u><a href="{{ event.playlist }}" target="_blank">{{ event.playlist|truncatechars:40 }}</a></u></p>
@@ -104,5 +115,15 @@
 
     </section>
 </div>
+
+<script>
+    function copyToClipboard(element) {
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val($(element).text()).select();
+        document.execCommand("copy");
+        $temp.remove();
+    }
+</script>
 
 {% endblock %}

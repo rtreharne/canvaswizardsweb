@@ -42,7 +42,7 @@
                     <p><strong>Next Event: {{ event.date }}, {{ event.time }}</strong></p>
                     <p><strong>Location: {{ event.location }}</strong></p>
                     <p><strong>Duration: {{ event.duration }} hrs</strong></p>
-                    <p><small>Registrations: {{ event.registrations }}</small></p>
+                    <p><small>Registrations: {{ event.registrations|add:event.registrations_online }}</small></p>
 
 
                     <p><a href="/register/{{ event.id }}">More Info</a> | <a href="/register/{{ event.id }}">Register</a></p>

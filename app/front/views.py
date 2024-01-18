@@ -37,16 +37,24 @@ def register(request, event_id):
         print("POSTING FORM")
         registration_form = RegistrationForm(request.POST, event=event)
         if registration_form.is_valid():
-            registration_form.save()
+            registration = registration_form.save()
 
-            # Get event from from
+            # Get event from form
             event = registration_form.cleaned_data['event']
-            event.registrations += 1
+            mode = registration_form.cleaned_data['mode']
+
+            if mode == "Online":
+                event.registrations_online += 1
+            else:
+                event.registrations += 1
+
             event.save()
 
             # Get first name from form
             first_name = registration_form.cleaned_data['first_name']
             context["thanks"] = f"Thank you {first_name}!"
+            context["registration"] = registration
+            context["event"] = event
             return render(request, 'front/event.html', context)
         else:
             print("FORM NOT VALID")

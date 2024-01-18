@@ -76,7 +76,7 @@ input[type=checkbox] {
     font-family: "Roboto", sans-serif;
     font-weight: 400;
     font-style: normal;
-    font-size: 8em;
+    font-size: 6em;
     line-height: 100%;
     margin-bottom: 25px;
 }
@@ -217,7 +217,7 @@ a:hover {
     max-width: 400px;
 }
 
-input {
+input, select {
     width: 100%;
     max-width: 400px;
     padding: 10px;

@@ -16,9 +16,11 @@ class Event(models.Model):
     duration = models.IntegerField(null=True, blank=True)
     image = models.FileField(upload_to='events/')
     location = models.CharField(max_length=100)
+    online_info = models.TextField(null=True, blank=True)
     resources = models.URLField(null=True, blank=True)
     long_description = models.TextField(null=True, blank=True)
     registrations = models.IntegerField(default=0)
+    registrations_online = models.IntegerField(default=0)
     reddit = models.URLField(null=True, blank=True)
     playlist = models.URLField(null=True, blank=True)
 
@@ -45,8 +47,16 @@ class Registration(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     organization = models.CharField(max_length=100, null=True, blank=True)
+
+    CHOICES = [
+        ('In Person', 'In Person'),
+        ('Online', 'Online')
+    ]
+    mode = models.CharField(max_length=100, null=True, blank=True, default="In Person", choices=CHOICES, verbose_name="How will you attend?", help_text="(If you choose 'In Person' then you can still attend online if you need to.)")
+    
     track = models.CharField(max_length=100, null=True, blank=True)
+    
     mailing_list = models.BooleanField(default=False, verbose_name="Join our mailing list for info on future events?")
 
     def __str__(self):
-        return self.name
+        return f"{self.first_name} {self.last_name}"
