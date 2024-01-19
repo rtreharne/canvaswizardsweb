@@ -29,6 +29,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'setmeinprod')
 DEBUG = bool(int(os.environ.get('DEBUG', 0)))
 
 ALLOWED_HOSTS = ['*'] if DEBUG else os.environ.get("DJANGO_ALLOWED_HOSTS").split(',')
+SECURE_SSL_REDIRECT = not DEBUG
 
 
 # Application definition
