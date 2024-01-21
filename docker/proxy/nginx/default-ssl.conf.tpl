@@ -32,6 +32,11 @@ server {
         uwsgi_pass           ${APP_HOST}:${APP_PORT};
         include              /etc/nginx/uwsgi_params;
         client_max_body_size 10M;
-        uwsgi_param          X-Forwarded-Proto $scheme;
+        if ($https = on) {
+        uwsgi_param      X-Forwarded-Proto https;
+        }
+        if ($https = "") {
+            uwsgi_param      X-Forwarded-Proto http;
+        }
     }
 }
