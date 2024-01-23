@@ -1,5 +1,6 @@
 import random
 
+
 def trantor(human, check=None):
     # seed random using human slug
     random.seed(str(human.slug))
@@ -70,6 +71,41 @@ def rocket(human, check=None):
     
     return random_numbers_string
 
+def fibonacci(n):
+    """Return a list of the first n Fibonacci numbers."""
+    fib = []
+    a, b = 0, 1
+    while len(fib) < n:
+        fib.append(b)
+        a, b = b, a + b
+    return fib
+
+
+def fuel(human, check=False):
+    # seed random using human slug
+    random.seed(str(human.slug))
+
+    fibonacci_list = fibonacci(20)
+    fibonacci_list = random.sample(fibonacci_list, 5)
+
+    random_list = random.sample(range(max(fibonacci_list)), 9995)
+
+    new_list = random_list + fibonacci_list
+
+    # shuffle new list
+    random.shuffle(new_list)
+
+    if check:
+        # find all fibonacci numbers in new_list and sum them
+        total = 0
+        for number in new_list:
+            if number in fibonacci_list:
+                total += number
+
+                return True
+
+    return ",".join(str(x) for x in new_list)
+
 # Write a "FizzBuzz" checker. Return True if number is divisible by 3, 5, or both.
 def fizzbuzzcheck(value):
     if value % 3 == 0 and value % 5 == 0:
@@ -80,6 +116,16 @@ def fizzbuzzcheck(value):
         return True
     else:
         return False
+    
+
+def visualize():
+    pass
+
+
+
+if __name__ == "__main__":
+    visualize()
+
     
 
     
