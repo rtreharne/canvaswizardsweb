@@ -50,7 +50,7 @@
                     {% if event.in_progress %}
                         <p class="flash-slowly"><strong>**Event in progress**</strong></p>
                     {% endif %}
-                    <p><strong>Next Event: {{ event.date }}, {{ event.time }}</strong></p>
+                    <p><strong>Date: {{ event.date }}, {{ event.time }}</strong></p>
                     <p><strong>Location: {{ event.location }}</strong></p>
                     <p><strong>Duration: {{ event.duration }} hrs</strong></p>
                     <p><small>Registrations: {{ event.registrations|add:event.registrations_online }}</small></p>
