@@ -4,6 +4,17 @@ from crispy_forms.helper import FormHelper
 
 from .models import Human
 
+class SlugForm(forms.Form):
+    slug = forms.CharField(label='Slug', max_length=20)
+
+    def clean_slug(self):
+        slug = self.cleaned_data['slug']
+        if not Human.objects.filter(slug=slug).exists():
+            raise forms.ValidationError(
+                "Sorry, that slug does not exist."
+            )
+        return slug
+    
 class HumanForm(forms.ModelForm):
     
     class Meta:

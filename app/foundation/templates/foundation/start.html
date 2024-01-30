@@ -52,10 +52,24 @@
                             
                             <button type="submit" class="btn btn-primary">Start</button>
 
+                        </form>
+
+                        <br>
+                        <br>
+
+                        <p>Want to pickup where you left off?</p>
+                        <p>Enter your slug below (e.g. "isaac-asimov").</p>                  
+
+                        <form class="registration-form" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ slug_form|crispy }}
+            
+                            
+                            <button type="submit" class="btn btn-primary">Go</button>
+
                             <br>
                             <br>
 
-                            <u><a href="/foundation/login/">Already started? Pickup where you left off.</a></u>
                         </form>
                 
               </div>

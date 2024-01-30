@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import HumanForm, IntegerInputForm
+from .forms import HumanForm, IntegerInputForm, SlugForm
 from .models import Human, Question, Answer
 from django.http import HttpResponseRedirect, HttpResponse
 from .utils import foundation
@@ -98,12 +98,29 @@ def start(request):
     context = {}
 
     if request.method == 'POST':
+        # if slug form submitted
+        if "slug" in request.POST:
+            slug_form = SlugForm(request.POST)
+            if slug_form.is_valid():
+                slug = slug_form.cleaned_data['slug']
+                return HttpResponseRedirect(f'{slug}')
+            else:
+                context["slug_form"] = slug_form
+                context["form"] = HumanForm()
+                return render(request, 'foundation/start.html', context)
+        
+        # if human form submitted
         form = HumanForm(request.POST)
         if form.is_valid():
             human = form.save()
             return HttpResponseRedirect(f'{human.slug}')
+        else:
+            context["form"] = form
+            context["slug_form"] = SlugForm()
+            return render(request, 'foundation/start.html', context)
         
     context["form"] = HumanForm()
+    context["slug_form"] = SlugForm()
     
     return render(request, 'foundation/start.html', context)
 
