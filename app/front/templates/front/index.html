@@ -60,7 +60,7 @@
                     {% else %}
 
                         {% if event.fully_booked %}
-                            <p><strong>Fully booked. {% if event.online_info %}Online registration only.{% endif %}</strong></p>
+                            <p><strong>Fully booked. {% if event.online_info %}You can still register to participate online.{% endif %}</strong></p>
                         {% endif %}
                     <p><a href="/register/{{ event.id }}">More Info</a> | <a href="/register/{{ event.id }}">Register</a></p>
                     {% endif %}
