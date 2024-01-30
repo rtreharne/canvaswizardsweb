@@ -79,26 +79,41 @@
 
             {% if not thanks %}
 
-            
+
                 {% if form %}
                 <div class="col-md-6">
 
-                    
-                    <div class="event-summary">
 
+                    {% if not event.fully_booked or event.online_info %}
+          
+                        <p><strong>This event is fully booked. Online registration only.</strong></p>
+                    
+                
+
+                
+                        <div class="event-summary">
+
+                            
+                                <form class="registration-form" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    {{ form|crispy }}
+                                    <br>
+                                    <button type="submit" class="btn btn-primary">Register</button>
+                                </form>
                         
-                            <form class="registration-form" method="post" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                {{ form|crispy }}
-                                <br>
-                                <button type="submit" class="btn btn-primary">Register</button>
-                            </form>
-                    
-                </div>
-                {% endif %}
+                        </div>
+
+                    {% else %}
+                        <div class="event-summary">
+                            <p><strong>This event is fully booked.</strong></p>
+                        </div>
+
+
+                    {% endif %}
                 <br>
                 <br>
 
+            {% endif %}
             {% endif %}
             
 

@@ -28,9 +28,13 @@ def index(request):
     # Update any events in progress
     for event in events:
         start = datetime.datetime.combine(event.date, event.time)
+        print("START", start)
         finish = start + datetime.timedelta(hours=event.duration)
         if start <= datetime.datetime.now() <= finish:
             event.in_progress = True
+            event.save()
+        else:
+            event.in_progress = False
             event.save()
 
     # Get past events
