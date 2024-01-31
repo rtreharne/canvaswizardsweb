@@ -64,6 +64,19 @@
             </div>
             
             <div class="col-md-6">
+
+                {% if resources %}
+                    <h3>Resources</h3>
+                    <hr style="border: none; height: 2px; background-color: white;">
+                    <ul>
+                        {% for resource in resources %}
+                            <li><ul><a href="{{ resource.url }}" target="_blank">{{ resource.name }}</a></ul></li>
+                        {% endfor %}
+                    </ul>
+                    <br>
+                    <br>
+                {% endif %}
+                
                 
                 <h3>My Stats ({{ human.slug }})</h3>
                 <hr style="border: none; height: 2px; background-color: white;">

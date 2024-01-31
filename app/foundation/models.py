@@ -35,6 +35,14 @@ class Answer(models.Model):
 
     def __str__(self):
         return f"{self.human} - {self.question} - {self.correct}"
+    
+class Resource(models.Model):
+    name = models.CharField(max_length=200)
+    url = models.URLField()
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, blank=True)
+    
+    def __str__(self):
+        return f"{self.name}"
 
 
 

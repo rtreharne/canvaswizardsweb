@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Human, Question, Answer
+from .models import Human, Question, Answer, Resource
 
 class HumanAdmin(admin.ModelAdmin):
 
@@ -20,7 +20,16 @@ class AnswerAdmin(admin.ModelAdmin):
         # add human.slug to list_display
         def human_slug(self, obj):
             return obj.human.slug
+        
+class ResourceAdmin(admin.ModelAdmin):
+         
+        list_display = ("name", "url", "question")
+        search_fields = ["name", "url", "question"]
+
+        
+
   
 admin.site.register(Human, HumanAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Answer, AnswerAdmin)
+admin.site.register(Resource, ResourceAdmin)

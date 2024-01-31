@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .forms import HumanForm, IntegerInputForm, SlugForm
-from .models import Human, Question, Answer
+from .models import Human, Question, Answer, Resource
 from django.http import HttpResponseRedirect, HttpResponse
 from .utils import foundation
 import datetime
@@ -138,6 +138,8 @@ def question(request, slug, question_id=None):
     if question_id:
         question = Question.objects.get(id=question_id)
         answers = Answer.objects.filter(human=human, question=question, correct=True)
+        resources = Resource.objects.filter(question=question)
+        print("RESOURCES", resources)
         if len(answers) > 0:
             context["complete"] = True
             context["question"] = question
@@ -145,6 +147,7 @@ def question(request, slug, question_id=None):
             context = get_leaderboard_question(context)
             context = get_leaderboard_overall(context)
             context["stats_part"] = get_rank(human, question=context["question"])
+            context["resources"] = resources
             return render(request, 'foundation/question.html', context)
     
 
@@ -228,6 +231,7 @@ def question(request, slug, question_id=None):
         return HttpResponseRedirect('/')
     
     context["question"] = question
+    context["resources"] = Resource.objects.filter(question=question).order_by('name')
     
     return render(request, 'foundation/question.html', context)
 
