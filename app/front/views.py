@@ -5,7 +5,7 @@ import datetime
 import random
 
 from .forms import RegistrationForm
-from .models import Event, Registration
+from .models import Event, Registration, Resource
 
 def promo(request, event_id):
 
@@ -49,7 +49,12 @@ def index(request):
 def register(request, event_id):
 
     event = Event.objects.get(id=event_id)
+    resources = Resource.objects.filter(events=event)
+
+    print(resources)
+
     context = {"event": event}
+    context["resources"] =  resources
 
     # If event is in the past, redirect to index
     if event.date < datetime.datetime.now().date():

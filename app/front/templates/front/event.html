@@ -137,6 +137,23 @@
             <img class="event-thumb reg" src="{{ event.image.url }}" alt="{{ event.name }}">
             <br>
             <br>
+            {% if resources %}
+                <h3>Resources</h3>
+                <hr style="border: none; height: 2px; background-color: white;">
+
+                    {% for resource in resources %}
+                        {% if resource.url %}
+                            <p><a href="{{ resource.url }}" target="_blank">{{ forloop.counter }}. {{ resource.name }}</a></p>
+                        {% elif resource.file %}
+                            <p><a href="{{ resource.file.url }}" target="_blank">{{ forloop.counter }}. {{ resource.name }}</a></p>
+                        {% else %}
+                            <p>{{ forloop.counter }}. {{ resource.name }}</p>
+                        {% endif %}
+                    {% endfor %}
+
+            <br>
+            <br>
+            {% endif %}
             {% if tracks %}
                 <h3>Event Playlist</h3>
                 <hr style="border: none; height: 2px; background-color: white;">

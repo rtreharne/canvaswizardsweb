@@ -62,3 +62,14 @@ class Registration(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+    
+
+class Resource(models.Model):
+    name = models.CharField(max_length=100)
+    url = models.URLField(blank=True, null=True)
+    events = models.ManyToManyField(Event, blank=True)
+    file = models.FileField(upload_to='resources/', blank=True, null=True)
+
+
+    def __str__(self):
+        return self.name
