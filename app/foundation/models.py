@@ -20,6 +20,7 @@ class Question(models.Model):
     function_name = models.CharField(max_length=200, null=True, blank=True)
     reddit = models.URLField(null=True, blank=True)
     resources = models.URLField(null=True, blank=True)
+    puzzle_input = models.BooleanField(default=True)
     
     def __str__(self):
         return f"{self.title}"

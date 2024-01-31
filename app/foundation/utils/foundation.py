@@ -1,5 +1,16 @@
 import random
+from PIL import Image, ImageDraw, ImageFont
 
+def name_seed(human, check=None):
+    random.seed(str(human.slug))
+
+    random_number = random.randint(100000,999999)
+
+    if check:
+        if check == random_number:
+            return True
+        
+    return random_number
 
 def trantor(human, check=None):
     # seed random using human slug
@@ -27,24 +38,32 @@ def trantor(human, check=None):
     return random_numbers_string
 
 def portal(human, check=None):
-    # seed random using human slug
-    random.seed(str(human.slug))
+    # ADD EVEN NUMBERS ONLY
 
-    # Create a random string of 10000 integers
-    random_integer_string = ""
+    # seed random using human slug
+    random.seed(str(human.slug)+str(human.first_name)+str(human.last_name))
+
+    # Create a list of 10000 random numbers between 1000000 and 9999999
+    random_numbers = []
     for i in range(10000):
-        random_integer_string += str(random.randint(0, 9))
-    
+        random_numbers.append(random.randint(1000000, 9999999))
+
     if check:
-        reverse = random_integer_string[::-1]
-        prod = 1
-        for item in reverse[::3]:
-            if item != "0":
-                prod *= int(item)
-        if check == len(str(prod)):
+        # Add all numbers in random_numbers
+        total = 0
+        for number in random_numbers:
+            if number % 2 == 0:
+                total += number
+     
+        if check == total:
             return True
-        
-    return random_integer_string
+    
+    # format random_numbers into a string. Put each number on a new line.
+    random_numbers_string = ""
+    for number in random_numbers:
+        random_numbers_string += f"{number}\n"
+    
+    return random_numbers_string
 
 def rocket(human, check=None):
     # seed random using human slug
@@ -67,7 +86,10 @@ def rocket(human, check=None):
     # format random_numbers into a string. Put each number on a new line.
     random_numbers_string = ""
     for number in random_numbers:
-        random_numbers_string += f"{number}\n"
+        random_numbers_string += f"{number},"
+
+    # remove final comma
+    random_numbers_string = random_numbers_string[:-1]
     
     return random_numbers_string
 
@@ -88,7 +110,7 @@ def fuel(human, check=False):
     fibonacci_list = fibonacci(20)
     fibonacci_list = random.sample(fibonacci_list, 5)
 
-    random_list = random.sample(range(max(fibonacci_list)), 9995)
+    random_list = [random.randint(1, max(fibonacci_list)) for x in range(1, 1000)]
 
     new_list = random_list + fibonacci_list
 
@@ -118,14 +140,93 @@ def fizzbuzzcheck(value):
         return False
     
 
-def visualize():
-    pass
+def starmap(human, check=False):
+    random.seed(str(human.slug))
 
-
-
-if __name__ == "__main__":
-    visualize()
-
+    map = ""
     
+    for i in range(100):
+        for j in range(100):
+            if random.random() < 0.1:
+                map += "*"
+            else:
+                map += "."
+        map += "\n"
 
+    if check:
+        lines = list(map.split("\n"))
+        coords = []
+        for i in range(len(lines)):
+            for j in range(len(lines[i])):
+                if lines[i][j] != ".":
+                    coords.append((i, j))
+        
+        x_sum = 0
+        y_sum = 0
+        for coord in coords:
+            x_sum += coord[0]
+            y_sum += coord[1]
+        
+        avg_x = x_sum / len(coords)
+        avg_y = y_sum / len(coords)
+
+        x = round(avg_x * 100)
+        y = round(avg_y * 100)
+        if check == int(str(x) + str(y)):
+            return True
+
+    return map
+
+def enlightenment(human, check=False):
+
+    random.seed(str(human.slug))
+
+
+    if check:
+        if check == human.first_name+"wozhere"+str(random.randint(1000000, 9999999)):
+            return True
+    
+    
+    # Create a blank image with a white background
+    image_width = 2000
+    image_height = 100
+    background_color = (255, 255, 255)
+    image = Image.new("RGB", (image_width, image_height), background_color)
+
+    # Specify the font and size
+    font_size = 40
+    font = ImageFont.truetype("arial.ttf", font_size)
+
+    # Specify the text and its position
+    text = human.first_name+"wozhere"+str(random.randint(100000, 999999))
+    text_color = (0, 0, 0)
+    text_position = (50, 30)
+
+    # Draw the text on the image
+    draw = ImageDraw.Draw(image)
+    draw.text(text_position, text, font=font, fill=text_color)
+
+    # Reverse engineer the draw object to extract coordinates of black pixels that can be plotted on a scatterplot
+    black_pixels = []
+    for x in range(image_width):
+        for y in range(image_height):
+            if draw._image.getpixel((x,y)) == (0,0,0):
+                black_pixels.append((x,y))
+
+  
+
+    x = [x[0] for x in black_pixels]
+    y = [x[1] for x in black_pixels]
+
+    # reverse y-axes
+    y = [image_height - y for y in y]
+
+    # format x and y into a text file
+    text_file = ""
+    for i in range(len(x)):
+        text_file += f"{x[i]},{y[i]}\n"
+
+    return text_file
+  
+        
     
