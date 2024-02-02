@@ -13,6 +13,8 @@ def name_seed(human, check=None):
     return random_number
 
 def trantor(human, check=None):
+    # Quesiton 1
+
     # seed random using human slug
     random.seed(str(human.slug))
 
@@ -38,6 +40,8 @@ def trantor(human, check=None):
     return random_numbers_string
 
 def portal(human, check=None):
+    # Question 2
+
     # ADD EVEN NUMBERS ONLY
 
     # seed random using human slug
@@ -66,6 +70,8 @@ def portal(human, check=None):
     return random_numbers_string
 
 def rocket(human, check=None):
+    # Question 3
+
     # seed random using human slug
     random.seed(str(human.slug))
 
@@ -104,6 +110,8 @@ def fibonacci(n):
 
 
 def fuel(human, check=False):
+    # Question 4
+
     # seed random using human slug
     random.seed(str(human.slug))
 
@@ -141,6 +149,8 @@ def fizzbuzzcheck(value):
     
 
 def starmap(human, check=False):
+    # Question 5
+
     random.seed(str(human.slug))
 
     map = ""
@@ -178,27 +188,28 @@ def starmap(human, check=False):
     return map
 
 def enlightenment(human, check=False):
+    # Question 6
 
-    random.seed(str(human.slug))
+    random.seed(str(human.first_name)+str(human.last_name))
 
 
     if check:
-        if check == human.first_name+"wozhere"+str(random.randint(1000000, 9999999)):
+        if check == random.randint(100000, 999999):
             return True
     
     
     # Create a blank image with a white background
-    image_width = 2000
-    image_height = 100
+    image_width = 500
+    image_height = 200
     background_color = (255, 255, 255)
     image = Image.new("RGB", (image_width, image_height), background_color)
 
     # Specify the font and size
-    font_size = 40
-    font = ImageFont.truetype("arial.ttf", font_size)
+    font_size = 18
+    font = ImageFont.load_default(font_size)
 
     # Specify the text and its position
-    text = human.first_name+"wozhere"+str(random.randint(100000, 999999))
+    text = str(random.randint(100000, 999999))
     text_color = (0, 0, 0)
     text_position = (50, 30)
 
@@ -206,13 +217,14 @@ def enlightenment(human, check=False):
     draw = ImageDraw.Draw(image)
     draw.text(text_position, text, font=font, fill=text_color)
 
+
     # Reverse engineer the draw object to extract coordinates of black pixels that can be plotted on a scatterplot
     black_pixels = []
+
     for x in range(image_width):
         for y in range(image_height):
-            if draw._image.getpixel((x,y)) == (0,0,0):
+            if draw._image.getpixel((x,y)) != (255,255,255):
                 black_pixels.append((x,y))
-
   
 
     x = [x[0] for x in black_pixels]

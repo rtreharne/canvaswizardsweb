@@ -4,6 +4,7 @@ from .models import Human, Question, Answer, Resource
 from django.http import HttpResponseRedirect, HttpResponse
 from .utils import foundation
 import datetime
+from django.core.exceptions import ObjectDoesNotExist
 
 def get_leaderboard_question(context):
     # Get all answers for this question that are correct. Order by most recently submitted.
@@ -72,16 +73,16 @@ def get_rank(human, question=None):
         else:
             answers = Answer.objects.filter(human=h, correct=True)
         score = sum([x.score for x in answers])
-        print(h, score)
+
         if score > 0:
             score_dict[h.slug] = score
     
-    print("SCORE-DICT", score_dict)
+
     sorted_score_dict = sorted(score_dict.items(), key=lambda x: x[1], reverse=True)
 
     # determine rank of human
     rank = 0
-    print("SORTED-SCORE-DICT", sorted_score_dict)
+
     for i, x in enumerate(sorted_score_dict):
         rank += 1
         if x[0] == human.slug:
@@ -127,7 +128,10 @@ def start(request):
 def question(request, slug, question_id=None):
 
     context = {}
-    human = Human.objects.get(slug=slug)
+    try:
+        human = Human.objects.get(slug=slug)
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect('/foundation')
     context["human"] = human
     answer_form = IntegerInputForm()
     context["answer_form"] = answer_form
@@ -139,7 +143,7 @@ def question(request, slug, question_id=None):
         question = Question.objects.get(id=question_id)
         answers = Answer.objects.filter(human=human, question=question, correct=True)
         resources = Resource.objects.filter(question=question)
-        print("RESOURCES", resources)
+
         if len(answers) > 0:
             context["complete"] = True
             context["question"] = question
@@ -169,6 +173,7 @@ def question(request, slug, question_id=None):
     context["stats_part"] = get_rank(human, question=context["question"])
     context = get_leaderboard_question(context)
     context = get_leaderboard_overall(context)
+
 
     if request.method == 'POST':
         answer_form = IntegerInputForm(request.POST)
@@ -220,15 +225,17 @@ def question(request, slug, question_id=None):
                 # Look for answers with the same submitted value.
                 matching_answers = Answer.objects.filter(question=question, correct=True, submitted=answer.submitted)
                 if len(matching_answers) > 0:
-                    print("AAAAAAAA")
+
                     context["message"] += f"Curiously, the human <strong>{matching_answers[0].human.slug}</strong> submitted the same answer and got it correct. What are the odds, eh?"
 
             render(request, 'foundation/question.html', context)
 
     # If there is no next question, then this is the last question.
     if question is None:
+        previous_question = Answer.objects.filter(human=human).order_by('-time_submitted')[0].question
+        context["previous_question"] = previous_question
         # TODO: Create Summary Page
-        return HttpResponseRedirect('/')
+        return render(request, 'foundation/finish.html', context)
     
     context["question"] = question
     context["resources"] = Resource.objects.filter(question=question).order_by('name')

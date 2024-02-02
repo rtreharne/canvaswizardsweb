@@ -28,7 +28,7 @@ def index(request):
     # Update any events in progress
     for event in events:
         start = datetime.datetime.combine(event.date, event.time)
-        print("START", start)
+
         finish = start + datetime.timedelta(hours=event.duration)
         if start <= datetime.datetime.now() <= finish:
             event.in_progress = True
@@ -42,7 +42,7 @@ def index(request):
     context["past_events"] = past_events
 
 
-    print("PAST EVENTS", past_events)
+
 
     return render(request, 'front/index.html', context)
 
@@ -51,7 +51,6 @@ def register(request, event_id):
     event = Event.objects.get(id=event_id)
     resources = Resource.objects.filter(events=event)
 
-    print(resources)
 
     context = {"event": event}
     context["resources"] =  resources
@@ -62,7 +61,7 @@ def register(request, event_id):
 
 
     if request.method == 'POST':
-        print("POSTING FORM")
+
         registration_form = RegistrationForm(request.POST, event=event)
         if registration_form.is_valid():
             registration = registration_form.save()
@@ -85,7 +84,7 @@ def register(request, event_id):
             context["event"] = event
             return render(request, 'front/event.html', context)
         else:
-            print("FORM NOT VALID")
+
             context["form"] = registration_form
             return render(request, 'front/event.html', context)
     

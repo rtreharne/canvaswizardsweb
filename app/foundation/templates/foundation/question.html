@@ -14,7 +14,11 @@
             <a href="/foundation">< Previous </a>
         {% endif %}
         {% if complete %}
+            {% if not question.next.id %}
+            | <a href="/foundation/{{ human.slug }}">Next ></a>
+            {% else %}
             | <a href="/foundation/{{ human.slug }}/question/{{ question.next.id }}">Next ></a>
+            {% endif %}
         {% endif %}
         
         <br>
@@ -36,7 +40,10 @@
                     <div class="success-block">
                         <h3>Success!</h3>
                         <p>Well done. You submitted the correct solution.</p>
-                        <p><a href=""><button type="submit" class="btn btn-primary">Continue</button></a></p>
+                 
+                        <p><button class="confetti-button btn btn-primary" onclick="confetti();">Click for reward</button></p>
+
+                        <p><a href="/foundation/{{ human.slug }}"><button type="submit" class="btn btn-primary">Continue</button></a></p>
                     </div>
                     <br>
                 {% endif %}
