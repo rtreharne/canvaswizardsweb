@@ -122,17 +122,21 @@ def fuel(human, check=False):
 
     new_list = random_list + fibonacci_list
 
-    # shuffle new list
     random.shuffle(new_list)
 
     if check:
         # find all fibonacci numbers in new_list and sum them
+        fibonacci_list = fibonacci(20)
         total = 0
         for number in new_list:
             if number in fibonacci_list:
+                print(number)
                 total += number
 
-                return True
+        print("TOTAL", total)
+
+        if check == total:
+            return True
 
     return ",".join(str(x) for x in new_list)
 
