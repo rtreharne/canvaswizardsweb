@@ -27,9 +27,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'setmeinprod')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get('DEBUG', 0)))
+DEBUG = True
 
 
-ALLOWED_HOSTS = ['*'] if DEBUG else os.environ.get("DJANGO_ALLOWED_HOSTS").split(',')
+ALLOWED_HOSTS = ['*', 'www.hipy.org.uk'] if DEBUG else os.environ.get("DJANGO_ALLOWED_HOSTS").split(',')
 
 if DEBUG:
     SITE_ID = 1
