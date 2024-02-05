@@ -9,6 +9,10 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 
+# import sites models
+from django.contrib.sites.models import Site
+
+
 from allauth.socialaccount.models import SocialAccount
 
 def github_callback(request):
