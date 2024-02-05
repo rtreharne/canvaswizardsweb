@@ -177,8 +177,6 @@ def start(request):
 
 
     context = {"human_form": human_form}
-
-
     
     return render(request, 'foundation2/start.html', context)
 
