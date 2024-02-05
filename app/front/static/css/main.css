@@ -98,6 +98,10 @@ input[type=checkbox] {
     background-color: white !important;
 }
 
+.social-btn {
+    margin: 5px;
+    min-width: 200px;
+}
 .btn-primary {
     /* transparent, white text, rounded courners, white border */
     background-color: transparent;
