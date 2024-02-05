@@ -35,7 +35,7 @@ if DEBUG:
     SITE_ID = 1
 else:
     SITE_ID = 3
-    
+
 LOGIN_REDIRECT_URL = '/'
 SOCIALACCOUNT_AUTO_SIGNUP = True
 
@@ -164,7 +164,7 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 
-SITE_ID = 1
+
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
