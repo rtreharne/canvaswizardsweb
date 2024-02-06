@@ -226,7 +226,7 @@ def question(request, slug, question_id=None):
                 matching_answers = Answer.objects.filter(question=question, correct=True, submitted=answer.submitted)
                 if len(matching_answers) > 0:
 
-                    context["message"] += f"Curiously, the human <strong>{matching_answers[0].human.slug}</strong> submitted the same answer and got it correct. What are the odds, eh?"
+                    context["message"] += f"Curiously, another human submitted the same answer and got it correct. What are the odds, eh?"
 
             render(request, 'foundation/question.html', context)
 

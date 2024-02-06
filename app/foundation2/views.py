@@ -168,7 +168,6 @@ def start(request):
     if user is not None and user.is_authenticated:
         try:
             human = Human.objects.get(user=user)
-            print(human.__dict__)
             context={"human": human}
  
         except:
@@ -191,6 +190,7 @@ def question(request, question_id=None):
 
     context = {}
     social_account = SocialAccount.objects.filter(user=request.user).first()
+    print(social_account, request.user)
     context["social_account"] = social_account
 
     
