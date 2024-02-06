@@ -31,9 +31,9 @@ class RegistrationAdmin(admin.ModelAdmin):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=registrations.csv'
         writer = csv.writer(response)
-        writer.writerow(['Last Name', 'First Name', 'Email', 'Event', 'Event Date'])
+        writer.writerow(['Last Name', 'First Name', 'Email', 'Event', 'Event Date', 'Mailing List'])
         for registration in queryset:
-            writer.writerow([smart_str(registration.last_name), smart_str(registration.first_name), smart_str(registration.email), smart_str(registration.event), smart_str(registration.event.date)])
+            writer.writerow([smart_str(registration.last_name), smart_str(registration.first_name), smart_str(registration.email), smart_str(registration.event), smart_str(registration.event.date), smart_str(registration.mailing_list)])
         return response
     
     
