@@ -67,7 +67,7 @@
                             <p><a href="question"><button type="submit" class="btn btn-primary">Continue</button></a></p>
                         {% endif %}
                     {% else %}
-                    <p>To play, please identify yourself via on of these services:</p>
+                    <p>To play, please identify yourself via one of these services:</p>
                     {% load socialaccount %}
                     <form action="{% provider_login_url 'github' next='/foundation2' %}" method="post">
                         {% csrf_token %}
