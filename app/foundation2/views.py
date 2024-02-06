@@ -76,7 +76,7 @@ def get_leaderboard_overall(context):
             if human.anonymous_user:
                 score_dict["AnonUser"+str(human.id)] = score
             else:
-                score_dict
+                score_dict[human.slug] = score
     
     sorted_score_dict = sorted(score_dict.items(), key=lambda x: x[1], reverse=True)
     top_scores = sorted_score_dict[:10]

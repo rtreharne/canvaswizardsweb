@@ -17,7 +17,7 @@
             {% if not question.next.id %}
             | <a href="/foundation2/">Next ></a>
             {% else %}
-            | <a href="/foundation2//question/{{ question.next.id }}">Next ></a>
+            | <a href="/foundation2/question/{{ question.next.id }}">Next ></a>
             {% endif %}
         {% endif %}
         
@@ -43,7 +43,7 @@
                  
                         <p><button class="confetti-button btn btn-primary" onclick="confetti();">Click for reward</button></p>
 
-                        <p><a href="/foundation2/"><button type="submit" class="btn btn-primary">Continue</button></a></p>
+                        <p><a href="/foundation2/question"><button type="submit" class="btn btn-primary">Continue</button></a></p>
                     </div>
                     <br>
                 {% endif %}
@@ -87,6 +87,7 @@
                 
                 <h3>My Stats ({{ human.first_name }} {{ human.last_name }})</h3>
                 <p style="font-size: .8em;">Logged in via {{ social_account.provider }} | <a href="/foundation2/logout">Logout</a> </p>
+                <p style="font-size: .8em;">Your unique user slug is: {% if human.anonymous_user %}AnonUser{{human.id}}{% else %}{{human.slug}}{% endif %}</p>
                 <hr style="border: none; height: 2px; background-color: white;">
 
                 <div class="row">
