@@ -140,6 +140,8 @@ def get_rank(human, question=None):
 
 def start(request):
 
+    context = {}
+
     # Get logged in user
     try:
         user = request.user
@@ -155,7 +157,8 @@ def start(request):
                 print("form is valid")
                 human = human_form.save()
                 context = {"human_form": None}
-                return render(request, 'foundation2/start.html', context)
+                # Redirect to /question
+                return HttpResponseRedirect('/foundation2/question')
             else:
                 print("form is not valid")
                 context = {"human_form": human_form, "errors": human_form.errors}
@@ -165,6 +168,8 @@ def start(request):
     if user is not None and user.is_authenticated:
         try:
             human = Human.objects.get(user=user)
+            print(human.__dict__)
+            context={"human": human}
  
         except:
             human = None
@@ -176,7 +181,8 @@ def start(request):
             
 
 
-    context = {"human_form": human_form}
+    context["human_form"] = human_form
+    
     
     return render(request, 'foundation2/start.html', context)
 

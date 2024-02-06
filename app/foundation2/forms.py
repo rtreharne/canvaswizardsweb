@@ -25,7 +25,7 @@ class HumanForm(forms.ModelForm):
         self.fields['user'].initial = self.user
 
         # Hide User field
-        #self.fields['user'].widget = forms.HiddenInput()
+        self.fields['user'].widget = forms.HiddenInput()
 
 
     def save(self, commit=True):

@@ -33,7 +33,7 @@ DEBUG = bool(int(os.environ.get('DEBUG', 0)))
 ALLOWED_HOSTS = ['*', ] if DEBUG else os.environ.get("DJANGO_ALLOWED_HOSTS").split(',')
 
 if DEBUG:
-    SITE_ID = 3
+    SITE_ID = 1
 else:
     SITE_ID = 3
     ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
-    #'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.google',
     'front',
     'foundation',
     'foundation2',

@@ -47,9 +47,10 @@
 
                     
                     {% if user.is_authenticated %}
-                    <p>Welcome {{ user.first_name }}</p>
+                    
                     
                         {% if human_form %}
+                        <p>Welcome {{ user.first_name }}, please update your profile before getting started.</p>
                             {% if errors %}
                                 <p>There was an error with your form. Please try again.</p>
                                 {% for error in errors %}
@@ -62,6 +63,7 @@
                                 <button type="submit" class="btn btn-primary">Save and continue</button>
                             </form>
                         {% else %}
+                            <p>Welcome back {{ human.first_name }}, are you ready to dive back in?</p>
                             <p><a href="question"><button type="submit" class="btn btn-primary">Continue</button></a></p>
                         {% endif %}
                     {% else %}
