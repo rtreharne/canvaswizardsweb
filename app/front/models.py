@@ -25,6 +25,8 @@ class Event(models.Model):
     playlist = models.URLField(null=True, blank=True)
     in_progress = models.BooleanField(default=False)
     fully_booked = models.BooleanField(default=False)
+    ask_for_track = models.BooleanField(default=False)
+    ask_for_description = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -57,8 +59,11 @@ class Registration(models.Model):
     mode = models.CharField(max_length=100, null=True, blank=True, default="In Person", choices=CHOICES, verbose_name="How will you attend?", help_text="(If you choose 'In Person' then you can still attend online if you need to.)")
     
     track = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField(null=True, blank=True, verbose_name="What's your issue?", help_text="Please describe your issue in as much detail as possible. The more we know, the better we can help you.")
+
     
     mailing_list = models.BooleanField(default=False, verbose_name="Join our mailing list for info on future events?")
+    present = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

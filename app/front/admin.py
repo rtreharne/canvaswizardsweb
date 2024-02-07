@@ -19,11 +19,19 @@ class EventAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 class RegistrationAdmin(admin.ModelAdmin):
-    list_display = ('last_name', 'first_name', 'email', 'event', 'created_at')
+
+    list_display = ('last_name', 'first_name', 'event', 'present')
     list_filter = ('event', 'created_at')
     search_fields = ('last_name', 'first_name', 'email')
 
+    list_editable = ('present',)
+
     actions = ['export_to_csv']
+
+    change_list_template = 'front/my_model_change_list.html'
+
+    class Media:
+        js = ('autosave.js',)
 
     # Build a custom action to export the selected registrations to a CSV file
     def export_to_csv(self, request, queryset):

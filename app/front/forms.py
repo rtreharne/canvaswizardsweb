@@ -15,12 +15,21 @@ class RegistrationForm(forms.ModelForm):
         event = kwargs.pop('event')
         super(RegistrationForm, self).__init__(*args, **kwargs)
         self.fields['event'].initial = event
+        if not event.ask_for_track:
+            self.fields['track'].widget = forms.HiddenInput()
+        
+        if not event.ask_for_description:
+            self.fields['description'].widget = forms.HiddenInput()
+
+        if event.online_info == "":
+            self.fields['mode'].widget = forms.HiddenInput()
+            
         if event.fully_booked:
             self.fields['mode'].choices = [('Online', 'Online')]
 
     # Do not show events field
     event = forms.ModelChoiceField(queryset=Event.objects.all(), widget=forms.HiddenInput())
-    
+
 
     # Check uniqueness of email and event together
     def clean(self):

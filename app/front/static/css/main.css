@@ -55,6 +55,7 @@ input[type=checkbox] {
 .help-block {
     font-size: 0.8em;
     margin-top: -10px;
+    max-width: 400px;
 }
 
 .success-block, .message-block {
@@ -225,7 +226,7 @@ a:hover {
     max-width: 400px;
 }
 
-input, select {
+input, select, textarea {
     width: 100%;
     max-width: 400px;
     padding: 10px;
