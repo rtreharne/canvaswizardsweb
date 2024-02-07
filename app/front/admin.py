@@ -20,8 +20,8 @@ class EventAdmin(admin.ModelAdmin):
 
 class RegistrationAdmin(admin.ModelAdmin):
 
-    list_display = ('last_name', 'first_name', 'event', 'present')
-    list_filter = ('event', 'created_at')
+    list_display = ('last_name', 'first_name', 'event', 'present', 'event_date', 'mode',)
+    list_filter = ('event', 'event__date', 'present', 'mode')
     search_fields = ('last_name', 'first_name', 'email')
 
     list_editable = ('present',)
@@ -29,6 +29,14 @@ class RegistrationAdmin(admin.ModelAdmin):
     actions = ['export_to_csv']
 
     change_list_template = 'front/my_model_change_list.html'
+
+    # event date field for the list view
+    def event_date(self, obj):
+        return obj.event.date
+    
+
+    event_date.short_description = 'Event Date'
+
 
     class Media:
         js = ('autosave.js',)
