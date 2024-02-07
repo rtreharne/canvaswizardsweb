@@ -34,6 +34,10 @@ class RegistrationAdmin(admin.ModelAdmin):
     def event_date(self, obj):
         return obj.event.date
     
+    # Want to make sure 'last_name' column is capitalized
+    def last_name(self, obj):
+        return obj.last_name.capitalize()
+    
 
     event_date.short_description = 'Event Date'
 
