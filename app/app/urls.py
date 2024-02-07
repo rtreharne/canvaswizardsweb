@@ -18,6 +18,9 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
+admin.site.site_header = "HiPy Administration"
+admin.site.site_title = "HiPy Administration"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('front.urls')),
