@@ -1,0 +1,210 @@
+{% extends "front/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+<!-- main.css to head -->
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/lifesci.css' %}">
+{% endblock %}
+
+{% block content %}
+
+
+<div class="page-section" id="event">
+    <section class="container">
+        <a href="/"><img class="logo" src="{% static 'img/navbar-logo.png' %}" alt="HiPy Logo"></a>
+        {% if question.previous %}
+            <a href="/lifesci/question/{{ question.previous.id }}">< Previous</a>
+        {% else %}
+            <a href="/lifesci">< Previous </a>
+        {% endif %}
+        {% if complete %}
+            {% if not question.next.id %}
+            | <a href="/lifesci/">Next ></a>
+            {% else %}
+            | <a href="/lifesci/question/{{ question.next.id }}">Next ></a>
+            {% endif %}
+        {% endif %}
+        
+        <br>
+        <br>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Foundation: Code Nexus</h1>
+                <h2>{{ question.title }}</h2>
+                {% if message %}
+                    <div class="message-block">
+                        <h3>Oops!</h3>
+                        <p>{{ message|safe }}</p>
+                    </div>
+                    <br>
+                {% endif %}
+
+                {% if success %}
+                    <div class="success-block">
+                        <h3>Success!</h3>
+                        <p>Well done. You submitted the correct solution.</p>
+                 
+                        <p><button class="confetti-button btn btn-primary" onclick="confetti();">Click for reward</button></p>
+
+                        <p><a href="/lifesci/question"><button type="submit" class="btn btn-primary">Continue</button></a></p>
+                    </div>
+                    <br>
+                {% endif %}
+                
+                <div>
+
+                    {{ question.text|safe }}
+                </div>
+
+                <div>
+                    <p>
+                        [<u><a href="/lifesci/question/{{ question.id }}/input" target="_blank">download your puzzle input</a></u>]
+                    </p>
+                    {% if complete %}
+                    <p><strong>Well done! You have completed this part. Your input was {{ answer.submitted }}.</strong></p>
+                    {% else %}
+                        <form method="POST" action="" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ answer_form|crispy }}
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                        <br>
+                        <br>    
+                    {% endif %}
+                </div>
+
+                <div>
+                    <h3>Sanity Check</h3>
+                    <hr style="border: none; height: 2px; background-color: white;">
+                    <p>The answer obtained using the example dataset below is: <strong>{{ question.example_answer }}</strong></p>
+                    <p><a href="/lifesci/question/{{ question.id }}/input/example" target="_blank"><u>[download example input]</u></a></p>
+                    
+                    <a href="{{ question.figure_example.url }}" target="_blank"><img class="example-image" src="{{ question.figure_example.url }}" alt="question-image"></a>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+
+                {% if resources %}
+                    <h3>Resources</h3>
+                    <hr style="border: none; height: 2px; background-color: white;">
+                    <ul>
+                        {% for resource in resources %}
+                            <li><ul><a href="{{ resource.url }}" target="_blank">{{ resource.name }}</a></ul></li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <br>
+                    <br>
+                {% endif %}
+                
+                
+                <h3>My Stats ({{ human.first_name }} {{ human.last_name }})</h3>
+                <p style="font-size: .8em;">Logged in via {{ social_account.provider }} | <a href="/lifesci/logout">Logout</a> </p>
+                <p style="font-size: .8em;">Your unique user slug is: {% if human.anonymous_user %}AnonUser{{human.id}}{% else %}{{human.slug}}{% endif %}</p>
+                <hr style="border: none; height: 2px; background-color: white;">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>Rank</th>
+                                <th>Score</th>
+                                <th>Mistakes</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th>Overall</th>
+                                <td class="right">{{ stats.rank }}</td>
+                                <td class="right">{{ stats.score }}</td>
+                                <td class="right">{{ stats.mistakes }}</td>
+                            </tr>
+                            <tr>
+                                <th>This part</th>
+                                <td class="right">{{ stats_part.rank }}</td>
+                                <td class="right">{{ stats_part.score }}</td>
+                                <td class="right">{{ stats_part.mistakes }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <h3>Leaderboard</h3>
+                <hr style="border: none; height: 2px; background-color: white;">
+                <div class="row">
+                    <div class="col-md-6">
+                    <table>
+                        <label>Overall:</label>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Name</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for player in overall_leaderboard %}
+                            <tr>
+                                <td class="right">{{ player.rank }}    </td>
+                                <td>{{ player.human }}    </td>
+                                <td class="right">{{ player.score }}    </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                
+                    <table>  
+                        <label>This part:</label>                      
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Name</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for player in question_leaderboard %}
+                            <tr>
+                                <td class="right">{{ player.rank }}    </td>
+                                <td>{{ player.human }}    </td>
+                                <td class="right">{{ player.score }}    </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+                </div>
+                <br><br>
+            </div>
+        </div>
+
+        <br>
+        <br>
+        
+        
+
+    </section>
+</div>
+<div class="page-section" id="padding">
+    <section class="container">
+        {% if question.image %}
+        <div class="image-block"></div>
+            <img class="event-thumb reg" src="{{ question.image.url }}" alt="question-image">
+        </div>
+        {% endif %}
+    </section>
+</div>
+
+
+{% endblock %}

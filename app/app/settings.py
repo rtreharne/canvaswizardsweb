@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'front',
     'foundation',
     'foundation2',
+    'lifesci',
     'crispy_forms',
 ]
 
