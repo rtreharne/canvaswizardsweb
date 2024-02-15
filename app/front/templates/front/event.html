@@ -7,7 +7,7 @@
 
 <div class="page-section" id="event">
     <section class="container">
-        <a href="/"><img class="logo" src="{% static 'img/navbar-logo.png' %}" alt="HiPy Logo"></a>
+        <a href="/"><img class="logo" src="{% static 'img/site-logo.png' %}" alt="Canvas Wizards Logo"></a>
         <a href="/">< Back</a>
         <br>
         <br>
@@ -28,11 +28,11 @@
                     
                         <h3>{{ thanks }}</h3>
                         <p>You're all registered.</p>
-                        <p>We won't send you an email confirmation. We won't bug you with annoying reminder emails. We expect competent humans to make a note of the date, time and location and arrive in style on the day.</p>
-                        <p>Keep an eye on our <u><a href="https://twitter.com/hipyliv" target="_blank">X feed</a></u> for any extra information ahead of the event.</p>
+                        <p>I'll send you a reminder 2 days before the event and another on the morning of the event.</p>
+                        <p>Keep an eye on my <u><a href="https://twitter.com/robtreharne" target="_blank">X feed</a></u> for any extra information ahead of the event.</p>
 
                         {% if event.online_info %}
-                            <p>If you're attending online, here is the information you need (make a note of it and keep it safe, you won't be sent this!):</p>
+                            <p>This is an online event, here is the information you need (make a note of it and keep it safe):</p>
                             
                                 <p class="code-block">{{ event.online_info|urlize }}</p>
                                 <button class="copy-button btn-primary" onclick="copyToClipboard('.code-block')">Copy</button>
@@ -40,13 +40,10 @@
                                 <br>
                                 <br>
                         {% endif %}
-                        <p>If you're attending in person:</p>
-                        <ul>
-                            <li>Bring your own laptop (and charger) if you have one</li>
-                            <li>Bring a mug for tea/coffee</li>
-                        </ul>
-                        <p>The benevolent AI overlords look forward to meeting you on the day (if we haven't met you already).</p>
+                                                
+                        <p>I look forward to meeting you on the day (if we haven't met you already).</p>
                         <p>See you there!</p>
+                        <p>Dr. Rob Treharne</p>
                     
               </div>
 
@@ -66,102 +63,81 @@
                     <p><strong>Date: </strong> {{ event.date }}, {{ event.time }}</p>
                     <p><strong>Location: </strong>{{ event.location }}</p>
                     <p><strong>Duration: </strong>{{ event.duration }} hrs</p>
-                    <p><strong>Registrations: </strong>{{ event.registrations }} (In Person), {{ event.registrations_online }} (Online)</p>
+                    <p><strong>Registrations: </strong>{{ event.registrations }}</p>
                     {% if event.resources %}
                     <p><strong>Resources: </strong><u><a href="{{ event.resources }}" target="_blank">{{ event.resources }}</a></u></p>
                     {% endif %}
-                    {% if event.playlist %}
-                        <p><strong>Playlist: </strong><u><a href="{{ event.playlist }}" target="_blank">{{ event.playlist|truncatechars:40 }}</a></u></p>
+                    {% if event.iframe %}
+                    <br>
+                    <div class="embed-responsive embed-responsive-16by9">
+                        {{ event.iframe|safe }}
+                    </div>
+                    <br>
                     {% endif %}
+
                 </div>
                 
             </div>
 
-            {% if not thanks %}
+            
 
 
-                {% if form %}
-                <div class="col-md-6">
+            {% if form %}
+            <div class="col-md-6">
 
 
-                    {% if event.fully_booked %}
+                {% if event.fully_booked %}
 
-                        {% if event.online_info %}
-          
-                            <p><strong>This event is fully booked, but you can still register to participate online.</strong></p>
-                        
+                    <p><strong>This event is fully booked.</strong></p>
 
-                            <div class="event-summary">
+                {% else %}
 
-                                
-                                    <form class="registration-form" method="post" enctype="multipart/form-data">
-                                        {% csrf_token %}
-                                        {{ form|crispy }}
-                                        <br>
-                                        <button type="submit" class="btn btn-primary">Register</button>
-                                    </form>
+                <div class="event-summary">
+
                             
-                            </div>
-
-      
-                        {% else %}
-                            <p><strong>This event is fully booked.</strong></p>
-                        {% endif %}
-
-                    {% else %}
-                    <div class="event-summary">
-
-                                
-                        <form class="registration-form" method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            {{ form|crispy }}
-                            <br>
-                            <button type="submit" class="btn btn-primary">Register</button>
-                        </form>
-                
+                    <form class="registration-form" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <br>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </form>
+            
                 </div>
 
 
-                    {% endif %}
-                <br>
-                <br>
+                {% endif %}
+            <br>
+
 
             {% endif %}
-            {% endif %}
-            
-
+       
+        </div>
         </div>
         <br>
+      
+        <div class="row">
         
-        <div class="col-md-6">
-            <img class="event-thumb reg" src="{{ event.image.url }}" alt="{{ event.name }}">
-            <br>
-            <br>
-            {% if resources %}
-                <h3>More Resources</h3>
-                <hr style="border: none; height: 2px; background-color: white;">
+            <div class="col-md-12">
+  
+                {% if resources %}
+                    <h3>More Resources</h3>
+                    <hr style="border: none; height: 2px; background-color: white;">
 
-                    {% for resource in resources %}
-                        {% if resource.url %}
-                            <p><a href="{{ resource.url }}" target="_blank">{{ forloop.counter }}. {{ resource.name }}</a></p>
-                        {% elif resource.file %}
-                            <p><a href="{{ resource.file.url }}" target="_blank">{{ forloop.counter }}. {{ resource.name }}</a></p>
-                        {% else %}
-                            <p>{{ forloop.counter }}. {{ resource.name }}</p>
-                        {% endif %}
-                    {% endfor %}
+                        {% for resource in resources %}
+                            {% if resource.url %}
+                                <p><a href="{{ resource.url }}" target="_blank">{{ forloop.counter }}. {{ resource.name }}</a></p>
+                            {% elif resource.file %}
+                                <p><a href="{{ resource.file.url }}" target="_blank">{{ forloop.counter }}. {{ resource.name }}</a></p>
+                            {% else %}
+                                <p>{{ forloop.counter }}. {{ resource.name }}</p>
+                            {% endif %}
+                        {% endfor %}
 
-            <br>
-            <br>
-            {% endif %}
-            {% if tracks %}
-                <h3>Event Playlist</h3>
-                <hr style="border: none; height: 2px; background-color: white;">
-
-                {% for track in tracks %}
-                    <p>{{ forloop.counter }}. {{ track }}</p>
-                {% endfor %}
-            {% endif %}
+                <br>
+                <br>
+                {% endif %}
+                
+            </div>
         </div>
 
     </section>

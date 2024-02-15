@@ -8,7 +8,7 @@ services:
       - POSTGRES_DB=devdb
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=changeme
-    container_name: hipyweb-db
+    container_name: canvaswizards-db
 
   app:
     build:
@@ -18,7 +18,7 @@ services:
               python manage.py migrate &&
               python manage.py runserver 0.0.0.0:8000"
     ports:
-      - 8000:8000
+      - 8001:8000
     volumes:
       - ./app:/app
       - ./data/web:/vol/web
@@ -31,7 +31,7 @@ services:
       - DB_PASS=changeme
     depends_on:
       - db
-    container_name: hipyweb-app
+    container_name: canvaswizards-app
 
 
 

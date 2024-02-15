@@ -3,9 +3,10 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 import datetime
 import random
+from .forms import ContactForm
 
 from .forms import RegistrationForm
-from .models import Event, Registration, Resource
+from .models import Event, Registration, Resource, Portfolio
 
 def promo(request, event_id):
 
@@ -17,13 +18,15 @@ def promo(request, event_id):
 def index(request):
 
     context = {}
-    
+
     events = Event.objects.all().order_by('date')
+    portfolios = Portfolio.objects.all().order_by('datetime')
 
     # Only get events in the future
     events = [event for event in events if event.date >= datetime.date.today()]
 
     context["events"] = events
+    context["portfolios"] = portfolios
 
     # Update any events in progress
     for event in events:
@@ -41,8 +44,17 @@ def index(request):
     past_events = [event for event in Event.objects.all().order_by('-date') if datetime.datetime.combine(event.date, event.time) < datetime.datetime.now()]
     context["past_events"] = past_events
 
-
-
+    if request.method == 'POST':
+        contact_form = ContactForm(request.POST)
+        if contact_form.is_valid():
+            contact_form.save()
+            context["thanks"] = "Thank you for your message! We will get back to you shortly."
+        else:
+            context["contact_"] = contact_form
+            return render(request, 'front/index.html', context)
+        
+    contact_form = ContactForm()
+    context["contact_form"] = contact_form
 
     return render(request, 'front/index.html', context)
 
@@ -132,3 +144,11 @@ def register(request, event_id):
     
     
     return render(request, 'front/event.html', context)
+
+def portfolio(request, portfolio_id):
+        
+        portfolio = Portfolio.objects.get(id=portfolio_id)
+    
+        context = {"portfolio": portfolio}
+    
+        return render(request, 'front/portfolio.html', context)

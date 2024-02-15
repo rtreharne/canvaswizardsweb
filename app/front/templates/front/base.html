@@ -8,7 +8,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HiPy_2.0</title>
+    <title>Canvas Wizards</title>
+    <meta name="description" content="A brief description of your website.">
+    <meta name="keywords" content="Canvas LMS, Canvas, Education, Coding, API.">
+    <link rel="canonical" href="https://www.canvaswizards.co.uk/">
+    <meta property="og:title" content="Canvas Wizards">
+    <meta property="og:description" content="A brief description of your website.">
+    <meta property="og:image" content="URL to image">
+    <meta property="og:url" content="https://www.yourwebsite.com/">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet"
         href="{% static 'css/main.css' %}">
@@ -33,21 +41,27 @@
     {% block content %}
     {% endblock %}
 
-    <footer>
+    <footer id="footer" style="text-align: left;">
         <div class="container">
+            <h3>About</h3>
+            <hr style="border: none; height: 2px; background-color: white; ">
             <div class="row">
                 <div class="col-md-6">
                     <p>
-                        HiPy was created in 2016 by a group of really cool students and researchers at the university of Liverpool.
-                        The surviving founders, <u><a href="https://twitter.com/robtreharne" target="_blank">Robert Treharne</a></u> and <u><a href="https://twitter.com/stmball" target="_blank">Sam Ball</a></u> still believe passionately in the original mission to 
-                        build an inclusive, friendly community that helps people learn to code for free.
+                        Dr. Robert Treharne is a Senior Lectuer in the School of Life Sciences, University of Liverpool, UK.
+                        He specialises in teaching coding skills to anyone who wants to learn. He has a particular interest in the Canvas LMS and has developed a number of tools and resources to help educators and students get the most out of the platform.
+                        He has a PhD in Physics from Durham University.
                     </p>
                     <br>
-                    <br>
-                    <p>HiPy. For free. Forever.</p>
+                    
+    
                 </div>
+                <div class="col-md-6">
+                    <img style="border: 2px solid white; max-width: 300px" src="{% static 'img/profile-pic.jpg' %}">
+                </div>  
             </div>
         </div>
+        <br>
     </footer>
 
 
@@ -71,6 +85,9 @@
             });
         });
     </script>
+
+    {% block js %}
+    {% endblock %}
 </body>
 
 </html>

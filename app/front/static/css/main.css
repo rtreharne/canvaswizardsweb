@@ -4,6 +4,12 @@ body {
     margin: 0; /* Add margin: 0 to remove default body margin */
 }
 
+
+
+textarea#id_feedback.textarea {
+    height: 50px;
+}
+
 th, td {
     padding-right: 10px;
 }
@@ -16,6 +22,10 @@ th.right, td.right {
     transform: scale(2.0); /* Makes the checkbox 50% larger */
     vertical-align: middle; /* Aligns the checkbox vertically with the label */
     margin-right: 0px; /* Adds some space between the checkbox and the label */
+}
+
+.embed-responsive {
+    border: 2px solid white;
 }
 
 .promo-qr {
@@ -128,6 +138,14 @@ input[type=checkbox] {
     border: 2px solid white;
 }
 
+.btn-white {
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    border: 2px solid white;
+
+}
+
 a.twitter-link {
     /* white, underlined, do nothing on hover */
     color: white;
@@ -235,6 +253,10 @@ input, select, textarea {
     /* rounded boxes? */
     border-radius: 5px;
 
+}
+
+#id_feedback {
+    height: 100px;
 }
 
 .event-thumb {

@@ -1,0 +1,61 @@
+{% extends "front/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+
+<div class="page-section" id="event">
+    <section class="container">
+        <a href="/"><img class="logo" src="{% static 'img/site-logo.png' %}" alt="Canvas Wizards Logo"></a>
+        <a href="/">< Back</a>
+        <br>
+        <br>
+   
+        <div class="row">
+
+           <div class="col-md-6">
+
+     
+                <div class="portfolio-summary">
+                    <h1>{{ portfolio.title }}</h1>
+                    <p>{{ portfolio.description|safe }}</p>
+                </div>
+                
+            </div>
+            <div class="col-md-6">
+                {% if portfolio.iframe %}
+                    <div class="embed-responsive embed-responsive-16by9">
+                        {{ portfolio.iframe|safe }}
+                    </div>
+                {% endif %}
+            </div>            
+
+        </div>
+        
+        <br>
+        
+        
+            <img class="event-thumb reg" src="{{ portfolio.image.url }}" alt="{{ portfolio.name }}">
+            <br>
+            <br>
+           
+      
+        
+
+        </div>
+
+    </section>
+</div>
+
+<script>
+    function copyToClipboard(element) {
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val($(element).text()).select();
+        document.execCommand("copy");
+        $temp.remove();
+    }
+</script>
+
+{% endblock %}

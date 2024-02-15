@@ -57,9 +57,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.google',
     'front',
-    'foundation',
-    'foundation2',
-    'lifesci',
     'crispy_forms',
 ]
 

@@ -18,16 +18,12 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
-admin.site.site_header = "HiPy Administration"
-admin.site.site_title = "HiPy Administration"
+admin.site.site_header = "Canvas Wizards Administration"
+admin.site.site_title = "Canvas Wizards Administration"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('front.urls')),
-    path('foundation/', include('foundation.urls')),
-    path('foundation2/', include('foundation2.urls')),
-    path('lifesci/', include('lifesci.urls')),
-    path('accounts/', include('allauth.urls')),
     
 ]
 

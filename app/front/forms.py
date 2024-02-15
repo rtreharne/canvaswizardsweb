@@ -2,7 +2,7 @@ from django import forms
 
 from .models import Contact, Registration, Event
 
-class Contactform(forms.ModelForm):
+class ContactForm(forms.ModelForm):
 
     class Meta:
         model = Contact
@@ -15,6 +15,8 @@ class RegistrationForm(forms.ModelForm):
         event = kwargs.pop('event')
         super(RegistrationForm, self).__init__(*args, **kwargs)
         self.fields['event'].initial = event
+        self.fields['mode'].widget = forms.HiddenInput()
+        self.fields['present'].widget = forms.HiddenInput()
         if not event.ask_for_track:
             self.fields['track'].widget = forms.HiddenInput()
         
@@ -29,6 +31,8 @@ class RegistrationForm(forms.ModelForm):
 
     # Do not show events field
     event = forms.ModelChoiceField(queryset=Event.objects.all(), widget=forms.HiddenInput())
+
+
 
 
     # Check uniqueness of email and event together

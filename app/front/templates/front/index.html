@@ -1,5 +1,6 @@
 {% extends "front/base.html" %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 
@@ -8,15 +9,17 @@
         <span></span><h2 class="thanks">{{ thanks }}</h2></span>
     {% endif %}
     <div class="container" >
-        <img class="logo" src="{% static 'img/navbar-logo.png' %}" alt="HiPy Logo">
-        <br>
+        <img class="logo" src="{% static 'img/site-logo.png' %}" alt="Canvas Wizards Logo">
         <span>
-            <h3>Learn to code</h3>
-            <h1 class="title">HiPy_2.0</h3>
-            <h2 class="subtitle">HiPy is a community driven coding initiative, created by benevolent AI overlords, based at the University of Liverpool.</h2>
+            <h1 class="title">Canvas Wizards</h3>
+            <h2 class="subtitle">Powerful training and tools for the Canvas LMS.</h2>
+            <p>
+                Canvas Wizards is <u><a href="#footer">Dr. Robert Treharne</a></u>. A Canvas LMS expert and educator.
+            </p>
+            <br>
             <!-- Events button-->
-            <p><a href="#events" class="btn btn-primary">Register for Events</a> <a href="/foundation2" class="btn btn-primary">Play Code Nexus</a></p>
-            <p><a class="twitter-link" href="https://twitter.com/hipyliv" target="_blank">Follow us on X</a></p>
+            <p>{% if events %}<a href="#events" class="btn btn-primary">Register for Events</a>{% endif %} {% if portfolios %}<a href="#portfolio" class="btn btn-primary">Portfolio</a>{% endif %} <a href="#contact" class="btn btn-primary btn-white">Contact</a></p>
+            <p><a class="twitter-link" href="https://twitter.com/robtreharne" target="_blank">Follow me on X</a></p>
         </span>
     </div>
 </header>
@@ -25,7 +28,8 @@
 
 <div class="page-section" id="events">
     <section class="container">
-        <p><strong>There is <u>FREE coffee</u> at all our events. But you must bring your own mug.</p></strong>
+        <h3>Events</h3>
+        <hr style="border: none; height: 2px; background-color: white;">
         <div class="row">
             {% for event in events %}
             
@@ -79,20 +83,38 @@
 
 {% endif %}
 
-{% if past_events %}
-<div class="page-section" id="events">
-    <section class="container">
-            <h3>Past Events</h3>
-            <hr style="border: none; height: 2px; background-color: white;">
+{% if portfolios %}
 
-            {% for event in past_events %}
-            <p>{{ event.date }}, <u><a href="/past/{{ event.id}}">{{ event.name }}</a></u></p>
-            {% endfor %}
-                
-            
+<div class="page-section" id="portfolio">
+    <section class="container">
+        <h3>Portfolio</h3>
+        <hr style="border: none; height: 2px; background-color: white;">
+      
+        {% for portfolio in portfolios %}
+        <p><a href="/portfolio/{{ portfolio.id }}">{{ portfolio.title }} - {{ portfolio.datetime|date:"D d M Y" }}</a></p>            
+        {% endfor %}
+        </div>
     </section>
 </div>
+
 {% endif %}
+
+<div class="page-section" id="contact">
+    <section class="container">
+            <h3>Contact</h3>
+            <hr style="border: none; height: 2px; background-color: white;">
+
+            {% if thanks %}
+                <p>{{ thanks }}</p>
+            {% else %}
+                <form class="contact-form" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ contact_form|crispy }}
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+            {% endif %}   
+    </section>
+</div>
 
 
 {% endblock %}

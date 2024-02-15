@@ -1,5 +1,16 @@
 from django.db import models
 
+class Portfolio(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    image = models.FileField(upload_to='portfolio/')
+    iframe = models.TextField(null=True, blank=True)
+    url = models.URLField(null=True, blank=True)
+    datetime = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+    
 class Service(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -19,6 +30,7 @@ class Event(models.Model):
     online_info = models.TextField(null=True, blank=True)
     resources = models.URLField(null=True, blank=True)
     long_description = models.TextField(null=True, blank=True)
+    iframe = models.TextField(null=True, blank=True)
     registrations = models.IntegerField(default=0)
     registrations_online = models.IntegerField(default=0)
     reddit = models.URLField(null=True, blank=True)
@@ -32,16 +44,16 @@ class Event(models.Model):
         return self.name
 
 class Contact(models.Model):
-    name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100)
     phone = models.CharField(max_length=20, null=True, blank=True)
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, verbose_name='What service are you interested in?')
     email = models.EmailField()
-    message = models.TextField()
-    mailing = models.BooleanField(default=False, verbose_name="Join our mailing list?")
+    message = models.TextField(help_text="How can I help? Please provide as much detail as possible.")
+    mailing = models.BooleanField(default=False, verbose_name="Join my mailing list? I promise not to spam you. I'll just send you updates on my work and events.")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.name
+        return self.last_name
     
 class Registration(models.Model):
     first_name = models.CharField(max_length=100)

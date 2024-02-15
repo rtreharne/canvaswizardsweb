@@ -3,10 +3,14 @@ import csv
 from django.http import HttpResponse
 from django.utils.encoding import smart_str
 
-from .models import Contact, Service, Event, Registration, Resource
+from .models import Contact, Service, Event, Registration, Resource, Portfolio
+
+class PortfolioAdmin(admin.ModelAdmin):
+    list_display = ('title', 'description', 'image', 'iframe', 'url', 'datetime')
+    search_fields = ('title', 'description', 'url')
 
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'message', 'created_at')
+    list_display = ('last_name', 'first_name', 'email', 'message', 'created_at')
     list_filter = ('created_at',)
     search_fields = ('name', 'email', 'message')
 
@@ -69,4 +73,6 @@ admin.site.register(Contact, ContactAdmin)
 admin.site.register(Service, ServiceAdmin)
 admin.site.register(Event, EventAdmin)
 admin.site.register(Registration, RegistrationAdmin)
-admin.site.register(Resource, ResourceAdmin)    
+admin.site.register(Resource, ResourceAdmin)
+admin.site.register(Portfolio, PortfolioAdmin)
+
