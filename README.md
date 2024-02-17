@@ -94,7 +94,7 @@ sudo yum install git
 
 Install docker
 ```bash
-sudo yum instlal docker -y
+sudo yum install docker -y
 ```
 
 Enable Docker and start

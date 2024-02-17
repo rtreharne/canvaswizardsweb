@@ -49,7 +49,7 @@ class Contact(models.Model):
     phone = models.CharField(max_length=20, null=True, blank=True)
     email = models.EmailField()
     message = models.TextField(help_text="How can I help? Please provide as much detail as possible.")
-    mailing = models.BooleanField(default=False, verbose_name="Join my mailing list? I promise not to spam you. I'll just send you updates on my work and events.")
+    mailing = models.BooleanField(default=False, verbose_name="Receive updates on my work and events?")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
