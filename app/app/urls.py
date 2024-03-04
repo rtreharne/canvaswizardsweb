@@ -24,6 +24,7 @@ admin.site.site_title = "Canvas Wizards Administration"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('front.urls')),
+    path('choices/', include('choices.urls')),
     
 ]
 

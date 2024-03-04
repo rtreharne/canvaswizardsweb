@@ -1,0 +1,140 @@
+{% extends "choices/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load filters %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/choices.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="page-section" id="event">
+    <section class="container">
+        <img class="logo" style="width: 200px;" src="{% static 'img/logo.png' %}" alt="University of Liverpool Logo">
+
+        <h1 class="logo"><a href="/">[ModuleChoices]</a></h1>
+        <p>{{ programme.title }}</p>
+        <br>
+        <br>
+        {% if tribes %}
+            <div class="tribes">
+                <h2>Pathways</h2>
+                <ul>
+                    {% for tribe in tribes %}
+                        <li><a data-toggle="tooltip" data-html="true" title="{{pathway.description}}" href="{{tribe.url}}">{{ tribe }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <br>
+        <p><a id="share-link" href="{{query}}">[Share]</a> <a href="" id="transcript" class="off">[Transcript: off]</a> <a href="/choices/{{programme.slug}}">[Clear]</a></p>
+
+        <br>
+
+        
+        
+        <div class="row">
+            {% for year in years %}
+            
+            <div class="col-md-4">
+
+                <div id="year-{{ year }}" class="year">
+
+                <h2>Year {{ year }}</h2>
+                <div>
+                    <p style="font-size: 0.8em;">Total Cedits Selected: <span class="year-total"></span></p>
+                </div>
+
+                <hr style="border: none; height: 2px; background-color: white;">
+                
+                {% if rules|filter_by_year:year %}
+                <div class="rules">
+
+                    <h3>Rules</h3>
+                    {% for rule in rules %}
+                        {% if rule.year == year %}
+                            <p class="rule" data-toggle="tooltip" data-html="true" title="{{rule.description}}">{{ rule }}</p>
+                        {% endif %}
+                    {% endfor %}
+                    
+                </div>
+                <hr style="border: none; height: 2px; background-color: white;">
+                {% endif %}
+
+                <div class="semester">
+
+                <h3>Semester 1</h3>
+
+                <hr style="border: none; height: 2px; background-color: white;">
+
+                {% for module in modules %}
+                    {% if module.year == year %}
+                            {% if module.semester != "Semester 2" %}
+                                <div id="{{module.code}}" class="module {% if module.compulsory %}selected compulsory{% endif %}" data-toggle="tooltip" data-html="true" alt-title='Required: {{ module.prerequisites.all|join:", "}}' title='{{module.title}}<br>Required: {{ module.prerequisites.all|join:", "}}' credits="{{module.credits}}" semester="{{module.semester}}">{{ module.code }} - {{ module.title|truncatechars:20 }} {% if module.practical %}[P]{% endif %} ({{ module.credits}})</div>
+                            {% endif %}      
+                    {% endif %}
+                {% endfor %}
+
+                <hr style="border: none; height: 2px; background-color: white;">
+
+                </div>
+
+                <div class="semester">
+
+                <h3>Semester 2</h3>
+
+                <hr style="border: none; height: 2px; background-color: white;">
+                {% for module in modules %}
+                    {% if module.year == year %}
+                            {% if module.semester == "Semester 2" %}
+                                <div id="{{module.code}}" class="module module {% if module.compulsory %}selected compulsory{% endif %}" data-toggle="tooltip" data-html="true" alt-title='Required: {{ module.prerequisites.all|join:","}}' title='{{module.title}}<br>Required: {{ module.prerequisites.all|join:", "}}' credits="{{module.credits}}">{{ module.code }} - {{ module.title|truncatechars:20 }} {% if module.practical %}[P]{% endif %} ({{ module.credits}})</div>
+                            {% endif %} 
+                    {% endif %}
+                {% endfor %}
+                </div>
+                
+                </div>
+                <br>
+
+            </div>
+            
+            
+            {% endfor %}
+        
+        </div>
+    
+        </section>
+
+</div>
+
+
+
+{% endblock %}
+
+
+
+{% block js %}
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        $(function () {
+    $('[data-toggle="tooltip"]').tooltip({
+        delay: { "show": 1000, "hide": 0 }
+    });
+
+    $('[data-toggle="tooltip"]').on('touchstart', function() {
+        var _this = this;
+        setTimeout(function() {
+            $(_this).tooltip('show');
+        }, 500); // Hide after 1 second
+    });
+
+    $('[data-toggle="tooltip"]').on('touchend', function() {
+        var _this = this;
+        setTimeout(function() {
+            $(_this).tooltip('hide');
+        }, 1000); // Hide after 1 second
+    });
+});
+    </script>
+{% endblock %}

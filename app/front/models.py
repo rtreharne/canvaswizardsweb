@@ -74,7 +74,7 @@ class Registration(models.Model):
     description = models.TextField(null=True, blank=True, verbose_name="What's your issue?", help_text="Please describe your issue in as much detail as possible. The more we know, the better we can help you.")
 
     
-    mailing_list = models.BooleanField(default=False, verbose_name="Join our mailing list for info on future events?")
+    mailing_list = models.BooleanField(default=False, verbose_name="Receive emails about future events?")
     present = models.BooleanField(default=False)
 
     def __str__(self):

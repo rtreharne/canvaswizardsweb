@@ -1,0 +1,28 @@
+{% extends "choices/base.html" %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/choices.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron page-section" id="event">
+    
+
+    <section class="container">
+        <img class="logo" src="{% static 'img/logo.png' %}" alt="University of Liverpool Logo">
+        <h1 class="logo"><a href="/">[ModuleChoices]</a></h1>
+        <br>
+
+        <ul class="programme-list">
+            {% for programme in programmes %}
+                <li>
+                    <a href="{{programme.slug}}">{{ programme }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+
+{% endblock %}
