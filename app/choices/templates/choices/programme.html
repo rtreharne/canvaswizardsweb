@@ -13,7 +13,7 @@
     <section class="container">
         <img class="logo" style="width: 200px;" src="{% static 'img/logo.png' %}" alt="University of Liverpool Logo">
 
-        <h1 class="logo"><a href="/">[ModuleChoices]</a></h1>
+        <h1 class="logo"><a href="/choices">[ModuleChoices]</a></h1>
         <p>{{ programme.title }}</p>
         <br>
         <br>
@@ -28,6 +28,7 @@
             </div>
         {% endif %}
         <br>
+        <p>[P] denotes practical modules.</p>
         <p><a id="share-link" href="{{query}}">[Share]</a> <a href="" id="transcript" class="off">[Transcript: off]</a> <a href="/choices/{{programme.slug}}">[Clear]</a></p>
 
         <br>
