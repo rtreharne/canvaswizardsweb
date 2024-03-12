@@ -71,9 +71,15 @@
 
                 {% for module in modules %}
                     {% if module.year == year %}
+                        {% if "xjtlu"|in_string:programme.slug and year == 2%}
+                            {% if module.semester != "Semester 2" %}
+                                <div id="{{module.code}}" class="module {% if module.compulsory %}selected compulsory{% endif %}" data-toggle="tooltip" data-html="true" alt-title='Required: ' title='{{module.title}}<br>Required: ' credits="{{module.credits}}" semester="{{module.semester}}">{{ module.code }} - {{ module.title|truncatechars:20 }} {% if module.practical %}[P]{% endif %} ({{ module.credits}})</div>
+                            {% endif %}
+                        {% else %}
                             {% if module.semester != "Semester 2" %}
                                 <div id="{{module.code}}" class="module {% if module.compulsory %}selected compulsory{% endif %}" data-toggle="tooltip" data-html="true" alt-title='Required: {{ module.prerequisites.all|join:", "}}' title='{{module.title}}<br>Required: {{ module.prerequisites.all|join:", "}}' credits="{{module.credits}}" semester="{{module.semester}}">{{ module.code }} - {{ module.title|truncatechars:20 }} {% if module.practical %}[P]{% endif %} ({{ module.credits}})</div>
-                            {% endif %}      
+                            {% endif %}  
+                        {% endif %}    
                     {% endif %}
                 {% endfor %}
 
@@ -88,9 +94,15 @@
                 <hr style="border: none; height: 2px; background-color: white;">
                 {% for module in modules %}
                     {% if module.year == year %}
+                        {% if "xjtlu"|in_string:programme.slug and year == 2%}
                             {% if module.semester == "Semester 2" %}
-                                <div id="{{module.code}}" class="module module {% if module.compulsory %}selected compulsory{% endif %}" data-toggle="tooltip" data-html="true" alt-title='Required: {{ module.prerequisites.all|join:","}}' title='{{module.title}}<br>Required: {{ module.prerequisites.all|join:", "}}' credits="{{module.credits}}">{{ module.code }} - {{ module.title|truncatechars:20 }} {% if module.practical %}[P]{% endif %} ({{ module.credits}})</div>
-                            {% endif %} 
+                                <div id="{{module.code}}" class="module {% if module.compulsory %}selected compulsory{% endif %}" data-toggle="tooltip" data-html="true" alt-title='Required: ' title='{{module.title}}<br>Required: ' credits="{{module.credits}}" semester="{{module.semester}}">{{ module.code }} - {{ module.title|truncatechars:20 }} {% if module.practical %}[P]{% endif %} ({{ module.credits}})</div>
+                            {% endif %}
+                        {% else %}
+                            {% if module.semester == "Semester 2" %}
+                                <div id="{{module.code}}" class="module {% if module.compulsory %}selected compulsory{% endif %}" data-toggle="tooltip" data-html="true" alt-title='Required: {{ module.prerequisites.all|join:", "}}' title='{{module.title}}<br>Required: {{ module.prerequisites.all|join:", "}}' credits="{{module.credits}}" semester="{{module.semester}}">{{ module.code }} - {{ module.title|truncatechars:20 }} {% if module.practical %}[P]{% endif %} ({{ module.credits}})</div>
+                            {% endif %}  
+                        {% endif %}    
                     {% endif %}
                 {% endfor %}
                 </div>
