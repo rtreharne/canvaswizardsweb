@@ -16,6 +16,8 @@ services:
       - DJANGO_ALLOWED_HOSTS=${DOMAIN}
     depends_on:
       - db
+      - redis
+    container_name: app
 
   db:
     image: postgres:13-alpine
@@ -25,36 +27,9 @@ services:
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_PASSWORD=${DB_PASS} 
 
-  # Redis
-  redis:
-    image: redis:alpine
-    container_name: canvaswizards-redis
-    environment:
-      - SECRET_KEY=${SECRET_KEY}
 
-  # Celery
-  celery:
-    restart: always
-    build:
-      context: .
-    command: >
-      sh -c "celery -A app worker -l INFO"
-    volumes:
-      - static-data:/vol/web/
-    container_name: canvaswizards-celery
-    environment:
-      - SECRET_KEY=${SECRET_KEY}
-      - DB_HOST=db
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASS=${DB_PASS}
-    depends_on:
-      - db
-      - redis
-      - app
-        
   proxy:
     build:
       context: ./docker/proxy
@@ -84,6 +59,35 @@ services:
       - certbot-certs:/etc/letsencrypt/
     depends_on:
       - proxy
+
+  # Redis
+  redis:
+    image: redis:alpine
+    container_name: canvaswizards-redis
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+
+  # Celery
+  celery:
+    restart: always
+    build:
+      context: .
+    command: >
+      sh -c "celery -A app worker -l INFO"
+    volumes:
+      - static-data:/vol/web/
+    container_name: canvaswizards-celery
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+    depends_on:
+      - db
+      - redis
+      - app
+        
     
   
 volumes:
