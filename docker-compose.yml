@@ -33,6 +33,36 @@ services:
       - db
     container_name: canvaswizards-app
 
+  # Redis
+  redis:
+    image: redis:alpine
+    container_name: canvaswizards-redis
+    environment:
+      - SECRET_KEY=devsecretkey  
+
+  # Celery
+  celery:
+    restart: always
+    build:
+      context: .
+    command: >
+      sh -c "celery -A app worker -l INFO"
+    volumes:
+      - ./app:/app
+      - ./data/web:/vol/web
+    container_name: canvaswizards-celery
+    environment:
+      - SECRET_KEY=devsecretkey
+      - DEBUG=1
+      - DB_HOST=db
+      - DB_NAME=devdb
+      - DB_USER=devuser
+      - DB_PASS=changeme
+    depends_on:
+      - db
+      - redis
+      - app
+
 
 
 

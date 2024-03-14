@@ -1,0 +1,8 @@
+input, select, textarea {
+    max-width: 100%;
+}
+
+a {
+    /* default text-decoration */
+    text-decoration: underline;
+}

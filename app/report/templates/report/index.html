@@ -1,0 +1,82 @@
+{% extends "front/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/report.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<header class="page-section" id="report">
+
+    <div class="container" >
+        <a href="/"><img class="logo" src="{% static 'img/site-logo.png' %}" alt="Canvas Wizards Logo"></a>
+        <h1>Assignment Report</h1>
+        <br>
+        <div class="row">
+            
+            <div class="col-md-6 ">
+
+                <p>
+                    This tool will allow you to create a downloadble report for a specific Canvas assignment.  The report will include the rubric assessment completed for each submission.
+                </p>
+                <br>
+                <!-- Report Request Form-->
+                <form method="post" action="">
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary">Generate Report</button>
+                </form>
+            </div>
+            
+            {% if requests %}
+            <div class="col-md-6">
+                <h3>My Reports</h3>
+                <hr style="border: none; height: 2px; background-color: white; ">
+      
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Assignment</th>
+                                <th>Requested at</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in requests %}
+                            <tr>
+                                <td>{{ r.course_code|truncatechars:120}}</td>
+                                <td>{{ r.assignment_name|truncatechars:20 }}</td>
+                                <td>{{ r.created|date:"Y-m-d H:i" }}</td>
+                                <td>
+                                    {% if r.completed %}
+                                        <a href="{{ r.file.url }}">[Download]</a>
+                                    {% else %}
+                                        Pending
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+       
+                
+            </div>
+            {% endif %} 
+        </div>
+    </div>
+</header>
+
+
+
+
+
+{% endblock %}

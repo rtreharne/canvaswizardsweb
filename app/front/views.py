@@ -48,7 +48,7 @@ def index(request):
         contact_form = ContactForm(request.POST)
         if contact_form.is_valid():
             contact_form.save()
-            context["thanks"] = "Thank you for your message! We will get back to you shortly."
+            context["thanks"] = "Thank you for your message! I will get back to you shortly."
         else:
             context["contact_"] = contact_form
             return render(request, 'front/index.html', context)
