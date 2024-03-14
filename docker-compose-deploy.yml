@@ -69,7 +69,7 @@ services:
 
   # Celery
   celery:
-    restart: no
+    restart: 'no'
     build:
       context: .
     command: >
