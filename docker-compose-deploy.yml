@@ -60,6 +60,12 @@ services:
     depends_on:
       - proxy
 
+  # Redis
+  redis:
+    image: redis:alpine
+    container_name: redis
+    environment:
+      - SECRET_KEY=${SECRET_KEY}  
         
     
   
