@@ -69,7 +69,7 @@ services:
 
   # Celery
   celery:
-    restart: always
+    restart: never
     build:
       context: .
     command: >
@@ -86,7 +86,8 @@ services:
     depends_on:
       - db
       - redis
-      - app  
+      - app 
+     
         
     
   
