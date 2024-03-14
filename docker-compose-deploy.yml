@@ -42,8 +42,7 @@ services:
     command: >
       sh -c "celery -A app worker -l INFO"
     volumes:
-      - ./app:/app
-      - ./data/web:/vol/web
+      - static-data:/vol/web/
     container_name: canvaswizards-celery
     environment:
       - SECRET_KEY=${SECRET_KEY}
