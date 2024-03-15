@@ -13,7 +13,7 @@
 
     <div class="container" >
         <a href="/"><img class="logo" src="{% static 'img/site-logo.png' %}" alt="Canvas Wizards Logo"></a>
-        <h1>Assignment Report</h1>
+        <h1>Report Generator</h1>
         <br>
         <div class="row">
             
@@ -36,8 +36,9 @@
                 </form>
             </div>
             
-            {% if requests %}
+            
             <div class="col-md-6">
+            {% if requests %}
                 <h3>My Reports</h3>
                 <hr style="border: none; height: 2px; background-color: white; ">
       
@@ -69,8 +70,15 @@
                     </table>
        
                 
-            </div>
-            {% endif %} 
+            </div>        
+            {% endif %}
+
+                
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe width="800" height="315" src="https://www.youtube.com/embed/k8-1a6_Y_I4?si=XsFu1td3ZcfDfxN6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                
+
         </div>
     </div>
 </header>
