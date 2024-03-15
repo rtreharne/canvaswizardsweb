@@ -58,6 +58,7 @@ services:
       - DB_NAME=devdb
       - DB_USER=devuser
       - DB_PASS=changeme
+      - DJANGO_SETTINGS_MODULE=app.settings
     depends_on:
       - db
       - redis

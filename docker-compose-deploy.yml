@@ -83,6 +83,7 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
+      - DJANGO_SETTINGS_MODULE=app.settings
     depends_on:
       - db
       - redis
