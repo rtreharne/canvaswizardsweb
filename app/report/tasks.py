@@ -1,9 +1,12 @@
+import io
 from celery import shared_task
 from .utils import assignment_report
 from canvasapi import Canvas
 from .models import ReportRequest
 import pandas as pd
 from django.core.files import File
+from django.core.files.base import ContentFile
+import datetime
 
 @shared_task
 def add(x, y):
@@ -28,14 +31,22 @@ def generate_report(CANVAS_URL, CANVAS_TOKEN, report_request_id, course_id, assi
     report_request.completed = True
 
     # Save report to file
-    file_name = f"report_{report_request_id}.xlsx"
-    report.to_excel(file_name, index=False)
-
-    print(report.head())
-
-    with open(file_name, "rb") as f:
-        report_request.file.save(file_name, File(f), save=True)
     
+    # Use datetime to create timestamp
+    timestamp = datetime.datetime.now()
+    datestamp = timestamp.strftime("%Y%m%d_%H%M%S")
+
+    file_name = f"assignment_report_{course_id}_{assignment_id}_{timestamp}.xlsx"
+
+    output = io.BytesIO()
+
+    with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+        report.to_excel(writer, index=False)
+
+    file = ContentFile(output.getvalue(), file_name)
+
+    report_request.file.save(file_name, file, save=True)
+
 
     return True
 

@@ -4,6 +4,9 @@ body {
     margin: 0; /* Add margin: 0 to remove default body margin */
 }
 
+btn {
+    margin-bottom: 10px;
+}
 
 
 textarea#id_feedback.textarea {
