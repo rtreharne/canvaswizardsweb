@@ -3,6 +3,7 @@ import getpass
 import datetime
 import csv
 import pandas as pd
+import re
 
 def main():
     print(
@@ -101,6 +102,8 @@ def get_headers(rubric):
         "last_name",
         "first_name",
         "sis_user_id",
+        "anonymous_id",
+        "url",
         "submitted_at",
         "seconds_late",
         "status",
@@ -167,7 +170,7 @@ def get_rubric_score(rubric, rubric_assessment):
         
     return ratings_list
 
-def build_submission_string(canvas, header_list, rubric, submission):
+def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header_list, rubric, submission):
     """
     Builds a row of data for a submission in a Canvas assignment report.
 
@@ -178,18 +181,33 @@ def build_submission_string(canvas, header_list, rubric, submission):
         list: A list containing the row of data for the submission, including student information,
               submission details, grading information, and rubric ratings and scores.
     """
+
+    try:
+        anonymous_id = submission.anonymous_id
+        url = f"{CANVAS_URL}/courses/{course_id}/gradebook/speed_grader?assignment_id={assignment_id}&anonymous_id={submission.anonymous_id}"
+    except:
+        anonymous_id = ""
     
     try:
         sortable_name = f'{submission.user["sortable_name"]}'
         last_name, first_name = sortable_name.split(", ")
         sis_user_id = submission.user["sis_user_id"]
+        url = f"{CANVAS_URL}/courses/{course_id}/gradebook/speed_grader?assignment_id={assignment_id}&user_id={submission.user_id}"
         submitted_at = submission.submitted_at
         seconds_late = submission.seconds_late
         status = submission.workflow_state
         posted_at = submission.posted_at
         score = submission.score
     except:
-        return None
+        sortable_name = ""
+        last_name = ""
+        first_name = ""
+        sis_user_id = ""
+        submitted_at = ""
+        seconds_late = ""
+        status = ""
+        posted_at = ""
+        score = ""
 
     try:
         grader = canvas.get_user(submission.grader_id).sortable_name
@@ -214,6 +232,8 @@ def build_submission_string(canvas, header_list, rubric, submission):
         last_name,
         first_name,
         sis_user_id,
+        anonymous_id,
+        url,
         submitted_at,
         seconds_late,
         status,
@@ -232,12 +252,12 @@ def build_submission_string(canvas, header_list, rubric, submission):
         
     return row
 
-def build_report(canvas, course_id, assignment_id, header_list, submissions, rubric) -> None:
+def build_report(CANVAS_URL, canvas, course_id, assignment_id, header_list, submissions, rubric) -> None:
     filename = f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_{course_id}_{assignment_id}.xlsx"
 
     data = []
     for submission in submissions:
-        row = build_submission_string(canvas, header_list, rubric, submission)
+        row = build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header_list, rubric, submission)
         if row:
             data.append(row)
 
@@ -253,8 +273,44 @@ def build_report(canvas, course_id, assignment_id, header_list, submissions, rub
                     if not isinstance(row[header], (int, float)):
                         df.at[index, 'rubric_issue'] = True
 
+    try:
+        df.sort_values(by='anonymous_id', inplace=True)
 
+        # reset the index, but start at 1
+        df.reset_index(drop=True, inplace=True)
+
+        # add 1 to the index
+        df.index += 1
+
+        # rename the index to 'student_number'
+        df.index.name = 'student'
+
+        # make index first column
+        df.reset_index(inplace=True)
+
+        # move 'student' column to first column
+        cols = list(df.columns)
+        cols = [cols[-1]] + cols[:-1]
+        df = df[cols]
+
+        
+    except:
+        pass
+        
     return df
+
+
+
+def sort_key(s):
+    match = re.match(r'(\d+)', s)
+    if match:
+        # For strings starting with digits, the key is the numeric value followed by the string itself
+        return (int(match.group(1)), s)
+    else:
+        # For strings starting with letters, the key is a large number followed by the string itself
+        return (float('inf'), s)
+
+
 
 
 
