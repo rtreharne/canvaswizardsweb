@@ -56,13 +56,15 @@ def index(request, uuid=None):
 
             uuid = profile_obj.uuid
 
-            # Create a ReportRequest object
-            report_request = ReportRequest(profile=profile_obj)
-            report_request.save()
+            
+
             
             try:
                 course = canvas.get_course(course_id)
                 assignment = course.get_assignment(assignment_id)
+
+                # Create a ReportRequest object
+                report_request = ReportRequest(profile=profile_obj)
 
                 report_request.course_code = course.course_code
                 report_request.assignment_name = assignment.name

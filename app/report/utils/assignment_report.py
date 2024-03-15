@@ -170,7 +170,7 @@ def get_rubric_score(rubric, rubric_assessment):
         
     return ratings_list
 
-def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header_list, rubric, submission):
+def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header_list, rubric, submission, enrollments=None):
     """
     Builds a row of data for a submission in a Canvas assignment report.
 
@@ -181,17 +181,36 @@ def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header
         list: A list containing the row of data for the submission, including student information,
               submission details, grading information, and rubric ratings and scores.
     """
-
-    try:
-        anonymous_id = submission.anonymous_id
-        url = f"{CANVAS_URL}/courses/{course_id}/gradebook/speed_grader?assignment_id={assignment_id}&anonymous_id={submission.anonymous_id}"
-    except:
-        anonymous_id = ""
+    if enrollments:
+        try:
+            user = get_user_from_id(enrollments, submission.user_id)
+            print(user)
+            anonymous_id = submission.anonymous_id
+            url = f"{CANVAS_URL}/courses/{course_id}/gradebook/speed_grader?assignment_id={assignment_id}&anonymous_id={anonymous_id}"
+            sortable_name = user["sortable_name"]
+            last_name, first_name = user["sortable_name"].split(", ")
+            sis_user_id = user["sis_user_id"]
+        except:
+            anonymous_id = ""
+            last_name = ""
+            first_name = ""
+            sortable_name = ""
+            sis_user_id = ""
+    else:
+        try:
+            anonymous_id = submission.anonymous_id
+            url = f"{CANVAS_URL}/courses/{course_id}/gradebook/speed_grader?assignment_id={assignment_id}&anonymous_id={submission.anonymous_id}"
+            sortable_name = f'{submission.user["sortable_name"]}'
+            last_name, first_name = sortable_name.split(", ")
+            sis_user_id = submission.user["sis_user_id"]
+        except:
+            anonymous_id = ""
+            last_name = ""
+            first_name = ""
+            sortable_name = ""
+            sis_user_id = ""
     
     try:
-        sortable_name = f'{submission.user["sortable_name"]}'
-        last_name, first_name = sortable_name.split(", ")
-        sis_user_id = submission.user["sis_user_id"]
         url = f"{CANVAS_URL}/courses/{course_id}/gradebook/speed_grader?assignment_id={assignment_id}&user_id={submission.user_id}"
         submitted_at = submission.submitted_at
         seconds_late = submission.seconds_late
@@ -199,10 +218,6 @@ def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header
         posted_at = submission.posted_at
         score = submission.score
     except:
-        sortable_name = ""
-        last_name = ""
-        first_name = ""
-        sis_user_id = ""
         submitted_at = ""
         seconds_late = ""
         status = ""
@@ -252,12 +267,26 @@ def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header
         
     return row
 
-def build_report(CANVAS_URL, canvas, course_id, assignment_id, header_list, submissions, rubric) -> None:
+def get_user_from_id(enrollments, user_id):
+    for enrollment in enrollments:
+        if enrollment.user_id == user_id:
+            return enrollment.user
+    return None
+
+def build_report(CANVAS_URL, canvas, course_id, assignment_id, header_list, submissions, rubric, enrollments=None) -> None:
     filename = f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_{course_id}_{assignment_id}.xlsx"
 
+    assignment = canvas.get_course(course_id).get_assignment(assignment_id)
+    print(assignment.anonymous_grading)
+    if assignment.anonymous_grading:
+        print("Getting enrollments...")
+        enrollments = [x for x in canvas.get_course(course_id).get_enrollments(include=["user"])]
+    else:
+        enrollments = None
+        
     data = []
     for submission in submissions:
-        row = build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header_list, rubric, submission)
+        row = build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header_list, rubric, submission, enrollments=enrollments)
         if row:
             data.append(row)
 
@@ -293,7 +322,7 @@ def build_report(CANVAS_URL, canvas, course_id, assignment_id, header_list, subm
         cols = [cols[-1]] + cols[:-1]
         df = df[cols]
 
-        
+
     except:
         pass
         
