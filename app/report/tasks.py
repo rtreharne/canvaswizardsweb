@@ -6,6 +6,8 @@ from .models import ReportRequest
 import pandas as pd
 from django.core.files import File
 from django.core.files.base import ContentFile
+import msoffcrypto
+
 import datetime
 
 @shared_task
@@ -13,7 +15,7 @@ def add(x, y):
     return x + y
 
 @shared_task
-def generate_report(CANVAS_URL, CANVAS_TOKEN, report_request_id, course_id, assignment_id):
+def generate_report(CANVAS_URL, CANVAS_TOKEN, report_request_id, course_id, assignment_id, encryption_password=None):
     canvas = Canvas(CANVAS_URL, CANVAS_TOKEN)
     print("Getting submissions")
     submissions = assignment_report.get_submissions(canvas, course_id, assignment_id)
@@ -34,19 +36,39 @@ def generate_report(CANVAS_URL, CANVAS_TOKEN, report_request_id, course_id, assi
     
     # Use datetime to create timestamp
     timestamp = datetime.datetime.now()
-    datestamp = timestamp.strftime("%Y%m%d_%H%M%S")
+    timestamp = timestamp.strftime("%Y%m%d_%H%M%S")
 
     file_name = f"assignment_report_{course_id}_{assignment_id}_{timestamp}.xlsx"
-
     output = io.BytesIO()
 
     with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
         report.to_excel(writer, index=False)
 
-    file = ContentFile(output.getvalue(), file_name)
+    # Seek to the beginning of the StreamIO object to ensure we read from the start
+    output.seek(0)
 
-    report_request.file.save(file_name, file, save=True)
+    # Encrypt the Excel file
+    if encryption_password:
+        password = encryption_password
+        encrypted_output = io.BytesIO()
+        file = msoffcrypto.OfficeFile(output)
+        file.load_key(password=password)
 
+        # Encrypt the file with the specified password
+        file.encrypt(ofile=encrypted_output, password=password)
+
+        # Since encrypt() writes to the encrypted_output, we need to seek to the beginning
+        # of this BytesIO object to read its content
+        encrypted_output.seek(0)
+
+        # Create a ContentFile from the encrypted BytesIO object
+        encrypted_file = ContentFile(encrypted_output.getvalue(), file_name)
+
+        # Save the encrypted file to your Django model
+        report_request.file.save(file_name, encrypted_file)
+    else:
+        report_request.file.save(file_name, File(output, file_name))
 
     return True
+
 

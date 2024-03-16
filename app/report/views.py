@@ -21,6 +21,7 @@ def index(request, uuid=None):
             CANVAS_URL = form.cleaned_data['canvas_url']
             course_id = form.cleaned_data['course_id']
             assignment_id = form.cleaned_data['assignment_id']
+            encryption_password = form.cleaned_data['encryption_password']
 
             try:
                 canvas = Canvas(CANVAS_URL, CANVAS_TOKEN)
@@ -72,7 +73,7 @@ def index(request, uuid=None):
             except:
                 return render(request, 'report/index.html', {'form': form, 'error': 'Could not find course or assignment. Check course and assignment ID.'})
             
-            generate_report.delay(CANVAS_URL, CANVAS_TOKEN, report_request.id, course_id, assignment_id)
+            generate_report.delay(CANVAS_URL, CANVAS_TOKEN, report_request.id, course_id, assignment_id, encryption_password)
 
             return HttpResponseRedirect(reverse('report:index-uuid', args=[uuid]))
 
