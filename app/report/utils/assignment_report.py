@@ -92,11 +92,16 @@ def get_submissions(canvas, course_id, assignment_id):
 def get_rubric(canvas, course_id, assignment_id):
     course = canvas.get_course(course_id)
     assignment = course.get_assignment(assignment_id)
-    return assignment.rubric
+    try:
+        return assignment.rubric
+    except:
+        return None
 
 def get_headers(rubric):
-    rubric_rating_headers = [f"RATING_{x['description']}" for x in rubric]
-    rubric_score_headers = [f"SCORE_{x['description']}" for x in rubric]
+
+    if rubric:
+        rubric_rating_headers = [f"RATING_{x['description']}" for x in rubric]
+        rubric_score_headers = [f"SCORE_{x['description']}" for x in rubric]
 
     header_list = [
         "last_name",
@@ -112,7 +117,8 @@ def get_headers(rubric):
         "grader",
         "comments"]
 
-    header_list += rubric_rating_headers + rubric_score_headers
+    if rubric:
+        header_list += rubric_rating_headers + rubric_score_headers
 
     return header_list
 
@@ -229,19 +235,22 @@ def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header
     except:
         grader = ""
     
-    try:
-        rubric_assessment = submission.rubric_assessment
-    except:
-        rubric_assessment = ""
+    if rubric:
+        try:
+            rubric_assessment = submission.rubric_assessment
+        except:
+            rubric_assessment = ""
         
+
+        if rubric_assessment:
+            rubric_rating = get_rubric_rating(rubric, rubric_assessment)
+            rubric_score = get_rubric_score(rubric, rubric_assessment)
+        else:
+            rubric_rating = [""]*len(rubric)
+            rubric_score = [""]*len(rubric)
+
     comments = ", ".join([f"{x['author_name']} - {x['comment']}" for x in submission.submission_comments])
 
-    if rubric_assessment:
-        rubric_rating = get_rubric_rating(rubric, rubric_assessment)
-        rubric_score = get_rubric_score(rubric, rubric_assessment)
-    else:
-        rubric_rating = [""]*len(rubric)
-        rubric_score = [""]*len(rubric)
 
     values = [
         last_name,
@@ -258,7 +267,8 @@ def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header
         comments
     ]
 
-    values += rubric_rating + rubric_score
+    if rubric:
+        values += rubric_rating + rubric_score
 
     row = {}
 
@@ -292,15 +302,16 @@ def build_report(CANVAS_URL, canvas, course_id, assignment_id, header_list, subm
 
     df = pd.DataFrame(data)
 
-    df['rubric_issue'] = False
+    if rubric:
+        df['rubric_issue'] = False
 
-    # look at all columns that contain the word 'SCORE' if any values are missing, and if status == 'graded', set rubric_issue to True
-    for index, row in df.iterrows():
-        if row['status'] == 'graded':
-            for header in header_list:
-                if 'SCORE' in header:
-                    if not isinstance(row[header], (int, float)):
-                        df.at[index, 'rubric_issue'] = True
+        # look at all columns that contain the word 'SCORE' if any values are missing, and if status == 'graded', set rubric_issue to True
+        for index, row in df.iterrows():
+            if row['status'] == 'graded':
+                for header in header_list:
+                    if 'SCORE' in header:
+                        if not isinstance(row[header], (int, float)):
+                            df.at[index, 'rubric_issue'] = True
 
     try:
         df.sort_values(by='anonymous_id', inplace=True)
@@ -318,9 +329,9 @@ def build_report(CANVAS_URL, canvas, course_id, assignment_id, header_list, subm
         df.reset_index(inplace=True)
 
         # move 'student' column to first column
-        cols = list(df.columns)
-        cols = [cols[-1]] + cols[:-1]
-        df = df[cols]
+        #cols = list(df.columns)
+        #cols = [cols[-1]] + cols[:-1]
+        #df = df[cols]
 
 
     except:

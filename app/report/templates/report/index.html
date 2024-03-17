@@ -42,7 +42,13 @@
             {% if requests %}
                 <h3 id="myreports">My Reports</h3>
                 <hr style="border: none; height: 2px; background-color: white; ">
-      
+                    <div class="quota-exceeded">
+                        {% if profile.downloads >= profile.max_downloads %}
+                        <div class="alert alert-white" role="alert">
+                            You have exceeded your free download quota. Please <a href="/#contact">contact Canvas Wizards</a> to continue using this tool.
+                        </div>
+                        {% endif %}
+                    </div>
                     <table>
                         <thead>
                             <tr>
@@ -65,7 +71,12 @@
                                             <a href="" class="downloaded">[Downloaded]</a>
 
                                         {% else %}
-                                            <a href="#" class="download-link" data-id="{{ r.id }}">[Download]</a>
+                                            {% if profile.max_downloads >=  profile.downloads %}
+                                                <a href="#" class="download-link" data-id="{{ r.id }}">[Download]</a>
+                                            {% else %}
+                                            <a href="#" class="downloaded">[Download]</a>
+
+                                            {% endif %}
                                         {% endif %}
                                         
                                     {% else %}
@@ -81,13 +92,14 @@
             <br>
             <br>
             {% endif %}
+            <h3 id="myreports">Guidance</h3>
+                <hr style="border: none; height: 2px; background-color: white; ">
 
                 
                     <div class="embed-responsive embed-responsive-16by9">
                         <iframe width="800" height="315" src="https://www.youtube.com/embed/k8-1a6_Y_I4?si=XsFu1td3ZcfDfxN6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     </div>
                 
-
         </div>
     </div>
 </header>
@@ -143,31 +155,21 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('.download-link').click(function(e) {
-            e.preventDefault();
-    
-            var link = $(this);
-            var reportRequestId = link.data('id');
-    
-            $.ajax({
-                url: '/report/download/' + reportRequestId + '/',
-                method: 'GET',
-                success: function() {
-                    // Create a hidden link and click it to download the file
-                    var hiddenLink = $('<a/>', {
-                        href: '/report/download/' + reportRequestId + '/',
-                        download: '',
-                        target: '_blank'
-                    }).appendTo('body').get(0).click();
-    
-                    // Make link inactive
-                    link.text('[Downloaded]').off('click').css('color', 'grey');
+    $('.download-link').click(function(e) {
+        e.preventDefault();
 
-                    // Add class to link
-                    link.addClass('downloaded');
-                }
-            });
-        });
+        var link = $(this);
+
+        // Create a hidden link and click it to download the file
+        var hiddenLink = $('<a/>', {
+            href: '/report/download/' + link.data('id') + '/',
+            download: '',
+            target: '_blank'
+        }).appendTo('body').get(0).click();
+
+        // Make link inactive and add class to link
+        link.text('[Downloaded]').off('click').css('color', 'grey').addClass('downloaded');
     });
+});
     </script>
 {% endblock %}

@@ -11,7 +11,7 @@ from datetime import timedelta
 
 
 def download_and_delete_file(request, report_request_id):
-    print("Hello Roberto")
+
     report_request = ReportRequest.objects.get(id=report_request_id)
 
     # Create a FileResponse to send the file
@@ -20,6 +20,10 @@ def download_and_delete_file(request, report_request_id):
     # Remove the file from the object and delete the file from the filesystem
     report_request.downloaded = True
     report_request.save()
+
+    profile = report_request.profile
+    profile.downloads += 1
+    profile.save()
 
 
     # return a HttpResponse
@@ -34,13 +38,16 @@ def delete_old_requests(request_user):
         request.file.delete()
         request.delete()
 
+    """ # Delete downloaded requests
+
     downloaded_requests = ReportRequest.objects.filter(profile=request_user, downloaded=True)
 
-    print("Downloaded requests: ", downloaded_requests)
-    print("Deleting requests")
+
     for request in downloaded_requests:
         request.file.delete()
         request.delete()
+    """
+    
     return ReportRequest.objects.filter(profile=request_user).order_by('-created')
 
 
