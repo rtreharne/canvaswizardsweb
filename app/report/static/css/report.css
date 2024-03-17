@@ -6,3 +6,9 @@ a {
     /* default text-decoration */
     text-decoration: underline;
 }
+
+.downloaded {
+    color: gray;
+    /* make link inactive */
+    pointer-events: none;
+}

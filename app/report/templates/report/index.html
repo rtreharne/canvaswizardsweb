@@ -40,7 +40,7 @@
             
             <div class="col-md-6">
             {% if requests %}
-                <h3>My Reports</h3>
+                <h3 id="myreports">My Reports</h3>
                 <hr style="border: none; height: 2px; background-color: white; ">
       
                     <table>
@@ -60,7 +60,14 @@
                                 <td>{{ r.created|date:"Y-m-d H:i" }}</td>
                                 <td>
                                     {% if r.completed %}
-                                        <a href="{{ r.file.url }}">[Download]</a>
+                                        
+                                        {% if r.downloaded %}
+                                            <a href="" class="downloaded">[Downloaded]</a>
+
+                                        {% else %}
+                                            <a href="#" class="download-link" data-id="{{ r.id }}">[Download]</a>
+                                        {% endif %}
+                                        
                                     {% else %}
                                         Pending
                                     {% endif %}
@@ -129,6 +136,38 @@
 
 
 
+{% endblock %}
 
+<!-- Extend block js -->
+{% block js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.download-link').click(function(e) {
+            e.preventDefault();
+    
+            var link = $(this);
+            var reportRequestId = link.data('id');
+    
+            $.ajax({
+                url: '/report/download/' + reportRequestId + '/',
+                method: 'GET',
+                success: function() {
+                    // Create a hidden link and click it to download the file
+                    var hiddenLink = $('<a/>', {
+                        href: '/report/download/' + reportRequestId + '/',
+                        download: '',
+                        target: '_blank'
+                    }).appendTo('body').get(0).click();
+    
+                    // Make link inactive
+                    link.text('[Downloaded]').off('click').css('color', 'grey');
 
+                    // Add class to link
+                    link.addClass('downloaded');
+                }
+            });
+        });
+    });
+    </script>
 {% endblock %}

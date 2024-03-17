@@ -9,4 +9,5 @@ app_name = 'report'
 urlpatterns = [
     path('', views.index, name='index'),
     path('<uuid:uuid>/', views.index, name='index-uuid'),
+    path('download/<int:report_request_id>/', views.download_and_delete_file, name='download'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

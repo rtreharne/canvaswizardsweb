@@ -3,16 +3,50 @@ from .forms import ReportRequestForm
 from canvasapi import Canvas
 from .models import ReportRequest, ReportProfile
 from .tasks import generate_report
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, FileResponse
 from django.urls import reverse
+from django.utils import timezone
+from datetime import timedelta
+
+
+
+def download_and_delete_file(request, report_request_id):
+    print("Hello Roberto")
+    report_request = ReportRequest.objects.get(id=report_request_id)
+
+    # Create a FileResponse to send the file
+    response = FileResponse(report_request.file)
+
+    # Remove the file from the object and delete the file from the filesystem
+    report_request.downloaded = True
+    report_request.save()
+
+
+    # return a HttpResponse
+
+    return response
+
+
+def delete_old_requests(request_user):
+    # Delete requests older than 24 hrs
+    old_requests = ReportRequest.objects.filter(created__lt=timezone.now() - timedelta(hours=24))
+    for request in old_requests:
+        request.file.delete()
+        request.delete()
+
+    downloaded_requests = ReportRequest.objects.filter(profile=request_user, downloaded=True)
+
+    print("Downloaded requests: ", downloaded_requests)
+    print("Deleting requests")
+    for request in downloaded_requests:
+        request.file.delete()
+        request.delete()
+    return ReportRequest.objects.filter(profile=request_user).order_by('-created')
+
 
 def index(request, uuid=None):
 
     context = {}
-
-   
-
-    
 
     if request.method == 'POST':
         form = ReportRequestForm(request.POST)
@@ -57,9 +91,6 @@ def index(request, uuid=None):
 
             uuid = profile_obj.uuid
 
-            
-
-            
             try:
                 course = canvas.get_course(course_id)
                 assignment = course.get_assignment(assignment_id)
@@ -80,9 +111,13 @@ def index(request, uuid=None):
     if uuid:
         try:
             profile = ReportProfile.objects.get(uuid=uuid)
-            requests = ReportRequest.objects.filter(profile=profile).order_by('-created')
+
+            requests = delete_old_requests(profile)
+                    
             context['profile'] = profile
             context['requests'] = requests
+
+
         except:
             pass
 
