@@ -217,7 +217,7 @@ def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header
             sis_user_id = ""
     
     try:
-        url = f"{CANVAS_URL}/courses/{course_id}/gradebook/speed_grader?assignment_id={assignment_id}&user_id={submission.user_id}"
+        url = f"{CANVAS_URL}/courses/{course_id}/gradebook/speed_grader?assignment_id={assignment_id}&student_id={submission.user_id}"
         submitted_at = submission.submitted_at
         seconds_late = submission.seconds_late
         status = submission.workflow_state
