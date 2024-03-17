@@ -176,7 +176,7 @@ def get_rubric_score(rubric, rubric_assessment):
         
     return ratings_list
 
-def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header_list, rubric, submission, enrollments=None):
+def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header_list, rubric, submission, enrollments=None, anonymous_grading=False):
     """
     Builds a row of data for a submission in a Canvas assignment report.
 
@@ -217,7 +217,8 @@ def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header
             sis_user_id = ""
     
     try:
-        url = f"{CANVAS_URL}/courses/{course_id}/gradebook/speed_grader?assignment_id={assignment_id}&student_id={submission.user_id}"
+        if not anonymous_grading:
+            url = f"{CANVAS_URL}/courses/{course_id}/gradebook/speed_grader?assignment_id={assignment_id}&student_id={submission.user_id}"
         submitted_at = submission.submitted_at
         seconds_late = submission.seconds_late
         status = submission.workflow_state
@@ -296,7 +297,7 @@ def build_report(CANVAS_URL, canvas, course_id, assignment_id, header_list, subm
         
     data = []
     for submission in submissions:
-        row = build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header_list, rubric, submission, enrollments=enrollments)
+        row = build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header_list, rubric, submission, enrollments=enrollments, anonymous_grading=assignment.anonymous_grading)
         if row:
             data.append(row)
 
