@@ -9,7 +9,7 @@ class ReportProfile(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
     downloads = models.IntegerField(default=0)
-    max_downloads = models.IntegerField(default=3)
+    max_downloads = models.IntegerField(default=20)
 
     def save(self, *args, **kwargs):
         self.uuid = uuid.uuid5(uuid.NAMESPACE_DNS, self.email)

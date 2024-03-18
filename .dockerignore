@@ -16,3 +16,4 @@ venv/
 
 # Local PostgreSQL data
 data/
+.xlsx
