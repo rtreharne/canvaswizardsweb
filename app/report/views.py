@@ -106,7 +106,7 @@ def index(request, uuid=None):
                 report_request = ReportRequest(profile=profile_obj)
 
                 report_request.course_code = course.course_code
-                report_request.assignment_name = assignment.name
+                report_request.assignment_name = assignment.name[:100]
                 report_request.save()
             except:
                 return render(request, 'report/index.html', {'form': form, 'error': 'Could not find course or assignment. Check course and assignment ID.'})

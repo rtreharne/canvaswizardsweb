@@ -2,7 +2,7 @@ from django.db import models
 import uuid
 
 class ReportProfile(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=1000)
     email = models.EmailField(max_length=100, unique=True)
     short_name = models.CharField(max_length=100, null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
@@ -22,7 +22,7 @@ class ReportProfile(models.Model):
 class ReportRequest(models.Model):
     profile = models.ForeignKey(ReportProfile, on_delete=models.CASCADE, null=True, blank=True)
     course_code = models.CharField(max_length=100, null=True, blank=True)
-    assignment_name = models.CharField(max_length=100, null=True, blank=True)
+    assignment_name = models.CharField(max_length=500, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     log = models.TextField(null=True, blank=True)
     completed = models.BooleanField(default=False)

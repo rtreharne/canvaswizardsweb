@@ -191,8 +191,7 @@ def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header
         try:
             user = get_user_from_id(enrollments, submission.user_id)
             print(user)
-            anonymous_id = submission.anonymous_id
-            url = f"{CANVAS_URL}/courses/{course_id}/gradebook/speed_grader?assignment_id={assignment_id}&anonymous_id={anonymous_id}"
+            
             sortable_name = user["sortable_name"]
             last_name, first_name = user["sortable_name"].split(", ")
             sis_user_id = user["sis_user_id"]
@@ -202,6 +201,14 @@ def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header
             first_name = ""
             sortable_name = ""
             sis_user_id = ""
+            url = ""
+        try:
+            anonymous_id = submission.anonymous_id
+            url = f"{CANVAS_URL}/courses/{course_id}/gradebook/speed_grader?assignment_id={assignment_id}&anonymous_id={anonymous_id}"
+        except:
+            anonymous_id = ""
+            url = ""
+            
     else:
         try:
             anonymous_id = submission.anonymous_id
