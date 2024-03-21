@@ -1,0 +1,27 @@
+input, select, textarea {
+    max-width: 100%;
+}
+
+a {
+    /* default text-decoration */
+    text-decoration: underline;
+}
+
+.alert-white {
+    background-color: white;
+    color: black;
+}
+
+.alert-white a {
+    color: black;
+}
+
+.alert-white a:hover {
+    color: #2e2e2e;
+}
+
+.downloaded {
+    color: gray;
+    /* make link inactive */
+    pointer-events: none;
+}

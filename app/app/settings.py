@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'choices',
     'crispy_forms',
     'report',
+    'adjustments',
 ]
 
 MIDDLEWARE = [
