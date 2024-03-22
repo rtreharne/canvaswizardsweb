@@ -5,8 +5,9 @@ class Portfolio(models.Model):
     description = models.TextField()
     image = models.FileField(upload_to='portfolio/')
     iframe = models.TextField(null=True, blank=True)
-    url = models.URLField(null=True, blank=True)
+    url = models.CharField(max_length=128, null=True, blank=True)
     datetime = models.DateTimeField(null=True, blank=True)
+    tool = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

@@ -6,8 +6,9 @@ from django.utils.encoding import smart_str
 from .models import Contact, Service, Event, Registration, Resource, Portfolio
 
 class PortfolioAdmin(admin.ModelAdmin):
-    list_display = ('title', 'description', 'image', 'iframe', 'url', 'datetime')
+    list_display = ('title', 'description', 'image', 'iframe', 'url', 'datetime', 'tool')
     search_fields = ('title', 'description', 'url')
+    search_fields = ('title', 'description', 'url', 'tool')
 
 class ContactAdmin(admin.ModelAdmin):
     list_display = ('last_name', 'first_name', 'email', 'message', 'created_at')

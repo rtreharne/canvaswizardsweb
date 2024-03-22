@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'report',
     'adjustments',
+    'panorama'
 ]
 
 MIDDLEWARE = [

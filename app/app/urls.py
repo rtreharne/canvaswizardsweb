@@ -27,6 +27,7 @@ urlpatterns = [
     path('choices/', include('choices.urls')),
     path('report/', include('report.urls')),
     path('adjustments/', include('adjustments.urls')),
+    path('panorama/', include('panorama.urls')),
     
 ]
 

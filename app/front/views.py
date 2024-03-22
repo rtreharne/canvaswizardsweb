@@ -20,13 +20,15 @@ def index(request):
     context = {}
 
     events = Event.objects.all().order_by('date')
-    portfolios = Portfolio.objects.all().order_by('datetime')
+    portfolios = Portfolio.objects.filter(tool=False).order_by('datetime')
+    tools = Portfolio.objects.filter(tool=True).order_by('title')
 
     # Only get events in the future
     events = [event for event in events if event.date >= datetime.date.today()]
 
     context["events"] = events
     context["portfolios"] = portfolios
+    context["tools"] = tools
 
     # Update any events in progress
     for event in events:

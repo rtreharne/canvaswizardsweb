@@ -1,54 +1,46 @@
 import io
 from celery import shared_task
-from .utils import adjustment_report
 from canvasapi import Canvas
-from .models import AdjustmentRequest, AdjustmentProfile
+from .models import PanoramaProfile, PanoramaRequest
 import pandas as pd
 from django.core.files import File
 from django.core.files.base import ContentFile
 import msoffcrypto
-from .utils import adjustment_report
-
+from .utils import panorama_report
 import datetime
 
 
 @shared_task
-def generate_report(CANVAS_URL, CANVAS_TOKEN, report_request_id, encryption_password=None, from_date=None):
+def generate_report(CANVAS_URL, CANVAS_TOKEN, report_request_id, from_date, to_date, encryption_password=None):
     canvas = Canvas(CANVAS_URL, CANVAS_TOKEN)
-   
-        
-    # convert from_date datetime.date to datetime.datetime
-    if from_date:
-        from_date = datetime.datetime.combine(from_date, datetime.datetime.min.time())
-
 
     # Save report to file and update report_request
-    report_request = AdjustmentRequest.objects.get(pk=report_request_id)
+    report_request = PanoramaRequest.objects.get(pk=report_request_id)
 
-    # read file into pandas dataframe
-    df = pd.read_excel(report_request.file)
+    # panorama_report functions here
 
-    report_request.completed = True
+    print(from_date, to_date)
+    print(type(from_date), type(to_date))
 
-    canvas = Canvas(CANVAS_URL, CANVAS_TOKEN)
+               # convert from_date to datetime object - use datetime
+    from_date = datetime.datetime.combine(from_date, datetime.datetime.min.time())
+    to_date = datetime.datetime.combine(to_date, datetime.datetime.min.time())  
 
-    course_set_ids = adjustment_report.get_course_set(canvas, dt=from_date)
+    print(from_date, to_date)
+    print(type(from_date), type(to_date)) 
 
-    students = adjustment_report.get_enrollments(CANVAS_URL, canvas, course_set_ids)
+    report = panorama_report.generate_report(CANVAS_URL, CANVAS_TOKEN, from_date, to_date)
 
-    # Start working on report
-
-    adjustments = adjustment_report.get_adjustment_factors(df, dt=from_date)
-
-    report = adjustment_report.tie_adjustments_to_students(adjustments, students)
+    print("apparently, I'm finished")
 
     # Save report to file
     
     # Use datetime to create timestamp
+
     timestamp = datetime.datetime.now()
     timestamp = timestamp.strftime("%Y%m%d_%H%M%S")
 
-    file_name = f"{timestamp}_adjustment_report.xlsx"
+    file_name = f"{timestamp}_panorama_report.xlsx"
     output = io.BytesIO()
 
     with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
@@ -82,6 +74,7 @@ def generate_report(CANVAS_URL, CANVAS_TOKEN, report_request_id, encryption_pass
         report_request.file.save(file_name, File(output, file_name))
         report_request.completed = True
         report_request.save()
+
     return True
 
 
