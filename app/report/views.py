@@ -109,6 +109,7 @@ def index(request, uuid=None):
                 report_request.assignment_name = assignment.name[:100]
                 report_request.save()
             except:
+                print("Got a problem here")
                 return render(request, 'report/index.html', {'form': form, 'error': 'Could not find course or assignment. Check course and assignment ID.'})
             
             generate_report.delay(CANVAS_URL, CANVAS_TOKEN, report_request.id, course_id, assignment_id, encryption_password)

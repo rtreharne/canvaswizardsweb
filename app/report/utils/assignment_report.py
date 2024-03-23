@@ -4,6 +4,7 @@ import datetime
 import csv
 import pandas as pd
 import re
+import requests
 
 def main():
     print(
@@ -115,7 +116,8 @@ def get_headers(rubric):
         "posted_at",
         "score",
         "grader",
-        "comments"]
+        "comments",
+        "student_viewed_feedback",]
 
     if rubric:
         header_list += rubric_rating_headers + rubric_score_headers
@@ -176,7 +178,22 @@ def get_rubric_score(rubric, rubric_assessment):
         
     return ratings_list
 
-def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header_list, rubric, submission, enrollments=None, anonymous_grading=False):
+def read_annotations(CANVAS_URL, CANVAS_TOKEN, course_id, assignment_id, user_id):
+    # Define the base URL
+    base_url = f"{CANVAS_URL}/api/v1/courses"
+
+    # Define the headers (replace 'YourToken' with your actual token)
+    headers = {
+        "Authorization": f"Bearer {CANVAS_TOKEN}"
+    }
+
+    # Make the GET request
+    response = requests.get(f"{base_url}/{course_id}/assignments/{assignment_id}/submissions/{user_id}/document_annotations/read", headers=headers)
+
+    # Print the response
+    return response.json()["read"]
+
+def build_submission_string(CANVAS_URL, CANVAS_TOKEN, canvas, course_id, assignment_id, header_list, rubric, submission, enrollments=None, anonymous_grading=False):
     """
     Builds a row of data for a submission in a Canvas assignment report.
 
@@ -187,11 +204,15 @@ def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header
         list: A list containing the row of data for the submission, including student information,
               submission details, grading information, and rubric ratings and scores.
     """
+    try:
+        student_viewed_feedback = read_annotations(CANVAS_URL, CANVAS_TOKEN, course_id, assignment_id, submission.user_id)
+    except:
+        student_viewed_feedback = ""
+
     if enrollments:
+
         try:
-            user = get_user_from_id(enrollments, submission.user_id)
-            print(user)
-            
+            user = get_user_from_id(enrollments, submission.user_id)            
             sortable_name = user["sortable_name"]
             last_name, first_name = user["sortable_name"].split(", ")
             sis_user_id = user["sis_user_id"]
@@ -272,7 +293,8 @@ def build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header
         posted_at,
         score,
         grader,
-        comments
+        comments,
+        student_viewed_feedback,
     ]
 
     if rubric:
@@ -291,7 +313,7 @@ def get_user_from_id(enrollments, user_id):
             return enrollment.user
     return None
 
-def build_report(CANVAS_URL, canvas, course_id, assignment_id, header_list, submissions, rubric, enrollments=None) -> None:
+def build_report(CANVAS_URL, CANVAS_TOKEN, canvas, course_id, assignment_id, header_list, submissions, rubric, enrollments=None) -> None:
     filename = f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_{course_id}_{assignment_id}.xlsx"
 
     assignment = canvas.get_course(course_id).get_assignment(assignment_id)
@@ -304,7 +326,7 @@ def build_report(CANVAS_URL, canvas, course_id, assignment_id, header_list, subm
         
     data = []
     for submission in submissions:
-        row = build_submission_string(CANVAS_URL, canvas, course_id, assignment_id, header_list, rubric, submission, enrollments=enrollments, anonymous_grading=assignment.anonymous_grading)
+        row = build_submission_string(CANVAS_URL, CANVAS_TOKEN, canvas, course_id, assignment_id, header_list, rubric, submission, enrollments=enrollments, anonymous_grading=assignment.anonymous_grading)
         if row:
             data.append(row)
 

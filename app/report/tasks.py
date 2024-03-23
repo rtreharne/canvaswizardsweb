@@ -25,7 +25,7 @@ def generate_report(CANVAS_URL, CANVAS_TOKEN, report_request_id, course_id, assi
     header_list = assignment_report.get_headers(rubric)
     print("Building report")
     report = assignment_report.build_report(
-        CANVAS_URL, canvas, course_id, assignment_id, header_list, submissions, rubric
+        CANVAS_URL, CANVAS_TOKEN, canvas, course_id, assignment_id, header_list, submissions, rubric
     )
 
     # Save report to file and update report_request
