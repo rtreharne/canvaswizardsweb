@@ -1,0 +1,73 @@
+{% extends "projects/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/projects.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="page-section">
+    
+
+    <section class="container">
+        <img class="logo" src="{{ institution.logo.url }}" alt="University of Liverpool Logo">
+        <h1 class="logo"><a href="/projects">[Project Allocation]</a></h1>
+        <br>
+        <h3>{{ admin_department }}</h3>
+        <br>
+        <div class="row">
+            <div class="col-md-6 ">
+
+                <form method="post" action="">
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary">Continue</button>
+                </form>
+                <br>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#div_id_department').hide();
+    $('#id_institute').change(function() {
+        var instituteName = $(this).val();
+        $.ajax({
+            url: "{% url 'projects:get-departments' %}",
+            data: {
+                'institute_name': instituteName
+            },
+            success: function(data) {
+                var departmentSelect = $('#id_department');
+                departmentSelect.empty();
+                $.each(data, function(index, department) {
+                    console.log(department.id, department.name)
+                    departmentSelect.append($('<option></option>').attr('value', department.id).text(department.name));
+                });
+                departmentSelect.show();
+                $('#div_id_department').show();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status == 400) {
+                    // handle 400 error here
+                    console.log('400 errors: ', errorThrown);
+                    $('#div_id_department').hide();
+                }
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

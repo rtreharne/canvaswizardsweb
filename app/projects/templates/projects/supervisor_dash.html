@@ -1,0 +1,96 @@
+{% extends "projects/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/projects.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="page-section">
+    
+
+    <section class="container">
+        <img class="logo" src="{{ institution.logo.url }}" alt="University of Liverpool Logo">
+        <h1 class="logo"><a href="/projects">[Project Allocation]</a></h1>
+        <br>
+        <h3>{{ admin_department }}</h3>
+        <p>Supervisor: {{ supervisor }}</p>
+        <div class="row">
+            <div class="col-md-6 ">
+                
+                <h4>My Projects</h4>
+                <!-- if len(supervisor_sets)> 0 -->
+                {% if supervisor_sets %}
+                <!-- Create a table with headers type, keywords, ug, pg -->
+                <table id="projects-table" class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Type</th>
+                            <th scope="col">Keywords</th>
+                            <th scope="col">UG</th>
+                            <th scope="col">PG</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for supervisor_set in supervisor_sets %}
+                        <tr data-id="{{ supervisor_set.id }}">
+                            <td>{{ supervisor_set.type }}</td>
+                            <td>{% for keyword in supervisor_set.keywords.all %}
+                                {{ keyword.name }}
+                                {% if not forloop.last %}, {% endif %}
+                            {% endfor %}</td>
+                            <td>{{ supervisor_set.available_for_ug }}</td>
+                            <td>{{ supervisor_set.available_for_pg }}</td>
+                            <td><button class="btn btn-primary delete-btn" data-id="{{ supervisor_set.id }}">remove</button></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>No supervisor sets found</p>
+                {% endif %}
+
+ 
+            </div>
+            <div class="col-md-6 ">
+                <h4>Add Projects</h4>
+                <form method="post" action="">
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+
+ 
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.delete-btn').click(function() {
+            var supervisorSetId = $(this).data('id');
+            console.log(supervisorSetId)
+            $.ajax({
+                url: '/projects/supervisor_sets/' + supervisorSetId,
+                type: 'DELETE',
+                success: function(result) {
+                    // remove the supervisor_set row from the table
+                    $('tr[data-id="' + supervisorSetId + '"]').remove();
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

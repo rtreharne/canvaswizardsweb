@@ -1,0 +1,33 @@
+{% extends "projects/base.html" %}
+{% load static %}
+
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/projects.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron page-section" id="event">
+    
+
+    <section class="container">
+        <img class="logo" src="{% static 'img/logo.png' %}" alt="University of Liverpool Logo">
+        <h1 class="logo"><a href="/projects">[Projects for Biosciences]</a></h1>
+        <br>
+
+        <ul class="programme-list">
+
+                <li>
+                    <a href="supervisors">Supervisors</a>
+                </li>
+                <li>
+                    <a href="students">Students</a>
+                </li>
+
+        </ul>
+    </section>
+
+</div>
+
+{% endblock %}
