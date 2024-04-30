@@ -88,17 +88,18 @@ class AdminDepartmentForm(forms.Form):
         self.fields['name'].widget = forms.Select()
 
         # Get all admins associated with institution_slug
-        admin_departments = set([x.department for x in Admin.objects.filter(institution=institution_slug)])
+        admin_departments = set([x.department for x in Admin.objects.filter(institution=institution_slug)]).order_by('name')
 
         # Build a queryset of departments that are in admin_departments
-        self.fields['name'].queryset = Department.objects.filter(id__in=[x.id for x in admin_departments])
+        self.fields['name'].queryset = Department.objects.filter(id__in=[x.id for x in admin_departments]).order_by('name')
 
        
 
 class SupervisorForm(forms.Form):
     username = forms.CharField(label='MWS Username', help_text='This must be your managed Windows username')
-    institute = forms.ModelChoiceField(queryset=Institute.objects.all(), label='Institute')
-    department = forms.ModelChoiceField(queryset=Department.objects.all(), label='Department')
+    institute = forms.ModelChoiceField(queryset=Institute.objects.all().order_by('name'), label='Institute')
+    department = forms.ModelChoiceField(queryset=Department.objects.all().order_by('name'), label='Department')
+
 
     # I want department to remain hidden initially.
     # Then I want to populate it with departments from the selected institute.

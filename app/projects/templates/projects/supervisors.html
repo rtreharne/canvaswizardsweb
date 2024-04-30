@@ -39,35 +39,40 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-$(document).ready(function() {
-    $('#div_id_department').hide();
-    $('#id_institute').change(function() {
-        var instituteName = $(this).val();
-        $.ajax({
-            url: "{% url 'projects:get-departments' %}",
-            data: {
-                'institute_name': instituteName
-            },
-            success: function(data) {
-                var departmentSelect = $('#id_department');
-                departmentSelect.empty();
-                $.each(data, function(index, department) {
-                    console.log(department.id, department.name)
-                    departmentSelect.append($('<option></option>').attr('value', department.id).text(department.name));
-                });
-                departmentSelect.show();
-                $('#div_id_department').show();
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                if (jqXHR.status == 400) {
-                    // handle 400 error here
-                    console.log('400 errors: ', errorThrown);
-                    $('#div_id_department').hide();
+    $(document).ready(function() {
+        $('#div_id_department').hide();
+        $('#id_institute').change(function() {
+            var instituteName = $(this).val();
+            $.ajax({
+                url: "{% url 'projects:get-departments' %}",
+                data: {
+                    'institute_name': instituteName
+                },
+                success: function(data) {
+                    // Sort the data alphabetically by department name
+                    data.sort(function(a, b) {
+                        return a.name.localeCompare(b.name);
+                    });
+    
+                    var departmentSelect = $('#id_department');
+                    departmentSelect.empty();
+                    $.each(data, function(index, department) {
+                        console.log(department.id, department.name)
+                        departmentSelect.append($('<option></option>').attr('value', department.id).text(department.name));
+                    });
+                    departmentSelect.show();
+                    $('#div_id_department').show();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status == 400) {
+                        // handle 400 error here
+                        console.log('400 errors: ', errorThrown);
+                        $('#div_id_department').hide();
+                    }
                 }
-            }
+            });
         });
     });
-});
-</script>
+    </script>
 
 {% endblock %}

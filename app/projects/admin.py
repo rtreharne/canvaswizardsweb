@@ -54,7 +54,7 @@ class LocationAdmin(AdminBase):
 
 class SupervisorAdmin(AdminBase):
     list_display = ('username', 'last_name', 'email', 'department', 'projects_UG', 'projects_PG', 'active')
-    list_filter = ('department',)
+    list_filter = ('department', 'active',)
     search_fields = ('username', 'last_name', 'first_name', 'email')
     list_editable = ('projects_UG', 'projects_PG', 'active')
 

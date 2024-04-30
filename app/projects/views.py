@@ -128,6 +128,7 @@ def supervisors(request, institution_slug, admin_department_slug):
                 if supervisor.department is None:
                     # set supervisor department to department.id
                     supervisor.department = Department.objects.get(pk=department.id)
+                    supervisor.active = True
                     supervisor.save()
                 elif supervisor.department != department:
                     return render(request, 'projects/supervisors.html', {'error': 'Supervisor already assigned to a different department.', 'form': SupervisorForm()})
