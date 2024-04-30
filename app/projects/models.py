@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils.crypto import get_random_string
+from django.core.exceptions import ValidationError
 
 class Institution(models.Model):
     name = models.CharField(max_length=255)
@@ -53,6 +54,8 @@ class Programme(models.Model):
     name = models.CharField(max_length=255)
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE, null=True, blank=True)
     admin_dept = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='programme_admin_dept', null=True, blank=True)
+    ug_or_pg = models.CharField(max_length=2, choices=[('UG', 'UG'), ('PG', 'PG')], default='UG', verbose_name='UG/PG')
+
 
     def __str__(self):
         return self.name
@@ -70,16 +73,39 @@ class Round(models.Model):
     slug = models.SlugField(max_length=255)
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
+
+    number_of_types = models.IntegerField(default=3)
+    number_of_keywords = models.IntegerField(default=3)
+
     start_date = models.DateField()
     end_date = models.DateField()
     admin_dept = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='round_admin_dept', null=True, blank=True)
 
+    def clean(self):
+        # Check for overlapping rounds with the same admin_dept
+        overlapping_rounds = Round.objects.filter(
+            admin_dept=self.admin_dept,
+            start_date__lte=self.end_date,
+            end_date__gte=self.start_date
+        )
+
+        # Exclude the current instance from the query
+        if self.pk:
+            overlapping_rounds = overlapping_rounds.exclude(pk=self.pk)
+
+        # If any overlapping rounds exist, raise a validation error
+        if overlapping_rounds.exists():
+            raise ValidationError("The dates for this round overlap with another round in the same department.")
+
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slug = slugify(self.name)
-            while Round.objects.filter(slug=self.slug, institute=self.institute).exists():
-                self.slug = '{}-{}'.format(slug, get_random_string(4))
-        super().save(*args, **kwargs)
+        self.clean()
+
+    # Add constraint. Name is unique for institution and admin_dept
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'institution', 'department'], name='unique_round')
+        ]
+
     
     def __str__(self):
         return self.name
@@ -91,6 +117,11 @@ class Student(models.Model):
     email = models.EmailField(null=True, blank=True)
     programme = models.ForeignKey(Programme, on_delete=models.CASCADE, null=True, blank=True)
     allocation_round = models.ForeignKey(Round, on_delete=models.CASCADE, null=True, blank=True)
+
+    project_types = models.CharField(max_length=1000, null=True, blank=True)
+    project_keywords = models.CharField(max_length=1000, null=True, blank=True)
+    prerequisites = models.CharField(max_length=1000, null=True, blank=True)
+
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE, null=True, blank=True)
     admin_dept = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
 
@@ -148,6 +179,7 @@ class SupervisorSet(models.Model):
 
     keywords = models.ManyToManyField('ProjectKeyword', blank=True,  related_name='supervisor_set_keywords')
     type = models.ForeignKey('ProjectType', blank=True, null=True, on_delete=models.CASCADE, related_name='supervisor_set_types')
+    prerequisite = models.ForeignKey('Prerequisite', blank=True, null=True, on_delete=models.CASCADE, related_name='supervisor_set_prerequisites')
     available_for_ug = models.PositiveIntegerField(default=3, verbose_name='Available for UG')
     available_for_pg = models.PositiveIntegerField(default=1, verbose_name='Available for PG')
     active = models.BooleanField(default=True)
@@ -191,6 +223,7 @@ class ProjectType(models.Model):
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
     admin_dept = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='project_type_admin_dept', null=True, blank=True)
 
+    limit_to_department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True, related_name='limit_to_department')
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['name', 'admin_dept'], name='unique_project_type')
@@ -201,13 +234,23 @@ class ProjectType(models.Model):
     
 class ProjectKeyword(models.Model):
     name = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
     admin_dept = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='project_keyword_admin_dept', null=True, blank=True)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
+    exclude_programmes = models.ManyToManyField(Programme, blank=True, related_name='exclude_programmes')
+    ug_only = models.BooleanField(default=False)
+    pg_only = models.BooleanField(default=False)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['name', 'admin_dept'], name='unique_project_keyword')
         ]
+
+    # Add constraint. Can't be both ug_only and pg_only
+    def clean(self):
+        if self.ug_only and self.pg_only:
+            raise ValidationError('Project keyword cannot be both UG only and PG only')
 
     def __str__(self):
         return self.name

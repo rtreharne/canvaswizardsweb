@@ -34,3 +34,15 @@ p.rule {
 .table {
     color: white;
 }
+
+select#id_keywords {
+    min-height: 300px;
+}
+
+input, select, textarea {
+    max-width: 100%;
+}
+
+section {
+    min-height: 80vh;
+}
