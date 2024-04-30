@@ -14,11 +14,14 @@ from django.db import IntegrityError
 class GetKeywordsView(View):
     def get(self, request, *args, **kwargs):
         programme_id = request.GET.get('programme_id', None)
-        keywords = ProjectKeyword.objects.exclude(exclude_programmes__id=programme_id).values('id', 'name')
+
+        admin_dept = Programme.objects.get(pk=programme_id).admin_dept
+        print("admin dept for programme", admin_dept)
+        keywords = ProjectKeyword.objects.exclude(exclude_programmes__id=programme_id)
+        keywords = keywords.filter(admin_dept=admin_dept).values('id', 'name')
         keyword_list = list(keywords)
         return JsonResponse(keyword_list, safe=False)
-
-
+    
 
 def index(request):
 

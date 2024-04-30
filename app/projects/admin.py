@@ -259,7 +259,10 @@ class ProjectKeywordAdmin(AdminBase):
     change_list_template = "projects/keywords_changelist.html"
 
     def institute(self, obj):
-        return obj.department.institute.name
+        try:
+            return obj.department.institute.name
+        except:
+            return ""
 
     def get_urls(self):
         urls = super().get_urls()
