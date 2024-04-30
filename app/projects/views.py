@@ -44,14 +44,14 @@ def index(request):
 
 def supervisor_dash(request, institution_slug, admin_department_slug, supervisor_username):
     institution = Institution.objects.get(slug=institution_slug)
-    admin_department = Department.objects.get(slug=admin_department_slug),
+    admin_department = Department.objects.get(slug=admin_department_slug)
 
+    print(admin_department)
     try:
-        supervisor = Supervisor.objects.get(username=supervisor_username, institution=institution)
+        supervisor = Supervisor.objects.get(username=supervisor_username, admin_dept=admin_department)
+        print(supervisor)
     except:
         return redirect('projects:supervisor', institution_slug=institution_slug, admin_department_slug=admin_department_slug)
-
-    admin_department = Department.objects.get(slug=admin_department_slug)
 
     supervisor_sets = SupervisorSet.objects.filter(supervisor=supervisor)
 
@@ -120,10 +120,10 @@ def supervisors(request, institution_slug, admin_department_slug):
             department = Department.objects.get(pk=department.id)
             # Look for the supervisor in the supervisors table
             # If they don't exist, return error message
-            if not Supervisor.objects.filter(username=username, institution=department.institute.institution).exists():
+            if not Supervisor.objects.filter(username=username, admin_dept__slug=admin_department_slug).exists():
                 return render(request, 'projects/supervisors.html', {'error': 'Supervisor not found', 'form': SupervisorForm()})
             else:
-                supervisor = Supervisor.objects.get(username=username, institution=department.institute.institution, admin_dept__slug=admin_department_slug)
+                supervisor = Supervisor.objects.get(username=username, admin_dept__slug=admin_department_slug)
 
                 if supervisor.department is None:
                     # set supervisor department to department.id
