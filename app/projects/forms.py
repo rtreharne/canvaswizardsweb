@@ -44,7 +44,7 @@ class SupervisorSetForm(forms.ModelForm):
         help_text='Select a minimum of 3 keywords that best describe your project. Hold down Ctrl (CMD on Mac) to select multiple keywords.', 
         required=True)
     
-    prerequisite = forms.ModelChoiceField(queryset=Prerequisite.objects.all(), label='Prerequisite', required=False)
+    #prerequisite = forms.ModelChoiceField(queryset=Prerequisite.objects.all(), label='Prerequisite', required=False)
     
     # Hide supervisor, institution and admin_dept fields
     def __init__(self, *args, **kwargs):
@@ -113,6 +113,8 @@ class SupervisorForm(forms.Form):
         # Set the CSS class for the department field to 'hidden'
         self.fields['department'].widget.attrs['class'] = 'hidden'
 
+        
+
 class StudentForm(forms.Form):
     
 
@@ -148,7 +150,12 @@ class StudentForm(forms.Form):
             field_name = f'project_keyword_{i+1}'
             self.fields[field_name] = forms.ModelChoiceField(queryset=ProjectKeyword.objects.filter(admin_dept=self.department).order_by('name'), label=f'Project keyword {i+1}')
 
-        self.fields['prerequisites'] = forms.ModelMultipleChoiceField(queryset=Prerequisite.objects.filter(admin_dept=self.department), label='Prerequisites', help_text='Select any prerequisites you have completed.', required=True)
+        self.fields['prerequisites'] = forms.ModelMultipleChoiceField(
+            queryset=Prerequisite.objects.filter(admin_dept=self.department), 
+            label='Prerequisites met', 
+            help_text='Select a minimum of 5 modules that you have completed. Hold down Ctrl (CMD on Mac) to select multiple keywords.',
+            required=True)
+        
     # create field student_number. Must be 9-digit integer
     student_number = forms.IntegerField(label='Student Number', help_text='Please enter your 9-digit student number.')
     last_name = forms.CharField(label='Last Name')
@@ -172,4 +179,3 @@ class StudentForm(forms.Form):
 
 
     
-    prerequisites = forms.ModelMultipleChoiceField(queryset=Prerequisite.objects.all(), label='Prerequisites', help_text='Select any prerequisites you have completed.', required=False)

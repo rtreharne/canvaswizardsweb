@@ -156,6 +156,86 @@ class PrerequisiteAdmin(AdminBase):
     list_display = ('name',)
     search_fields = ('name',)
 
+    change_list_template = "projects/courses_changelist.html"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path('import-csv/', self.import_csv),
+        ]
+        return my_urls + urls
+    
+    def import_csv(self, request):
+
+        payload = {}
+
+        payload["headers"] = "You must use the following headers: course"
+        
+        if request.method == "POST":
+
+            form = CsvImportForm(request.POST, request.FILES)
+
+            payload["form"] = form
+
+            print("courses form", form)
+
+            if form.is_valid():
+
+                admin = Admin.objects.get(user=request.user)
+
+                admin_department = admin.department
+                institution = admin.institution
+                
+                # read csv file
+                csv_file = request.FILES["file"]
+                decoded_file = csv_file.read().decode("latin-1").splitlines()
+                reader = csv.DictReader(decoded_file)
+
+                # check if headers are correct
+                headers = reader.fieldnames
+                if headers != ["course"]:
+                    payload["error"] = "Incorrect headers. Please use the following headers: course"
+                    return render(request, "forms/csv_form.html", payload)
+                
+                # create supervisor objects
+
+                error_string = ""
+                for row in reader:
+                    print(row["course"])
+                    try:
+   
+                        prerequisite = Prerequisite(
+                            name = row["course"].strip().upper(),
+                            
+                            admin_dept=admin_department,
+                            institution=institution
+
+                        )
+
+                        prerequisite.save()
+                        
+                    except:
+                        error_string += f"Error adding course: {row['course']}.\n"
+
+            else:
+                print("form not valid", form.errors)
+                return render(request, "forms/csv_form.html", payload)
+
+            self.message_user(request, "Your csv file has been imported. Your courses will appear shortly. Keep refreshing.")
+
+            if error_string:
+                self.message_user(request, error_string)
+            
+            print("redirecting")
+            return redirect("..")
+        
+        form = CsvImportForm()
+        payload["form"] = form
+
+        return render(
+            request, "forms/csv_form.html", payload
+        )
+
 class ProjectTypeAdmin(AdminBase):
     list_display = ('name',)
     search_fields = ('name',)

@@ -66,6 +66,7 @@ def supervisor_dash(request, institution_slug, admin_department_slug, supervisor
                 'supervisor': supervisor,
                 'institution': institution,
                 'admin_dept': admin_department,
+                'prerequisite': sorted([x for x in ProjectKeyword.objects.filter(admin_dept=admin_department)], key=lambda x: x.name),
     })
 
     # Get latest round for department

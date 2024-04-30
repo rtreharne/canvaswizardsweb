@@ -40,6 +40,8 @@
 
                 {% else %}
 
+                <p>Complete ALL Sections of the form below to submit your project preferences.</p>
+
 
                     <form method="post" action="">
                         {% csrf_token %}
@@ -54,22 +56,32 @@
                         {% endif %}
                         <fieldset>
                             <legend>Personal Information</legend>
+                            <hr style="margin-top: 0; margin-bottom: 1rem; border-top: 1px solid #e9ecef;">
                             {{ form.student_number|as_crispy_field }}
                             {{ form.first_name|as_crispy_field }}
                             {{ form.last_name|as_crispy_field }}
                             {{ form.email|as_crispy_field }}
                             {{ form.programme|as_crispy_field }}                        
                         </fieldset>
+                        <br>
                         <fieldset>
                             <legend>Project Type Preferences</legend>
+                            <hr style="margin-top: 0; margin-bottom: 1rem; border-top: 1px solid #e9ecef;">
+                            <p>Select your preferred project types in a prioritised order (i.e. Project Type 1 is most preferred).</p>
                             {% for field in project_type_fields %}
                                 {{ form|get_field:field|as_crispy_field }}
                             {% endfor %}
-                            <legend>Project Keyword Preferences</legend>
+                            <br>
+                            <legend>Project Topic Preferences</legend>
+                            <hr style="margin-top: 0; margin-bottom: 1rem; border-top: 1px solid #e9ecef;">
+                            <p>Select your preferred project topic in a prioritised order (i.e. Project topic 1 is most preferred).</p>
                             {% for field in project_keyword_fields %}
                                 {{ form|get_field:field|as_crispy_field }}
                             {% endfor %}
-                            <p>Prerequisites</p>
+                            <br>
+                            <legend>Prerequisite Modules</legend>
+                            <hr style="margin-top: 0; margin-bottom: 1rem; border-top: 1px solid #e9ecef;">
+                            <p>Select the second year modules that you have completed. Select a minimum of 5 modules.</p>
                             {{ form.prerequisites }}
                         </fieldset>
                         
