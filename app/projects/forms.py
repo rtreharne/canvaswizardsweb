@@ -29,7 +29,6 @@ class SupervisorSetForm(forms.ModelForm):
         model = SupervisorSet
         fields = '__all__'
 
-
     available_for_ug = forms.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)], initial=3)
     available_for_pg = forms.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)], initial=1)
 
@@ -135,6 +134,7 @@ class StudentForm(forms.Form):
         self.institution = kwargs.pop('institution')
         self.department = kwargs.pop('admin_department')
         self.round = kwargs.pop('round')
+    
         super(StudentForm, self).__init__(*args, **kwargs)
 
         if self.round.number_of_types < len(ProjectType.objects.filter(admin_dept=self.round.admin_dept)):
@@ -162,6 +162,8 @@ class StudentForm(forms.Form):
             label='Prerequisites met', 
             help_text='Select a minimum of 5 modules that you have completed. Hold down Ctrl (CMD on Mac) to select multiple keywords.',
             required=True)
+        
+        self.fields['programme'] = forms.ModelChoiceField(queryset=Programme.objects.filter(admin_dept=self.department).order_by('name'), label='Programme', help_text='Select your programme.')
         
     # create field student_number. Must be 9-digit integer
     student_number = forms.IntegerField(label='Student Number', help_text='Please enter your 9-digit student number.')
