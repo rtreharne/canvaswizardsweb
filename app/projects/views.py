@@ -93,6 +93,8 @@ def supervisor_dash(request, institution_slug, admin_department_slug, supervisor
             supervisor_set.available_for_ug = available_for_ug
             supervisor_set.available_for_pg = available_for_pg
 
+            supervisor_set.active = True
+
             supervisor_set.save()
 
             supervisor_set.keywords.set(project_keywords)

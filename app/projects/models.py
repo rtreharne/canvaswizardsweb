@@ -134,7 +134,7 @@ class Supervisor(models.Model):
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE, null=True, blank=True)
     admin_dept = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='upervisor_admin_dept', null=True, blank=True)
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(default=False)
     projects_UG = models.IntegerField(default=3)
     projects_PG = models.IntegerField(default=1)
 
