@@ -98,6 +98,7 @@ class SupervisorAdmin(AdminBase):
                     return render(request, "forms/csv_form.html", payload)
                 
                 # create supervisor objects
+                error_string = ""
                 for row in reader:
                     supervisor = Supervisor(
                         last_name=row["last_name"],
@@ -105,14 +106,24 @@ class SupervisorAdmin(AdminBase):
                         username=row["username"],
                         email=row["email"],
                         admin_dept=admin_department,
-                        institution=institution
+                        institution=institution,
+                        active=False
                     )
-                    supervisor.save()
+                    try:
+                        supervisor.save()
+                    except:
+                        error_string += f"Error creating supervisor: {row['last_name']}.\n"
 
             else:
+                print("form not valid", form.errors)
                 return render(request, "forms/csv_form.html", payload)
 
-            self.message_user(request, "Your csv file has been imported. Your courses will appear shortly. Keep refreshing.")
+            self.message_user(request, "Your csv file has been imported. Your supervisors will appear shortly. Keep refreshing.")
+
+            if error_string:
+                self.message_user(request, error_string)
+            
+            print("redirecting")
             return redirect("..")
         
         form = CsvImportForm()
@@ -213,9 +224,10 @@ class PrerequisiteAdmin(AdminBase):
                         )
 
                         prerequisite.save()
-                        
+
                     except:
                         error_string += f"Error adding course: {row['course']}.\n"
+                        
 
             else:
                 print("form not valid", form.errors)
