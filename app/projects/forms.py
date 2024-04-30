@@ -36,7 +36,7 @@ class SupervisorSetForm(forms.ModelForm):
     
 
 
-    type = forms.ModelChoiceField(queryset=ProjectType.objects.all(), label='Type', help_text='Select the type of project you are offering.', required=True)
+    type = forms.ModelChoiceField(queryset=ProjectType.objects.all().order_by('name'), label='Type', help_text='Select the type of project you are offering.', required=True)
     keywords = forms.ModelMultipleChoiceField(
         queryset=ProjectKeyword.objects.all().order_by('name'), 
         label='Keywords',
@@ -48,6 +48,7 @@ class SupervisorSetForm(forms.ModelForm):
     
     # Hide supervisor, institution and admin_dept fields
     def __init__(self, *args, **kwargs):
+        self.admin_department = kwargs.pop('admin_department', None)
         super(SupervisorSetForm, self).__init__(*args, **kwargs)
         self.fields['supervisor'].widget = forms.HiddenInput()
         self.fields['institution'].widget = forms.HiddenInput()
@@ -63,6 +64,11 @@ class SupervisorSetForm(forms.ModelForm):
 
         new_order = ['supervisor', 'institution', 'admin_dept', 'type', 'keywords', 'prerequisite', 'available_for_ug', 'available_for_pg', 'active']
         self.fields = OrderedDict((key, self.fields[key]) for key in new_order)
+
+        self.fields['type'].queryset = ProjectType.objects.filter(admin_dept=self.admin_department).order_by('name')
+        self.fields['keywords'].queryset = ProjectKeyword.objects.filter(admin_dept=self.admin_department).order_by('name')
+
+
 
 
 

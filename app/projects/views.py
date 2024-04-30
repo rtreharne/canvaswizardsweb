@@ -67,7 +67,7 @@ def supervisor_dash(request, institution_slug, admin_department_slug, supervisor
                 'institution': institution,
                 'admin_dept': admin_department,
                 'prerequisite': sorted([x for x in ProjectKeyword.objects.filter(admin_dept=admin_department)], key=lambda x: x.name),
-    })
+    }, admin_department=admin_department)
 
     # Get latest round for department
     latest_round = Round.objects.filter(department=admin_department).order_by('-start_date').first()
@@ -82,7 +82,7 @@ def supervisor_dash(request, institution_slug, admin_department_slug, supervisor
 
 
     if request.method == 'POST':
-        form = SupervisorSetForm(request.POST)
+        form = SupervisorSetForm(request.POST, admin_department=admin_department)
         if form.is_valid():
             available_for_ug = form.cleaned_data['available_for_ug']
             available_for_pg = form.cleaned_data['available_for_pg']
@@ -123,7 +123,7 @@ def supervisors(request, institution_slug, admin_department_slug):
             if not Supervisor.objects.filter(username=username, institution=department.institute.institution).exists():
                 return render(request, 'projects/supervisors.html', {'error': 'Supervisor not found', 'form': SupervisorForm()})
             else:
-                supervisor = Supervisor.objects.get(username=username, institution=department.institute.institution)
+                supervisor = Supervisor.objects.get(username=username, institution=department.institute.institution, admin_dept__slug=admin_department_slug)
 
                 if supervisor.department is None:
                     # set supervisor department to department.id

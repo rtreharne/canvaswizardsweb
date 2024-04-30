@@ -130,7 +130,7 @@ class Supervisor(models.Model):
     first_name = models.CharField(max_length=255, null=True, blank=True)
     last_name = models.CharField(max_length=255, null=True, blank=True)
     username = models.CharField(max_length=255, null=True, blank=True)
-    email = models.EmailField(unique=True, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE, null=True, blank=True)
     admin_dept = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='upervisor_admin_dept', null=True, blank=True)
@@ -146,7 +146,7 @@ class Supervisor(models.Model):
     # ensure that username and institution are unique together
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['username', 'institution'], name='unique_supervisor')
+            models.UniqueConstraint(fields=['username', 'admin_dept'], name='unique_supervisor')
         ]
 
     def __str__(self):
@@ -193,6 +193,7 @@ class Admin(models.Model):
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE, null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     user = models.OneToOneField('auth.User', on_delete=models.CASCADE, null=True, blank=True)
+
 
 
     def __str__(self):
