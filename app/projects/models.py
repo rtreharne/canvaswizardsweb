@@ -81,32 +81,12 @@ class Round(models.Model):
     end_date = models.DateField()
     admin_dept = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='round_admin_dept', null=True, blank=True)
 
-    def clean(self):
-        # Check for overlapping rounds with the same admin_dept
-        overlapping_rounds = Round.objects.filter(
-            admin_dept=self.admin_dept,
-            start_date__lte=self.end_date,
-            end_date__gte=self.start_date
-        )
-
-        # Exclude the current instance from the query
-        if self.pk:
-            overlapping_rounds = overlapping_rounds.exclude(pk=self.pk)
-
-        # If any overlapping rounds exist, raise a validation error
-        if overlapping_rounds.exists():
-            raise ValidationError("The dates for this round overlap with another round in the same department.")
-
-    def save(self, *args, **kwargs):
-        self.clean()
-
     # Add constraint. Name is unique for institution and admin_dept
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['name', 'institution', 'department'], name='unique_round')
         ]
 
-    
     def __str__(self):
         return self.name
     
