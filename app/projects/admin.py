@@ -71,7 +71,7 @@ class SupervisorAdmin(AdminBase):
 
         payload = {}
 
-        payload["headers"] = "You must use the following headers: last_name, first_name, username, email"
+        payload["headers"] = "You must use the following headers: last_name, first_name, projects_UG, projects_PG, max_projects, username, email,"
         
         if request.method == "POST":
 
@@ -93,7 +93,7 @@ class SupervisorAdmin(AdminBase):
 
                 # check if headers are correct
                 headers = reader.fieldnames
-                if headers != ["last_name", "first_name", "username", "email"]:
+                if headers != ["last_name", "first_name", "projects_UG", "projects_PG", "max_projects", "username", "email"]:
                     payload["error"] = "Incorrect headers. Please use the following headers: last_name, first_name, username, email"
                     return render(request, "forms/csv_form.html", payload)
                 
@@ -104,6 +104,8 @@ class SupervisorAdmin(AdminBase):
                         last_name=row["last_name"],
                         first_name=row["first_name"],
                         username=row["username"],
+                        projects_UG=row["projects_UG"],
+                        projects_PG=row["projects_PG"],
                         email=row["email"],
                         admin_dept=admin_department,
                         institution=institution,
@@ -390,7 +392,6 @@ class ProjectAdmin(AdminBase):
 
     def type(self, obj):
         return obj.supervisor_set.type.name
-
 
 class DepartmentAdmin(admin.ModelAdmin):
     list_display = ('name', 'institute')

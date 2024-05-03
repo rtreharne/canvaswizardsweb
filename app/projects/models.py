@@ -137,6 +137,7 @@ class Supervisor(models.Model):
     active = models.BooleanField(default=False)
     projects_UG = models.IntegerField(default=3)
     projects_PG = models.IntegerField(default=1)
+    max_projects = models.IntegerField(default=4)
 
     # ensure that when saving username is all lowercase with no spaces or special characters
     def save(self, *args, **kwargs):
