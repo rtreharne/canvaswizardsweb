@@ -85,21 +85,20 @@ function checkPrerequisites() {
     unselectedModules.each(function() {
         
         var prerequisites = $(this).attr('alt-title');
-        console.log(prerequisites);
+        //console.log(prerequisites);
         
         if (prerequisites !== 'Required: ') {
-            prerequisites = prerequisites.split(": ")[1].split(',');
+            prerequisites = prerequisites.split(": ")[1].split(', ');
             
+
+                        
             // id of this
             var id = $(this).attr('id');
         
-            for (var i = 0; i < prerequisites.length; i++) {
-                if (selectedModuleIds.includes(prerequisites[i])) {
-                    $(this).removeClass('pnotsat');
-                    break;
-                } else {
-                    $(this).addClass('pnotsat');
-                }
+            if (prerequisites.every(val => selectedModuleIds.includes(val))) {
+                $(this).removeClass('pnotsat');
+            } else {
+                $(this).addClass('pnotsat');
             }
         }
     });
