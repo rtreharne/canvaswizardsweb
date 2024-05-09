@@ -17,6 +17,8 @@ def index(request):
     institution_slug = "liverpool"
     admin_department_slug = "sobs"
 
+    admin_department = Department.objects.get(slug=admin_department_slug)
+
     if request.method == 'POST':
         form = SupervisorForm(request.POST)
         if form.is_valid():
@@ -26,7 +28,7 @@ def index(request):
             department = Department.objects.get(pk=department.id)
             # Look for the supervisor in the supervisors table
             # If they don't exist, return error message
-            if not Supervisor.objects.filter(username=username, admin_dept__slug=admin_department_slug).exists():
+            if not Supervisor.objects.filter(username=username, department__slug=admin_department_slug).exists():
                 return render(request, 'ilo/index.html', {'error': 'Staff member not found', 'form': SupervisorForm(), 'institution': Institution.objects.get(slug=institution_slug)})
             else:
                 supervisor = Supervisor.objects.get(username=username, admin_dept__slug=admin_department_slug)
