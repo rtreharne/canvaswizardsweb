@@ -28,7 +28,7 @@ def index(request):
             department = Department.objects.get(pk=department.id)
             # Look for the supervisor in the supervisors table
             # If they don't exist, return error message
-            if not Supervisor.objects.filter(username=username, department__slug=admin_department_slug).exists():
+            if not Supervisor.objects.filter(username=username, admin_dept=admin_department).exists():
                 return render(request, 'ilo/index.html', {'error': 'Staff member not found', 'form': SupervisorForm(), 'institution': Institution.objects.get(slug=institution_slug)})
             else:
                 supervisor = Supervisor.objects.get(username=username, admin_dept__slug=admin_department_slug)
@@ -53,10 +53,10 @@ def index(request):
     return render(request, 'ilo/index.html', context)
 
 def catalogue(request, username):
-
-
     try:
         staff = Supervisor.objects.get(username=username)
+        if staff.department is None:
+            return redirect('ilo:index')
     except Supervisor.DoesNotExist:
         return redirect('ilo:index')
     
