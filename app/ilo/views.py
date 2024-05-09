@@ -31,7 +31,7 @@ def index(request):
             if not Supervisor.objects.filter(username=username, admin_dept=admin_department).exists():
                 return render(request, 'ilo/index.html', {'error': 'Staff member not found', 'form': SupervisorForm(), 'institution': Institution.objects.get(slug=institution_slug)})
             else:
-                supervisor = Supervisor.objects.get(username=username, admin_dept__slug=admin_department_slug)
+                supervisor = Supervisor.objects.get(username=username, admin_dept=admin_department)
 
                 if supervisor.department is None:
                     # set supervisor department to department.id
