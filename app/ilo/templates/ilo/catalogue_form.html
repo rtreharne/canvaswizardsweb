@@ -70,7 +70,9 @@
                                                 {% endif %}
                                             {% endfor %}
                                         {% else %}
-                                            <td><input type="checkbox" id="checkbox_{{ lo.id }}" name="lo" value="{{ lo.id }}" data-module-code="{{ lo.module.code }}" onchange="sendRequest('{{ lo.id }}', '{{ staff.id }}'); updateModuleCount('{{ lo.module.code }}')"></td>
+                                            <td>
+                                                <input type="checkbox" id="checkbox_{{ lo.id }}" name="lo" value="{{ lo.id }}" data-module-code="{{ lo.module.code }}" onchange="sendRequest('{{ lo.id }}', '{{ staff.id }}'); updateModuleCount('{{ lo.module.code }}')" disabled>
+                                            </td>
                                             <td>
                                                 {{ lo }}
                                                 <br>
