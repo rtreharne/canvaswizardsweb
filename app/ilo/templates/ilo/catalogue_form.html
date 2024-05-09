@@ -22,7 +22,8 @@
             <div class="col-md-8 ">
 
 
-                <p>Complete ALL Sections of the form below to submit your project preferences.</p>
+                <p>Please select all the learning outcomes from the list below that you are able to contribute to. In cases where the form asks for additional info, please provide as much detail as possible.</p>
+                <p>The form will automatically save your responses as you go. You can return to this page at any time to update your responses.</p>
 
 
                     <form id="catalogue-form" method="post" action="">
@@ -92,7 +93,7 @@
                                                     {% if response.active %}
                                                         <td><input type="checkbox" id="checkbox_{{ lo.id }}" name="lo" value="{{ lo.id }}" data-module-code="{{ lo.module.code }}" onchange="sendRequest('{{ lo.id }}', '{{ staff.id }}'); updateModuleCount('{{ lo.module.code }}')" checked></td>
                                                     {% else %}
-                                                        <td><input type="checkbox" id="checkbox_{{ lo.id }}" name="lo" value="{{ lo.id }}" data-module-code="{{ lo.module.code }}" onchange="sendRequest('{{ lo.id }}', '{{ staff.id }}')"></td>
+                                                        <td><input type="checkbox" id="checkbox_{{ lo.id }}" name="lo" value="{{ lo.id }}" data-module-code="{{ lo.module.code }}" onchange="sendRequest('{{ lo.id }}', '{{ staff.id }}'); updateModuleCount('{{ lo.module.code }}')"></td>
                                                     {% endif %}
                                                 {% endif %}
                                             {% endfor %}
@@ -150,6 +151,7 @@ $(window).scroll(function() {
 function checkInput(loId, staffId) {
     var checkbox = document.getElementById('checkbox_' + loId);
     var additionalInfoInput = document.getElementById('additional_info_' + loId);
+    var moduleCode = checkbox.getAttribute('data-module-code');
     console.log('checkInput', loId, staffId, additionalInfoInput);
     if (additionalInfoInput && additionalInfoInput.value.trim() !== '') {
         checkbox.disabled = false;
@@ -159,6 +161,7 @@ function checkInput(loId, staffId) {
         checkbox.checked = false;
     }
     sendRequest(loId, staffId);  // call sendRequest
+    updateModuleCount(moduleCode);
 }
 
 function sendRequest(loId, staffId) {

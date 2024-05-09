@@ -4,9 +4,11 @@ from django.urls import path
 from django.shortcuts import render, redirect
 from projects.forms import CsvImportForm
 import csv
-
+import csv
+from django.http import HttpResponse
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+import datetime
 
 class AlphabeticalUsernameFilter(admin.SimpleListFilter):
     title = _('username')  # a label for this filter
@@ -141,7 +143,29 @@ class ResponseAdmin(admin.ModelAdmin):
     def sortable_name(self, obj):
         return f"{obj.staff.last_name}, {obj.staff.first_name}"
 
-    # I want the 'staff' header to appear as 'username'
+    # I want to create a custom action that exports selected responses to a csv file
+    def export_to_csv(self, request, queryset):
+
+        response = HttpResponse(content_type='text/csv')
+
+        # create timestamped file name string
+        filename = f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_ilo_responses.csv"
+
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+        writer = csv.writer(response)
+        writer.writerow(['username', 'sortable_name', 'email', 'staff_institute', 'staff_department', 'module', 'LO', 'additional_info', 'active', 'date_created', 'date_updated'])
+
+        for obj in queryset:
+            writer.writerow([obj.staff.username, f"{obj.staff.last_name}, {obj.staff.first_name}", obj.staff.email, obj.staff.department, obj.staff.department.institute, obj.learning_objective.module.code, obj.learning_objective.description, obj.learning_objective.additional_info, obj.active, obj.created_at, obj.updated_at])
+
+        return response
+    
+    export_to_csv.short_description = "Export selected to CSV"
+
+    actions = [export_to_csv]
+
+
 
 
 
