@@ -54,7 +54,7 @@ def index(request):
 
 def catalogue(request, username):
     try:
-        staff = Supervisor.objects.get(username=username)
+        staff = Supervisor.objects.get(username=username, admin_dept__slug='sobs')
         if staff.department is None:
             return redirect('ilo:index')
     except Supervisor.DoesNotExist:
