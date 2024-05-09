@@ -1,0 +1,238 @@
+{% extends "ilo/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load form_fields %}
+
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/projects.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="page-section">
+    
+
+    <section class="container">
+        <img class="logo" src="{{ institution.logo.url }}" alt="University of Liverpool Logo">
+        <h1 class="logo"><a href="/ilo">[ILO Catalogue]</a></h1>
+     
+        <br>
+        <div class="row">
+            <div class="col-md-8 ">
+
+
+                <p>Complete ALL Sections of the form below to submit your project preferences.</p>
+
+
+                    <form id="catalogue-form" method="post" action="">
+                        {% csrf_token %}
+                        {% if errors %}
+                            <div class="alert alert-danger" role="alert">
+                                <ul>
+                                    {% for error in errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+
+                        {{ form.staff_id | as_crispy_field }}
+                        
+
+                        {% for module in modules %}
+                        <h2 id="{{ module.code }}">{{ module.name }}</h2>
+                        <table class="table">
+                            <tbody>
+                                {% for lo in module.los %}
+                                <tr>
+                                    {% if lo.additional_info %}
+
+                                        {% if lo in response_los %}
+                                            <!-- Get active state of corresponding lo in responses -->
+                                            {% for response in responses %}
+                                                {% if response.learning_objective.id == lo.id %}
+
+                                                    {% if response.active %}
+                                                        <td><input type="checkbox" id="checkbox_{{ lo.id }}" name="lo" value="{{ lo.id }}" data-module-code="{{ lo.module.code }}" onchange="sendRequest('{{ lo.id }}', '{{ staff.id }}'); updateModuleCount('{{ lo.module.code }}'); updateModuleCount('{{ lo.module.code }}')" checked></td>
+                                                    {% else %}
+                                                        <td><input type="checkbox" id="checkbox_{{ lo.id }}" name="lo" value="{{ lo.id }}" data-module-code="{{ lo.module.code }}" onchange="sendRequest('{{ lo.id }}', '{{ staff.id }}'); updateModuleCount('{{ lo.module.code }}'); updateModuleCount('{{ lo.module.code }}')"></td>
+                                                    {% endif %}
+                                                    <td>
+                                                        {{ lo }}
+                                                        <br>
+                                                    
+                                                        <small>Additional info required: {{ lo.additional_info }}</small>
+                                                        <!-- text input - do not use form -->
+                                                        <input type="text" id="additional_info_{{ lo.id }}" class="form-control" placeholder="Additional info" oninput="checkInput('{{ lo.id }}', '{{ staff.id }}')" value="{{ response.additional_info }}">
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <td><input type="checkbox" id="checkbox_{{ lo.id }}" name="lo" value="{{ lo.id }}" data-module-code="{{ lo.module.code }}" onchange="sendRequest('{{ lo.id }}', '{{ staff.id }}'); updateModuleCount('{{ lo.module.code }}')"></td>
+                                            <td>
+                                                {{ lo }}
+                                                <br>
+                                            
+                                                <small>Additional info required: {{ lo.additional_info }}</small>
+                                                <!-- text input - do not use form -->
+                                                <input type="text" id="additional_info_{{ lo.id }}" class="form-control" placeholder="Additional info" oninput="checkInput('{{ lo.id }}', '{{ staff.id }}')">
+                                            </td>
+                                    {% endif %}
+                                    
+
+                                        
+                                    {% else %}
+                                        <!-- if lo in responses pre-check the checkbox -->
+                                        {% if lo in response_los %}
+                                            <!-- Get active state of corresponding lo in responses -->
+                                            {% for response in responses %}
+                                                {% if response.learning_objective.id == lo.id %}
+
+                                                    {% if response.active %}
+                                                        <td><input type="checkbox" id="checkbox_{{ lo.id }}" name="lo" value="{{ lo.id }}" data-module-code="{{ lo.module.code }}" onchange="sendRequest('{{ lo.id }}', '{{ staff.id }}'); updateModuleCount('{{ lo.module.code }}')" checked></td>
+                                                    {% else %}
+                                                        <td><input type="checkbox" id="checkbox_{{ lo.id }}" name="lo" value="{{ lo.id }}" data-module-code="{{ lo.module.code }}" onchange="sendRequest('{{ lo.id }}', '{{ staff.id }}')"></td>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <td><input type="checkbox" id="checkbox_{{ lo.id }}" name="lo" value="{{ lo.id }}" data-module-code="{{ lo.module.code }}" onchange="sendRequest('{{ lo.id }}', '{{ staff.id }}'); updateModuleCount('{{ lo.module.code }}'); updateModuleCount('{{ lo.module.code }}')"></td>
+                                        {% endif %}
+                                        <td>{{ lo }}</td>
+                                    {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endfor %}
+                        
+                        
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+
+                <br>
+            </div>
+
+            <div col="col-md-4">
+                <div id="module-nav">
+                {% for module in modules %}
+                <p><a href="#{{ module.code }}">{{ module.name|truncatechars:30 }}</a></p>
+                {% endfor %}
+                </div>  
+        </div>
+    </section>
+
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(window).scroll(function() {
+    var prevH2 = null;
+    var currentH2 = null;
+    $('h2').each(function() {
+        if ($(this).offset().top > $(window).scrollTop()) {
+            if (prevH2 == null) {
+                prevH2 = this;
+            } else if (currentH2 == null) {
+                currentH2 = this;
+            }
+        } else {
+            prevH2 = this;
+        }
+    });
+    if (currentH2) {
+        $('#module-nav a').css('font-weight', 'normal').css('color', 'white').css('background-color', 'black');
+        $('#module-nav a[href="#' + currentH2.id + '"]').css('font-weight', 'bold').css('color', 'black').css('background-color', 'white');
+    }
+});
+function checkInput(loId, staffId) {
+    var checkbox = document.getElementById('checkbox_' + loId);
+    var additionalInfoInput = document.getElementById('additional_info_' + loId);
+    console.log('checkInput', loId, staffId, additionalInfoInput);
+    if (additionalInfoInput && additionalInfoInput.value.trim() !== '') {
+        checkbox.disabled = false;
+        checkbox.checked = true;
+    } else {
+        checkbox.disabled = true;
+        checkbox.checked = false;
+    }
+    sendRequest(loId, staffId);  // call sendRequest
+}
+
+function sendRequest(loId, staffId) {
+    var additionalInfoInput = document.getElementById('additional_info_' + loId);
+    var additionalInfo = additionalInfoInput ? additionalInfoInput.value : null;
+    var checked_value = document.getElementById('checkbox_' + loId).checked;
+    console.log(loId, staffId, additionalInfo);
+
+
+    $.ajax({
+        url: '/ilo/create-update/{{ staff.username }}/',  // replace with the URL of your API
+        type: 'POST',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+        data: {
+            'lo_id': loId,
+            'staff_id': staffId,
+            'additional_info': additionalInfo,
+            'active': checked_value
+        },
+        success: function(response) {
+            console.log("success")
+        },
+        error: function(error) {
+            console.log("error")
+        }
+    });
+}
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+<script>
+// Call this function every time a checkbox is selected or deselected
+function updateModuleCount(moduleCode) {
+    var checkboxes = document.querySelectorAll('input[name="lo"]:checked');
+    var count = 0;
+    checkboxes.forEach(function(checkbox) {
+        if (checkbox.getAttribute('data-module-code') === moduleCode) {
+            count++;
+        }
+    });
+    var moduleLink = document.querySelector('#module-nav a[href="#' + moduleCode + '"]');
+    moduleLink.textContent = moduleLink.textContent.replace(/\(\d+\)$/, '') + ' (' + count + ')';
+}
+
+// Call updateModuleCount for all modules when the page loads
+window.onload = function() {
+    var modules = document.querySelectorAll('#module-nav a');
+    modules.forEach(function(moduleLink) {
+        var moduleCode = moduleLink.getAttribute('href').substring(1);  // remove the '#' at the start
+        updateModuleCount(moduleCode);
+    });
+};
+
+// Call updateModuleCount when a checkbox is selected or deselected
+document.querySelectorAll('input[name="lo"]').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        var moduleCode = checkbox.getAttribute('data-module-code');
+        updateModuleCount(moduleCode);
+    });
+});
+</script>
+
+
+{% endblock %}

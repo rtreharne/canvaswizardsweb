@@ -1,0 +1,23 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<div>
+    <p>{{ headers }}</p>
+</div>
+    <div>
+        <form action="." method="POST" enctype="multipart/form-data">
+            {% if error %}
+                <p>{{ error }}</p>
+            {% endif %}
+            {{ form.as_p }}
+            {% csrf_token %}
+
+            <button type="submit">Upload CSV</button>
+        </form>
+    </div>
+    <br />
+    <div>
+        <a href="{% url 'admin:projects_supervisor_changelist' %}">Back to list</a>
+    </div>
+
+{% endblock %}

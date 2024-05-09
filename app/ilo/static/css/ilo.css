@@ -1,0 +1,74 @@
+@keyframes throb {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+#catalogue-form  {
+    position: relative;
+}
+
+#catalogue-form .btn {
+    position: fixed; 
+    right: 20px; 
+    bottom: 10px;
+
+    font-size: 1.5em;
+    animation: throb 2s infinite;
+
+    background-color: black;
+    color: white;  /* To ensure the text is visible on the black background */
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.5);
+
+    display: none;
+
+}
+
+#catalogue-form input[type="checkbox"] {
+    transform: scale(2);
+}
+#catalogue-form table td {
+    vertical-align: middle;
+}
+
+#catalogue-form table tr:nth-child(even) {
+    background-color: #333;
+}
+
+#catalogue-form input.form-control {
+    margin: 0;
+}
+
+#module-nav {
+    max-height: 80vh;
+    overflow-y: auto;
+    height: 60vh;
+    position: sticky;
+    top: 10%;
+    bottom: 10%;
+    width: 250px;
+}
+
+#module-nav p {
+    font-size: 0.85em;
+    margin: 0;
+    padding-right: 10px;
+}
+
+#module-nav::-webkit-scrollbar {
+    width: 10px;
+}
+
+#module-nav::-webkit-scrollbar-track {
+    background: #000;
+}
+
+#module-nav::-webkit-scrollbar-thumb {
+    background: #fff;
+}
+
+#module-nav::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+

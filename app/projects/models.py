@@ -149,9 +149,10 @@ class Supervisor(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['username', 'admin_dept'], name='unique_supervisor')
         ]
+        ordering = ['username']
 
     def __str__(self):
-        return self.email
+        return self.username
     
 class SupervisorSet(models.Model):
     supervisor = models.ForeignKey(Supervisor, on_delete=models.CASCADE)
