@@ -39,6 +39,7 @@ class Department(models.Model):
     slug = models.SlugField(max_length=255)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
     location = models.ForeignKey('Location', on_delete=models.CASCADE, null=True, blank=True)
+    help_video_iframe = models.CharField(max_length=10000, null=True, blank=True)
     
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -95,6 +96,8 @@ class Student(models.Model):
     first_name = models.CharField(max_length=255, null=True, blank=True)
     last_name = models.CharField(max_length=255, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
+
+    mbiolsci = models.BooleanField(default=False)
     programme = models.ForeignKey(Programme, on_delete=models.CASCADE, null=True, blank=True)
     allocation_round = models.ForeignKey(Round, on_delete=models.CASCADE, null=True, blank=True)
 

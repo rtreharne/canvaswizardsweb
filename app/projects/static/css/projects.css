@@ -46,3 +46,7 @@ input, select, textarea {
 section {
     min-height: 80vh;
 }
+
+select#id_prerequisites {
+    min-height: 400px;
+}

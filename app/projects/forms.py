@@ -155,7 +155,7 @@ class StudentForm(forms.Form):
 
         for i in range(number_of_keywords):
             field_name = f'project_keyword_{i+1}'
-            self.fields[field_name] = forms.ModelChoiceField(queryset=ProjectKeyword.objects.filter(admin_dept=self.department).order_by('name'), label=f'Project keyword {i+1}')
+            self.fields[field_name] = forms.ModelChoiceField(queryset=ProjectKeyword.objects.filter(admin_dept=self.department).order_by('name'), label=f'Project topic {i+1}')
 
         self.fields['prerequisites'] = forms.ModelMultipleChoiceField(
             queryset=Prerequisite.objects.filter(admin_dept=self.department), 
@@ -163,14 +163,18 @@ class StudentForm(forms.Form):
             help_text='Select a minimum of 5 modules that you have completed. Hold down Ctrl (CMD on Mac) to select multiple keywords.',
             required=True)
         
-        self.fields['programme'] = forms.ModelChoiceField(queryset=Programme.objects.filter(admin_dept=self.department).order_by('name'), label='Programme', help_text='Select your programme.')
+        self.fields['programme'] = forms.ModelChoiceField(queryset=Programme.objects.filter(admin_dept=self.department).order_by('name'), label='Programme/Pathway', help_text='Select your programme (or pathway if MBiolSci).')
         
     # create field student_number. Must be 9-digit integer
     student_number = forms.IntegerField(label='Student Number', help_text='Please enter your 9-digit student number.')
     last_name = forms.CharField(label='Last Name')
     first_name = forms.CharField(label='First Name')
     email = forms.EmailField(label='UoL Email Address')
-    programme = forms.ModelChoiceField(queryset=Programme.objects.all(), label='Programme', help_text='Select your programme.')
+
+    # create field for mbiolsci boolean with radio buttons for yes/no and no default
+    mbiolsci = forms.ChoiceField(choices=[('', '---------'), ('yes', 'Yes'), ('no', 'No')], label='Are you an MBiolSci student?', required=True, initial=None)
+    programme = forms.ModelChoiceField(queryset=Programme.objects.all(), label='Programme/Pathway', help_text='Select your programme (or pathway if MBiolSci).')
+
 
     # Make sure student selects at least 5 prerequisites
     def clean_prerequisites(self):

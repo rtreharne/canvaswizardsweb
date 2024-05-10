@@ -124,7 +124,7 @@ def supervisors(request, institution_slug, admin_department_slug):
             # Look for the supervisor in the supervisors table
             # If they don't exist, return error message
             if not Supervisor.objects.filter(username=username, admin_dept__slug=admin_department_slug).exists():
-                return render(request, 'projects/supervisors.html', {'error': 'Supervisor not found', 'form': SupervisorForm()})
+                return render(request, 'projects/supervisors.html', {'error': 'Supervisor not found', 'form': SupervisorForm(), 'admin_department': department})
             else:
                 supervisor = Supervisor.objects.get(username=username, admin_dept__slug=admin_department_slug)
 
@@ -134,7 +134,7 @@ def supervisors(request, institution_slug, admin_department_slug):
                     supervisor.active = True
                     supervisor.save()
                 elif supervisor.department != department:
-                    return render(request, 'projects/supervisors.html', {'error': 'Supervisor already assigned to a different department.', 'form': SupervisorForm()})
+                    return render(request, 'projects/supervisors.html', {'error': 'Supervisor already assigned to a different department.', 'form': SupervisorForm(), 'admin_department': department})
                 
                 return redirect(
                     'projects:supervisor-dash', 
@@ -231,6 +231,7 @@ def students(request, institution_slug, admin_department_slug):
             project_types = ','.join([form.cleaned_data[field].name for field in context['project_type_fields']])
             project_keywords = ','.join([form.cleaned_data[field].name for field in context['project_keyword_fields']])
             prerequisites = ','.join(x.name for x in form.cleaned_data['prerequisites'])
+            mbiolsci = form.cleaned_data['mbiolsci']
 
 
             student = Student(

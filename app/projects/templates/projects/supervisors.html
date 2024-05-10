@@ -32,6 +32,15 @@
                 </form>
                 <br>
             </div>
+ 
+            {% if admin_department.help_video_iframe %}
+            <div class="col-md-6">
+                    <div class="embed-responsive embed-responsive-16by9">
+                        {{ admin_department.help_video_iframe|safe }}
+                    </div>
+         
+            </div>    
+            {% endif %}      
         </div>
     </section>
 

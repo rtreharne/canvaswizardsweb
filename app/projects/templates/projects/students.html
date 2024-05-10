@@ -31,6 +31,7 @@
                     <li>First Name: {{ student.first_name }}</li>
                     <li>Last Name: {{ student.last_name }}</li>
                     <li>Email: {{ student.email }}</li>
+                    <li>MBiolSci?: {{ student.mbiolsci }}</li>
                     <li>Programme: {{ student.programme }}</li>
                     <li>Project Type Preferences: {{ student.project_types }}</li>
                     <li>Project Keyword Preferences: {{ student.project_keywords }}</li>
@@ -61,6 +62,7 @@
                             {{ form.first_name|as_crispy_field }}
                             {{ form.last_name|as_crispy_field }}
                             {{ form.email|as_crispy_field }}
+                            {{ form.mbiolsci|as_crispy_field }}
                             {{ form.programme|as_crispy_field }}                        
                         </fieldset>
                         <br>
