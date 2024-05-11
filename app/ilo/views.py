@@ -39,7 +39,7 @@ def index(request):
                     supervisor.active = True
                     supervisor.save()
                 elif supervisor.department != department:
-                    return render(request, 'ilo/index.html', {'error': 'Staff member to a different department.', 'form': SupervisorForm(), 'institution': Institution.objects.get(slug=institution_slug)})
+                    return render(request, 'ilo/index.html', {'error': 'Staff member belongs to a different department. Contact tel-life@liverpool.ac.uk.', 'form': SupervisorForm(), 'institution': Institution.objects.get(slug=institution_slug)})
             # redirect to /ilo/<username>
             return redirect('ilo:catalogue', username=username)
 
