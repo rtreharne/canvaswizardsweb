@@ -11,11 +11,13 @@
 {% block content %}
 
 <div class="page-section">
+
+    <div id="message"></div>
     
 
     <section class="container">
         <img class="logo" src="{{ institution.logo.url }}" alt="University of Liverpool Logo">
-        <h1 class="logo"><a href="/expertise">[Educator Expertise]</a></h1>
+        <h1 class="logo"><a href="/expertise">[Educator Expertise1234]</a></h1>
      
         <br>
         <div class="row">
@@ -211,6 +213,15 @@ function sendRequest(loId, staffId) {
         },
         success: function(response) {
             console.log("success")
+            // Display the message
+            var messageDiv = $('#message');
+            messageDiv.text('Your responses have been updated. There is no save button, so don\'t worry!');
+            messageDiv.show();
+
+            // Fade out the message after 5 seconds
+            setTimeout(function() {
+                messageDiv.fadeOut('slow');
+            }, 5000);
         },
         error: function(error) {
             console.log("error")

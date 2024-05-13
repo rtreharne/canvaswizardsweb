@@ -71,4 +71,18 @@
     background: #888;
 }
 
+#message {
+
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px;
+    background-color: #4e8541; /* Change this to your preferred color */
+    color: #ffffff; /* Change this to your preferred color */
+    border: 1px solid #00c251; /* Change this to your preferred color */
+    border-radius: 5px;
+    z-index: 1000; /* This should be higher than the z-index of all other elements */
+    display: none;
+}
+
 
