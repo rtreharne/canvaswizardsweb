@@ -20,8 +20,8 @@ class CsvImportForm(forms.Form):
      
 
 def validate_min_keywords(value):
-    if len(list(value)) < 3:
-        raise ValidationError('Please select at least 3 keywords.')
+    if len(list(value)) < 1:
+        raise ValidationError('Please select at least 1 keyword.')
     
 
 class SupervisorSetForm(forms.ModelForm):
@@ -40,7 +40,7 @@ class SupervisorSetForm(forms.ModelForm):
         queryset=ProjectKeyword.objects.all().order_by('name'), 
         label='Keywords',
         validators = [validate_min_keywords],
-        help_text='Select a minimum of 3 keywords that best describe your project. Hold down Ctrl (CMD on Mac) to select multiple keywords.', 
+        help_text='Select a minimum of 1 keyword that best describe your project. Hold down Ctrl (CMD on Mac) to select multiple keywords.', 
         required=True)
     
     #prerequisite = forms.ModelChoiceField(queryset=Prerequisite.objects.all(), label='Prerequisite', required=False)
