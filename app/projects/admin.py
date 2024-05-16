@@ -5,6 +5,8 @@ from .forms import CsvImportForm
 import csv
 from django.shortcuts import render, redirect
 from django.urls import path, include, reverse
+from django.http import HttpResponse
+import datetime
 
 
 
@@ -253,12 +255,15 @@ class PrerequisiteAdmin(AdminBase):
 class ProjectTypeAdmin(AdminBase):
     list_display = ('name',)
     search_fields = ('name',)
-
+    
 class ProjectKeywordAdmin(AdminBase):
     list_display = ('name','department','institute', 'ug_only', 'pg_only')
     search_fields = ('name',)
+    actions = ['export_csv']
+
 
     change_list_template = "projects/keywords_changelist.html"
+
 
     def institute(self, obj):
         try:
@@ -345,6 +350,28 @@ class ProjectKeywordAdmin(AdminBase):
         return render(
             request, "forms/csv_form.html", payload
         )
+    
+    def export_csv(self, request, queryset):
+        meta = self.model._meta
+        field_names = [field.name for field in meta.fields]
+
+        response = HttpResponse(content_type='text/csv')
+
+        # Create timestamp string for filename
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        fname = f"{timestamp}_keywords.csv"
+        
+
+        response['Content-Disposition'] = f'attachment; filename={fname}'
+        writer = csv.writer(response)
+
+        writer.writerow(field_names)
+        for obj in queryset:
+            row = writer.writerow([getattr(obj, field) for field in field_names])
+
+        return response
+
+    export_csv.short_description = 'Export to CSV'
 
 class SupervisorSetsAdmin(AdminBase):
     list_display = (
