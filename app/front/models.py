@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 class Portfolio(models.Model):
     title = models.CharField(max_length=100)
@@ -91,3 +92,21 @@ class Resource(models.Model):
 
     def __str__(self):
         return self.name
+    
+class VideoBackground(models.Model):
+    name = models.CharField(max_length=128)
+    file = models.FileField(upload_to='icons/')
+
+    # prevent filesize > 50 MB
+    def validate_file_size(value):
+        filesize = value.size
+
+        if filesize > 50000000:
+            raise ValidationError("The maximum file size that can be uploaded is 50MB")
+        else:
+            return value
+
+
+    def __str__(self):
+        return self.name
+    

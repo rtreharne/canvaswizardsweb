@@ -5,11 +5,16 @@
 {% block content %}
 
 <header class="jumbotron page-section" id="home">
+
+    <video class="youtube-video" autoplay muted loop>
+        <source src="{{ background.file.url }}" type="video/mp4">
+    </video>
+
     {% if thanks %}
         <span></span><h2 class="thanks">{{ thanks }}</h2></span>
     {% endif %}
     <div class="container" >
-        <img class="logo" src="{% static 'img/site-logo.png' %}" alt="Canvas Wizards Logo">
+        <img class="logo" src="{% static 'img/site-logo-2.png' %}" alt="Canvas Wizards Logo">
         <span>
             <h1 class="title">Canvas Wizards</h3>
             <h2>Powerful tools and training for the Canvas LMS.</h2>

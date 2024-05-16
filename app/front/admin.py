@@ -3,7 +3,7 @@ import csv
 from django.http import HttpResponse
 from django.utils.encoding import smart_str
 
-from .models import Contact, Service, Event, Registration, Resource, Portfolio
+from .models import Contact, Service, Event, Registration, Resource, Portfolio, VideoBackground
 
 class PortfolioAdmin(admin.ModelAdmin):
     list_display = ('title', 'description', 'image', 'iframe', 'url', 'datetime', 'tool')
@@ -76,4 +76,5 @@ admin.site.register(Event, EventAdmin)
 admin.site.register(Registration, RegistrationAdmin)
 admin.site.register(Resource, ResourceAdmin)
 admin.site.register(Portfolio, PortfolioAdmin)
+admin.site.register(VideoBackground)
 

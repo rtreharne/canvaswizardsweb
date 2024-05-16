@@ -6,7 +6,8 @@ import random
 from .forms import ContactForm
 
 from .forms import RegistrationForm
-from .models import Event, Registration, Resource, Portfolio
+from .models import Event, Registration, Resource, Portfolio, VideoBackground
+import random
 
 def promo(request, event_id):
 
@@ -29,6 +30,17 @@ def index(request):
     context["events"] = events
     context["portfolios"] = portfolios
     context["tools"] = tools
+
+    backgrounds = VideoBackground.objects.all()
+
+    if backgrounds:
+        background = random.choice(backgrounds)
+    else:
+        background = None
+
+    print("BACKGROUND", background.file.url)
+
+    context["background"] = background
 
     # Update any events in progress
     for event in events:
