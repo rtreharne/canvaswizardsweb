@@ -80,7 +80,7 @@ input[type=checkbox] {
 
 .jumbotron {
     margin: 0;
-    height: 100vh; /* Set height to 100vh for full page */
+    min-height: 100vh; /* Set height to 100vh for full page */
     display: flex; /* Add display: flex to center content vertically */
     align-items: center; /* Add align-items: center to center content vertically */
     justify-content: center; /* Add justify-content: center to center content horizontally */
@@ -354,7 +354,4 @@ img.logo {
         padding-top: 50px;
         padding-bottom: 50px;
     }
-
-    .jumbotron {
-        height: 100%;
-    }}
+}

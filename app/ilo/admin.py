@@ -12,7 +12,7 @@ import datetime
 
 class AlphabeticalUsernameFilter(admin.SimpleListFilter):
     title = _('username')  # a label for this filter
-    parameter_name = 'username'  # you can put here any name
+    parameter_name = 'staff_id'  # you can put here any name
 
     def lookups(self, request, model_admin):
         staffs = model_admin.model.objects.order_by('staff__username').values_list('staff__id', 'staff__username').distinct()
@@ -20,7 +20,7 @@ class AlphabeticalUsernameFilter(admin.SimpleListFilter):
 
     def queryset(self, request, queryset):
         if self.value():
-            return queryset.filter(id__exact=self.value())
+            return queryset.filter(staff_id__exact=self.value())
         else:
             return queryset
 
