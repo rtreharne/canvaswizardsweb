@@ -157,7 +157,7 @@ class ResponseAdmin(admin.ModelAdmin):
         writer.writerow(['username', 'sortable_name', 'email', 'staff_institute', 'staff_department', 'module', 'LO', 'additional_info', 'active', 'date_created', 'date_updated'])
 
         for obj in queryset:
-            writer.writerow([obj.staff.username, f"{obj.staff.last_name}, {obj.staff.first_name}", obj.staff.email, obj.staff.department, obj.staff.department.institute, obj.learning_objective.module.code, obj.learning_objective.description, obj.learning_objective.additional_info, obj.active, obj.created_at, obj.updated_at])
+            writer.writerow([obj.staff.username, f"{obj.staff.last_name}, {obj.staff.first_name}", obj.staff.email, obj.staff.department.institute, obj.staff.department, obj.learning_objective.module.code, obj.learning_objective.description, obj.additional_info, obj.active, obj.created_at, obj.updated_at])
 
         return response
     
