@@ -103,7 +103,12 @@ class Student(models.Model):
 
     project_types = models.CharField(max_length=1000, null=True, blank=True)
     project_keywords = models.CharField(max_length=1000, null=True, blank=True)
+
+    priority = models.CharField(max_length=1000, null=True, blank=True)
+
     prerequisites = models.CharField(max_length=1000, null=True, blank=True)
+
+    mbiolsci = models.CharField(max_length=128, null=True, blank=True)
 
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE, null=True, blank=True)
     admin_dept = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)

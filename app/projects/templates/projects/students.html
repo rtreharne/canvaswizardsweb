@@ -81,6 +81,11 @@
                                 {{ form|get_field:field|as_crispy_field }}
                             {% endfor %}
                             <br>
+                            <legend>Allocation Priority</legend>
+                            <hr style="margin-top: 0; margin-bottom: 1rem; border-top: 1px solid #e9ecef;">
+                            <p>How would you like us to prioritise the allocation of your project?</p>
+                            {{ form.allocation_priority }}
+                            <br>
                             <legend>Prerequisite Modules</legend>
                             <hr style="margin-top: 0; margin-bottom: 1rem; border-top: 1px solid #e9ecef;">
                             <p>Select the second year modules that you have completed. Select a minimum of 5 modules.</p>

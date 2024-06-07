@@ -232,6 +232,7 @@ def students(request, institution_slug, admin_department_slug):
             project_keywords = ','.join([form.cleaned_data[field].name for field in context['project_keyword_fields']])
             prerequisites = ','.join(x.name for x in form.cleaned_data['prerequisites'])
             mbiolsci = form.cleaned_data['mbiolsci']
+            priority = form.cleaned_data['allocation_priority']
 
 
             student = Student(
@@ -242,10 +243,12 @@ def students(request, institution_slug, admin_department_slug):
                 programme=programme,
                 project_types=project_types,
                 project_keywords=project_keywords,
+                priority=priority,
                 prerequisites=prerequisites,
                 admin_dept = admin_department,
                 institution = institution,
-                allocation_round = round
+                allocation_round = round,
+                mbiolsci = mbiolsci
             )
 
             try:

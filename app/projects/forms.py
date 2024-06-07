@@ -172,8 +172,12 @@ class StudentForm(forms.Form):
     email = forms.EmailField(label='UoL Email Address')
 
     # create field for mbiolsci boolean with radio buttons for yes/no and no default
-    mbiolsci = forms.ChoiceField(choices=[('', '---------'), ('yes', 'Yes'), ('no', 'No')], label='Are you an MBiolSci student?', required=True, initial=None)
+    mbiolsci = forms.ChoiceField(choices=[('', '---------'), ('yes', 'Yes'), ('no', 'No')], label='Are you a 4th year MBiolSci student?', required=True, initial=None)
     programme = forms.ModelChoiceField(queryset=Programme.objects.all(), label='Programme/Pathway', help_text='Select your programme (or pathway if MBiolSci).')
+
+    # create a choice field to ask the question: "Allocation priority?" with options "Prioritise by project type", "Prioritise by topic", "No preference"
+    allocation_priority = forms.ChoiceField(choices=[('type', 'Prioritise by project type'), ('topic', 'Prioritise by project topic'), ('none', 'No preference')], label='Allocation priority', help_text='Select your preference for project allocation.')
+
 
 
     # Make sure student selects at least 5 prerequisites

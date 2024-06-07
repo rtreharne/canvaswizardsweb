@@ -150,8 +150,8 @@ class RoundAdmin(AdminBase):
     search_fields = ('name',)
 
 class StudentAdmin(AdminBase):
-    list_display = ('student_id', 'last_name', 'first_name', 'email', 'programme', 'allocation_round')
-    list_filter = ('programme', 'allocation_round')
+    list_display = ('student_id', 'last_name', 'first_name', 'email', 'programme', 'mbiolsci', 'project_keywords', 'project_types', 'priority', 'allocation_round')
+    list_filter = ('programme', 'mbiolsci', 'allocation_round', 'priority')
     search_fields = ('last_name', 'first_name', 'email')
 
     # Default filter by most recent allocation round
