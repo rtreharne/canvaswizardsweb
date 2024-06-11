@@ -1,0 +1,34 @@
+table {
+    border-collapse: separate;
+    border-spacing: 0 20px;
+}
+
+.date-column {
+    white-space: nowrap;
+}
+
+td, th {
+    vertical-align: top;
+}
+
+td a {
+    text-decoration: none;
+}
+
+.highlight {
+    background-color: #8e8e00;
+}
+
+/* Make hr a solid white line */
+hr {
+    border-top: 1px solid white !important;
+}
+
+/* Make anchor text default blue in class alert */
+.alert a {
+    color: #007bff;
+}
+
+#dateHeader {
+    cursor: pointer;
+}

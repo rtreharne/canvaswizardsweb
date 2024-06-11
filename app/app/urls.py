@@ -30,7 +30,8 @@ urlpatterns = [
     path('panorama/', include('panorama.urls')),
     path('projects/', include('projects.urls')),
     path('ilo/', include('ilo.urls')),
-    path('expertise/', include('ilo.urls'))
+    path('expertise/', include('ilo.urls')),
+    path('captionsearch/', include('captionsearch.urls')),
     
 ]
 

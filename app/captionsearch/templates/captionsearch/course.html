@@ -1,0 +1,105 @@
+{% extends "front/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block css %}
+<!-- My CSS -->
+<link rel="stylesheet" href="{% static 'css/report.css' %}">
+<link rel="stylesheet" href="{% static 'css/captionsearch.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<header class="page-section" id="report">
+
+    <div class="container" >
+        <a href="/"><img class="logo" src="{% static 'img/site-logo-2.png' %}" alt="Canvas Wizards Logo"></a>
+        <h1>Caption Search</h1>
+        <br>
+        <div class="row">
+            
+            <div class="col-md-4 ">
+
+                <p>
+                    This tool will allow you to perform a keyword search for all video content associated with 
+                    the <a href="{{ course.url }}" target="_blank">{{ course.name }}</a> Canvas course. 
+                </p>
+                <br>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+                <br>
+            </div>
+
+            {% if results %}
+            {% endif %}
+            
+            
+            <div class="col-md-8">
+                {% if captions %}
+                <h2>Results for "<i>{{ query }}</i>" ... </h2>
+                <hr>
+
+                <table id="resultsTable">
+                    <tbody>
+                        <tr>
+                            <th>Caption Text</th>
+                            <th>Timestamp</th>
+                            <th id="dateHeader">Date</th>
+                            <th>Title</th>
+                            <th>Owner</th>
+                        </tr>
+                        {% for caption in captions %}
+                        <!-- table headers: Caption text, Timestamp, Date, Title, Owner -->
+                        
+                        
+                        <tr>
+                            <td><a href="{{ caption.transcript_url }}" target="_blank">{{ caption.transcript_text|safe }}</a></td>
+                            <td>{{ caption.transcript_timestamp }}</a></td>
+                            <td class="date-column">{{ caption.video.date }}</td>
+                            <td class="title-column">{{ caption.title }}</td>
+                            <td class="owner-column">{{ caption.owner }}</td>
+                        </tr>
+                        </a>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+            
+                
+        </div>
+
+    </div>
+</header>
+
+<!-- Include jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Your jQuery script -->
+<script>
+$(document).ready(function() {
+    var table = $("#resultsTable");
+    var rows = table.find("tr:gt(0)").toArray();
+    var asc = false;
+
+    $("#dateHeader").click(function() {
+        console.log("I've been clicked")
+        asc = !asc;
+        rows.sort(function(a, b) {
+            var A = $(a).children("td").eq(2).text();
+            var B = $(b).children("td").eq(2).text();
+            return (new Date(A) < new Date(B) ? -1 : new Date(A) > new Date(B) ? 1 : 0) * (asc ? 1 : -1);
+        });
+        rows.forEach(function(row) {
+            table.append(row);
+        });
+    });
+});
+</script>
+
+{% endblock %}
+
