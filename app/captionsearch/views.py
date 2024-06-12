@@ -7,6 +7,8 @@ from django.utils.datetime_safe import datetime
 from .tasks import add_captions
 from django.db.models import Q
 import re
+from functools import reduce
+from operator import or_, and_
 
 def index(request):
     context = {}
@@ -73,9 +75,8 @@ def index(request):
     return render(request, 'captionsearch/index.html', context)
 
 def course(request, course_name):
-
     course = Course.objects.get(name=course_name)
-    videos = Video.objects.filter(course=course).order_by('-date', '-time')
+    videos = Video.objects.select_related('course').filter(course=course).order_by('-date', '-time')
     context = {
         "course": course,
         "videos": videos,
@@ -85,21 +86,10 @@ def course(request, course_name):
         form = SearchForm(request.POST)
         if form.is_valid():
             query = form.cleaned_data["query"]
-            if " AND " in query:
-                words = query.split(" AND ")
-                q_objects = Q()
-                for word in words:
-                    q_objects &= Q(transcript_text__icontains=word)
-            else:
-                words = query.split()
-                q_objects = Q()
-                for word in words:
-                    q_objects |= Q(transcript_text__icontains=word)
-
-            captions = Caption.objects.filter(q_objects, video__course=course)
-
-            for caption in captions:
-                caption.transcript_text = re.sub(f'({query})', r'<span class="highlight">\1</span>', caption.transcript_text, flags=re.IGNORECASE)
+            words = query.split(" AND " if " AND " in query else " ")
+            q_objects = [Q(transcript_text__icontains=word) for word in words]
+            operator = and_ if " AND " in query else or_
+            captions = Caption.objects.filter(reduce(operator, q_objects), video__course=course)
 
             context["captions"] = captions
             context["query"] = query
@@ -109,7 +99,6 @@ def course(request, course_name):
             context["form"] = form
 
         return render(request, 'captionsearch/course.html', context)
-        
 
     form = SearchForm()
     context["form"] = form

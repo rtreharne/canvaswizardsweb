@@ -51,3 +51,10 @@ class CaptionSearchRequestForm(forms.Form):
 
 class SearchForm(forms.Form):
     query = forms.CharField(label='', widget=forms.TextInput(attrs={'placeholder': ''}))
+
+    # query must be more than 3 characters in length
+    def clean_query(self):
+        query = self.cleaned_data['query']
+        if len(query) < 3:
+            raise ValidationError('Query must be at least 3 characters long.')
+        return query

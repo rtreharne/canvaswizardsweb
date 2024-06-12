@@ -29,7 +29,8 @@
                 <form method="post">
                     {% csrf_token %}
                     {{ form|crispy }}
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button id="search-button" type="submit" class="btn btn-primary">Search</button>
+                    <div id="spinner" class="spinner" style="display: none;"></div>
                 </form>
                 <br>
             </div>
@@ -57,7 +58,7 @@
                         
                         
                         <tr>
-                            <td><a href="{{ caption.transcript_url }}" target="_blank">{{ caption.transcript_text|safe }}</a></td>
+                            <td><a class="transcript-text" href="{{ caption.transcript_url }}" target="_blank">{{ caption.transcript_text|safe }}</a></td>
                             <td>{{ caption.transcript_timestamp }}</a></td>
                             <td class="date-column">{{ caption.video.date }}</td>
                             <td class="title-column">{{ caption.title }}</td>
@@ -97,6 +98,25 @@ $(document).ready(function() {
         rows.forEach(function(row) {
             table.append(row);
         });
+    });
+});
+
+$(document).ready(function() {
+    var query = "{{ query }}".split(" ");
+    $(".transcript-text").each(function() {
+        var transcript = $(this).text();
+        for (var i = 0; i < query.length; i++) {
+            var pattern = new RegExp('('+ query[i] +')', 'gi');
+            transcript = transcript.replace(pattern, '<span class="highlight">$1</span>');
+        }
+        $(this).html(transcript);
+    });
+});
+
+$(document).ready(function() {
+    $('#search-button').on('click', function() {
+        $(this).hide();
+        $('#spinner').show();
     });
 });
 </script>
