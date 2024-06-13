@@ -1,39 +1,31 @@
 import io
 from celery import shared_task
+import pandas as pd
 
 from .models import Video, Caption, Course
 from django.utils.datetime_safe import datetime
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from io import StringIO
 
 @shared_task
-def add_caption(course_id, line):
+def add_caption(course_id, row):
 
-    course = Course.objects.get(id=course_id)
 
-    fields = line.split("\t")
-
-    if fields[5] != "":
-        fields = line.split("\t")
-        video_url = fields[0]
-        date = datetime.strptime(fields[1], "%m/%d/%Y").date()
-        time = datetime.strptime(fields[2], "%I:%M %p").time()
-        transcript_url = fields[3]
-        transcript_text = fields[4]
-        transcript_timestamp = fields[5]
-        title = fields[6]
-        owner = fields[7]
+    if row["transcript_text"] != "":
+        video_url = row["video_url"]
+        transcript_url = row["transcript_url"]
+        transcript_text = row["transcript_text"]
+        transcript_timestamp = row["transcript_timestamp"]
+        title = row["title"]
+        owner = row["owner"]
 
         # Create video object if it doesn't exist
         try:
             video = Video.objects.get(video_url=video_url)
-        except:
-            video = Video(
-                video_url = video_url,
-                title = title,
-                course = course,
-                date = date,
-                time = time
-            )
-            video.save()
+        except ObjectDoesNotExist:
+            return "Video does not exist"
+        except MultipleObjectsReturned:
+            video = Video.objects.filter(video_url=video_url)[0]
 
         # Check if caption object exists
         try:
@@ -50,8 +42,6 @@ def add_caption(course_id, line):
                 title = title,
                 owner = owner
             )
-
-
             caption.save()
     
     return "Caption Added"
@@ -59,9 +49,38 @@ def add_caption(course_id, line):
 @shared_task
 def add_captions(course_id, decoded_file):
 
-    # Let's create the captions
-    for line in decoded_file:
-        add_caption.delay(course_id, line)
+    try:
+        course = Course.objects.get(id=course_id)
+    except ObjectDoesNotExist:
+        return "Course does not exists!"
+
+    # convert dict to dataframe
+    decoded_file = pd.DataFrame(decoded_file)
+
+    # # Get rid of duplicates by columns video_url, title, date, time
+    df = decoded_file.drop_duplicates(subset=['video_url', 'title', 'date', 'time'])
+
+    for i, row in df.iterrows():
+        try:
+            video = Video.objects.get(video_url=df["video_url"])
+        except ObjectDoesNotExist:
+            print("Video does not exist, adding video")
+            video = Video(
+                course = course,
+                video_url = row["video_url"],
+                title = row["title"],
+                date = datetime.strptime(row["date"], "%m/%d/%Y").date(),
+                time = datetime.strptime(row["time"], "%I:%M %p").time()
+            )
+            video.save()
+        except MultipleObjectsReturned:
+            continue
+
+
+
+    # # Let's create the captions
+    for i, row in decoded_file.iterrows():
+        add_caption.delay(course_id, row.to_dict())
     
     return "Done"
 

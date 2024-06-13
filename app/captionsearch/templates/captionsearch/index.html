@@ -108,6 +108,29 @@
 
 {% endblock %}
 
+{% block footer %}
+<footer id="footer" style="text-align: left;">
+    <div class="container">
+        <h3>About</h3>
+        <hr style="border: none; height: 2px; background-color: white; ">
+        <div class="row">
+            <div class="col-md-6">
+                <p>
+                    This neat little app was built by <a href="/">Dr. Robert Treharne</a>. The original idea belongs to <a href="https://www.liverpool.ac.uk/infection-veterinary-and-ecological-sciences/staff/alan-radford/" target="_blank">Prof. Alan Radford</a>.
+                </p>
+                <br>
+                
+
+            </div>
+            <!-- <div class="col-md-6">
+                <img style="border: 2px solid white; max-width: 300px" src="{% static 'img/profile-pic.jpg' %}">
+            </div>   -->
+        </div>
+    </div>
+    <br>
+</footer>
+{% endblock %}
+
 <!-- Extend block js -->
 {% block js %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

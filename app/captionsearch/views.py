@@ -9,6 +9,7 @@ from django.db.models import Q
 import re
 from functools import reduce
 from operator import or_, and_
+import pandas as pd
 
 def index(request):
     context = {}
@@ -49,12 +50,14 @@ def index(request):
             
             # Let's read the .tsv file
 
-            # Determine encoding first
-            
-            decoded_file = file.read().decode("ISO-8859-1").splitlines()
+            decoded_file = pd.read_csv(file, sep='\t', encoding='utf-8')
 
-            # Let's check if the headers are correct
-            headers = decoded_file[0].split("\t")
+            # drop na on transcript_text column
+            decoded_file = decoded_file.dropna(subset=["transcript_text"])
+
+            decoded_file = decoded_file.to_dict(orient='records')
+            
+            #decoded_file = file.read().decode("utf-8").splitlines()
 
             add_captions.delay(course.id, decoded_file)
 
@@ -87,7 +90,7 @@ def course(request, course_name):
         if form.is_valid():
             query = form.cleaned_data["query"]
             words = query.split(" AND " if " AND " in query else " ")
-            q_objects = [Q(transcript_text__icontains=word) for word in words]
+            q_objects = [Q(transcript_text__icontains=word) | Q(owner__icontains=word) for word in words]
             operator = and_ if " AND " in query else or_
             captions = Caption.objects.filter(reduce(operator, q_objects), video__course=course)
 

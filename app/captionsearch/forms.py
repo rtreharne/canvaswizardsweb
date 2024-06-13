@@ -24,7 +24,7 @@ class CaptionSearchRequestForm(forms.Form):
         # Split the first line into headers 
         headers = first_line.split('\t')
         # Check if the headers are as expected
-        expected_headers = ['video_url', 'date', 'time', 'transcript_url', 'video_timestamp', 'transcript_text', 'transcript_timestamp', 'title', 'owner']
+        expected_headers = ['video_url', 'date', 'time', 'transcript_url', 'transcript_text', 'transcript_timestamp', 'title', 'owner']
         if len(headers) != len(expected_headers):
             raise ValidationError('The headers in the file are not as expected.')
         
@@ -40,6 +40,10 @@ class CaptionSearchRequestForm(forms.Form):
         # Check file is not empty
         if not file.size:
             raise ValidationError('File is empty.')
+        
+        # Reset the file pointer to the beginning of the file
+        file.seek(0)
+
         return file
     
 
