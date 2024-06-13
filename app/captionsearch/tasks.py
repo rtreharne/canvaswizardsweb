@@ -6,6 +6,7 @@ from .models import Video, Caption, Course
 from django.utils.datetime_safe import datetime
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from io import StringIO
+import time
 
 @shared_task
 def add_caption(course_id, row):
@@ -80,6 +81,9 @@ def add_captions(course_id, decoded_file):
 
     # # Let's create the captions
     for i, row in decoded_file.iterrows():
+        # add delay of 0.5 sec
+        time.sleep(0.5)
+        
         add_caption.delay(course_id, row.to_dict())
     
     return "Done"

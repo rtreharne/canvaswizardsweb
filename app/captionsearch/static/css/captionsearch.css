@@ -1,4 +1,4 @@
-table {
+#resultsTable {
     border-collapse: separate;
     border-spacing: 0 20px;
 }
@@ -51,4 +51,9 @@ hr {
     width: 25px;
     height: 25px;
     animation: spin 2s linear infinite;
+}
+
+.code-block {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }

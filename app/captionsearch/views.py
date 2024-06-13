@@ -12,7 +12,17 @@ from operator import or_, and_
 import pandas as pd
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseForbidden
+from django.core.cache import cache
+from django.http import HttpResponse
+from datetime import datetime as dt
+from datetime import timedelta
+from django.db.models import Count
 
+def calculate_upload_time(nrows, time_per_row=0.5):
+    total_seconds = nrows * time_per_row
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, _ = divmod(remainder, 60)
+    return f"{int(hours)} hours and {int(minutes)} minutes"
 
 def index(request):
     context = {}
@@ -58,13 +68,24 @@ def index(request):
             # drop na on transcript_text column
             decoded_file = decoded_file.dropna(subset=["transcript_text"])
 
+            nrows = len(decoded_file)
+
+            # If each row will take 0.5 seconds to upload, calculate how long in sec
+            # it will take to do nrows. 
+            # Create a string in the format "h hours and m minutes"
+            upload_time = calculate_upload_time(nrows)
+
+            iframe = f"<p><iframe style='overflow: auto;' src='https://www.canvaswizards.org.uk/captionsearch/{course.name}?from_iframe=true' width='100%' height='900px'></iframe></p>"
+
             decoded_file = decoded_file.to_dict(orient='records')
             
             #decoded_file = file.read().decode("utf-8").splitlines()
 
             add_captions.delay(course.id, decoded_file)
 
-            context['message'] = f"Fantastic! I'm making your captions searchable now. You can search your captions at the following URL.<br><br><a href='{course.name}'>https://www.canvaswizards.org.uk/captionsearch/{course.name}</a><br><br>Be sure to share the link with your students."
+            context['success'] = True
+            context['upload_time'] = upload_time
+            context['iframe'] = iframe
 
             return render(request, 'captionsearch/index.html', context)
 
@@ -80,13 +101,31 @@ def index(request):
     context["form"] = CaptionSearchRequestForm()
     return render(request, 'captionsearch/index.html', context)
 
+
 @csrf_exempt
 def course(request, course_name):
 
     # Check if the request is from an iframe
-    from_iframe = request.GET.get('from_iframe')
-    if not from_iframe:
-        return HttpResponseForbidden("This view can only be accessed from an iframe")
+    #from_iframe = request.GET.get('from_iframe')
+    #if not from_iframe:
+        #return HttpResponseForbidden("This view can only be accessed from an iframe")
+    
+    # Get the IP address of the client
+    ip = request.META.get('REMOTE_ADDR')
+
+    # Get the current time
+    now = datetime.now()
+
+    # Get the list of timestamps for this IP
+    timestamps = cache.get(ip, [])
+
+    # Remove timestamps older than 1 minute
+    one_minute_ago = now - timedelta(minutes=1)
+    timestamps = [timestamp for timestamp in timestamps if timestamp > one_minute_ago]
+
+    # Check if the rate limit has been exceeded
+    if len(timestamps) >= 5:  # Limit to 10 requests per minute
+        return HttpResponse('Too many requests', status=429)
 
     course = Course.objects.get(name=course_name)
     videos = Video.objects.select_related('course').filter(course=course).order_by('-date', '-time')
@@ -104,8 +143,17 @@ def course(request, course_name):
             operator = and_ if " AND " in query else or_
             captions = Caption.objects.filter(reduce(operator, q_objects), video__course=course)
 
+            # Count unique videos and order by count
+            video_counts = (captions.values('video__title')  # Group by video title
+                            .annotate(count=Count('video'))  # Count distinct videos
+                            .order_by('-count'))  # Order by count descending
+
+            # Convert to list of tuples
+            # # Convert to list of dictionaries
+            video_counts = [{"title": item['video__title'], "count": item['count']} for item in video_counts]            
             context["captions"] = captions
             context["query"] = query
+            context["video_counts"] = video_counts[:10]
             context["form"] = SearchForm()
         else:
             print("form invalid")

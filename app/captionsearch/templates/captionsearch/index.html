@@ -27,9 +27,13 @@
                 <!-- Report Request Form. Allow files upload -->
                 <form method="post" enctype="multipart/form-data">
 
-                    {% if message %}
+                    {% if success %}
                     <div class="alert alert-success" role="success">
-                        {{ message|safe }}
+                        <p>Fantastic! I'm making your captions searchable now.</p>
+                        <p>Based on the size of your uploaded file I estimate that it will take approx <strong>{{ upload_time }}</strong> to make your captions searchable.</p>
+                        <p>You will need to copy and paste the html code below into a Canvas page (in html editor mode) to enable your students to search the captions you have uploaded.</p>
+                        <p class="code-block">{{ iframe }}</p>
+                        <p><strong>Make sure you copy this and keep it safe. You won't get another chance once you navigate away from this page.</strong></p>
                     </div>
                     {% endif %}
             
