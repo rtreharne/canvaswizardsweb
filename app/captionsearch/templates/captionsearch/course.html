@@ -66,12 +66,11 @@
                 {% if captions %}
                 <h2>Results for "<i>{{ query }}</i>" ... </h2>
                 <hr>
-
+                
                 <table id="resultsTable">
                     <tbody>
                         <tr>
                             <th>Caption Text</th>
-                            <th>Timestamp</th>
                             <th id="dateHeader">Date</th>
                             <th>Title</th>
                             <th>Owner</th>
@@ -81,10 +80,9 @@
                         
                         
                         <tr>
-                            <td><a class="transcript-text" href="{{ caption.transcript_url }}" target="_blank">{{ caption.transcript_text|safe }}</a></td>
-                            <td>{{ caption.transcript_timestamp }}</a></td>
-                            <td class="date-column">{{ caption.video.date }}</td>
-                            <td class="title-column">{{ caption.title }}</td>
+                            <td><a class="transcript-text" href="{{ caption.transcript_url }}" target="_blank">{{ caption.transcript_text|safe }} - {{ caption.transcript_timestamp }}</a></td>
+                            <td class="date-column">{{ caption.video.date|date:"d/m/y" }}</td>
+                            <td class="title-column">{{ caption.title|truncatechars:11 }}</td>
                             <td class="owner-column">{{ caption.owner }}</td>
                         </tr>
                         </a>

@@ -34,9 +34,13 @@ ALLOWED_HOSTS = ['*', ] if DEBUG else os.environ.get("DJANGO_ALLOWED_HOSTS").spl
 
 if DEBUG:
     SITE_ID = 1
+    DOMAIN = "localhost"
+    SESSION_COOKIE_DOMAIN = DOMAIN
 else:
     SITE_ID = 3
     ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+    DOMAIN = "www.canvaswizards.org.uk"
+    SESSION_COOKIE_DOMAIN = DOMAIN
 
 LOGIN_REDIRECT_URL = '/'
 SOCIALACCOUNT_AUTO_SIGNUP = True

@@ -10,6 +10,9 @@ import re
 from functools import reduce
 from operator import or_, and_
 import pandas as pd
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseForbidden
+
 
 def index(request):
     context = {}
@@ -77,7 +80,14 @@ def index(request):
     context["form"] = CaptionSearchRequestForm()
     return render(request, 'captionsearch/index.html', context)
 
+@csrf_exempt
 def course(request, course_name):
+
+    # Check if the request is from an iframe
+    from_iframe = request.GET.get('from_iframe')
+    if not from_iframe:
+        return HttpResponseForbidden("This view can only be accessed from an iframe")
+
     course = Course.objects.get(name=course_name)
     videos = Video.objects.select_related('course').filter(course=course).order_by('-date', '-time')
     context = {
