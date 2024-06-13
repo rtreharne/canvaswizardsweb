@@ -43,6 +43,11 @@ SOCIALACCOUNT_AUTO_SIGNUP = True
 
 # Application definition
 
+SESSION_COOKIE_SAMESITE = None
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = None
+CSRF_COOKIE_SECURE = True
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -76,6 +81,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'app.middleware.P3PMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -186,3 +192,5 @@ SOCIALACCOUNT_PROVIDERS = {
         'ADAPTER': 'foundation2.adapters.MyGitHubOAuth2Adapter',
     },
 }
+
+X_FRAME_OPTIONS = 'ALLOWALL'
