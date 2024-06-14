@@ -61,6 +61,7 @@ hr {
 #summaryTable {
     width: 100%; /* Ensure the table takes up the full width of its container */
     overflow-x: auto; /* Add a horizontal scrollbar when necessary */
+    font-size: 0.9em;
 }
 
 #summaryTable tr:nth-child(even) {
