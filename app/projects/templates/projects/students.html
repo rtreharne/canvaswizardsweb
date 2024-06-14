@@ -73,9 +73,11 @@
                             {% for field in project_type_fields %}
                                 {{ form|get_field:field|as_crispy_field }}
                             {% endfor %}
-                            <br>
+                   
                             <legend>Project Topic Preferences</legend>
+                            
                             <hr style="margin-top: 0; margin-bottom: 1rem; border-top: 1px solid #e9ecef;">
+                            <p>For a full list of project topic descriptions, please visit the <u><a href="student/topics" target="_blank">topics</a></u> page.</p>
                             <p>Select your preferred project topic in a prioritised order (i.e. Project topic 1 is most preferred).</p>
                             {% for field in project_keyword_fields %}
                                 {{ form|get_field:field|as_crispy_field }}

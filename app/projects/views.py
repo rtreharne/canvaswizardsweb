@@ -192,6 +192,19 @@ def delete_supervisor_set(request, supervisor_set_id):
         SupervisorSet.objects.get(id=supervisor_set_id).delete()
         return JsonResponse({'status': 'success'})
     
+def topics(request, institution_slug, admin_department_slug):
+
+    topics = ProjectKeyword.objects.filter(admin_dept__slug=admin_department_slug).order_by('name')
+
+    print(topics)
+
+    context = {
+        'topics': topics,
+        'institution': Institution.objects.get(slug=institution_slug),
+        'admin_department': Department.objects.get(slug=admin_department_slug),
+    }
+
+    return render(request, 'projects/topics.html', context)
 
 def students(request, institution_slug, admin_department_slug):
     institution = Institution.objects.get(slug=institution_slug)

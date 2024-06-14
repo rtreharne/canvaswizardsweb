@@ -1,0 +1,40 @@
+{% extends "projects/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load form_fields %}
+
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/projects.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="page-section">
+    
+
+    <section class="container">
+        <img class="logo" src="{{ institution.logo.url }}" alt="University of Liverpool Logo">
+        <h1 class="logo"><a href="/projects">[Project Allocation]</a></h1>
+        <br>
+        <h3>Topic Descriptions</h3>
+        <br>
+        <div class="row">
+
+            <div class="col-md-8 ">
+                {% for topic in topics %}
+          
+                <div class="topic">
+                    <h5 class="topic-title">{{ topic.name }}</h5>
+                    <p class="topic-text">{{ topic.description }}</p>
+                </div>
+             
+                {% endfor %}
+            </div>
+  
+        </div>
+    </section>
+
+</div>
+
+{% endblock %}

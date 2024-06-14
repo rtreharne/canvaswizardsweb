@@ -21,7 +21,7 @@ def index(request):
     context = {}
 
     events = Event.objects.all().order_by('date')
-    portfolios = Portfolio.objects.filter(tool=False).order_by('datetime')
+    portfolios = Portfolio.objects.filter(tool=False).order_by('-datetime')
     tools = Portfolio.objects.filter(tool=True).order_by('title')
 
     # Only get events in the future
