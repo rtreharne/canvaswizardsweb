@@ -25,7 +25,10 @@ def calculate_upload_time(nrows, time_per_row=0.5):
     return f"{int(hours)} hours and {int(minutes)} minutes"
 
 def timestamp_to_seconds(timestamp):
-    minutes, seconds = map(int, timestamp.split(":"))
+    try:
+        minutes, seconds = map(int, timestamp.split(":"))
+    except:
+        return 0
     return minutes * 60 + seconds
 
 def index(request):
