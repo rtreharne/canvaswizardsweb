@@ -24,6 +24,10 @@ def calculate_upload_time(nrows, time_per_row=0.5):
     minutes, _ = divmod(remainder, 60)
     return f"{int(hours)} hours and {int(minutes)} minutes"
 
+def timestamp_to_seconds(timestamp):
+    minutes, seconds = map(int, timestamp.split(":"))
+    return minutes * 60 + seconds
+
 def index(request):
     context = {}
 
@@ -128,11 +132,53 @@ def course(request, course_name):
         return HttpResponse('Too many requests', status=429)
 
     course = Course.objects.get(name=course_name)
-    videos = Video.objects.select_related('course').filter(course=course).order_by('-date', '-time')
+
+    # if video in query string
+    if 'video_id' in request.GET:
+        videos = [Video.objects.get(id=request.GET['video_id'])]
+    else:
+        videos = Video.objects.select_related('course').filter(course=course).order_by('-date', '-time')
+    
     context = {
         "course": course,
         "videos": videos,
     }
+    
+    if 'search' in request.GET:
+        query = request.GET['search']
+        query = query.replace('-', ' ')
+        words = query.split(" AND " if " AND " in query else " ")
+
+        q_objects = [Q(transcript_text__icontains=word) | Q(owner__icontains=word) for word in words]
+        operator = and_ if " AND " in query else or_
+        captions = Caption.objects.filter(reduce(operator, q_objects), video__course=course)
+
+        # Count unique videos and order by count
+        video_counts = (captions.values('video__title', 'video__video_url', 'video__id')  # Group by video title and url
+                        .annotate(count=Count('video'))  # Count distinct videos
+                        .order_by('-count'))  # Order by count descending
+        
+        # Convert to list of tuples
+        # # Convert to list of dictionaries
+        video_counts = [{"title": item['video__title'], "video_url": item['video__video_url'], "video_id": item['video__id'], "count": item['count']} for item in video_counts]            
+        
+        if 'video_id' in request.GET:
+            video_id = request.GET['video_id']
+            # filter captions by video_id
+            captions = captions.filter(video__id=video_id)
+
+        # Order captions by transcript_timestamp (a string in format M:S)
+        captions = list(captions)
+        captions.sort(key=lambda caption: timestamp_to_seconds(caption.transcript_timestamp))
+
+
+        
+        context["captions"] = captions
+        context["query"] = query
+        context["search"] = query.replace(" ", "-")
+        context["video_counts"] = video_counts[:10]
+            
+
 
     if request.method == "POST":
         form = SearchForm(request.POST)
@@ -143,16 +189,31 @@ def course(request, course_name):
             operator = and_ if " AND " in query else or_
             captions = Caption.objects.filter(reduce(operator, q_objects), video__course=course)
 
+
             # Count unique videos and order by count
-            video_counts = (captions.values('video__title')  # Group by video title
+            video_counts = (captions.values('video__title', 'video__video_url', 'video__id')  # Group by video title and url
                             .annotate(count=Count('video'))  # Count distinct videos
                             .order_by('-count'))  # Order by count descending
+            
+            # sort captions by video__title, video__date, then transcript_timestamp
+            captions = list(captions)
+            
+            captions.sort(key=lambda caption: caption.video.date, reverse=True)
+            
+            captions = sorted(
+                captions,
+                key=lambda caption: (
+                    caption.video.title,
+                    timestamp_to_seconds(caption.transcript_timestamp),
+                ),
+            )
 
             # Convert to list of tuples
             # # Convert to list of dictionaries
-            video_counts = [{"title": item['video__title'], "count": item['count']} for item in video_counts]            
+            video_counts = [{"title": item['video__title'], "video_url": item['video__video_url'], "video_id": item['video__id'], "count": item['count']} for item in video_counts]            
             context["captions"] = captions
             context["query"] = query
+            context["search"] = query.replace(" ", "-")
             context["video_counts"] = video_counts[:10]
             context["form"] = SearchForm()
         else:

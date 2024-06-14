@@ -57,3 +57,12 @@ hr {
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
+
+#summaryTable {
+    width: 100%; /* Ensure the table takes up the full width of its container */
+    overflow-x: auto; /* Add a horizontal scrollbar when necessary */
+}
+
+#summaryTable tr:nth-child(even) {
+    background-color: #2f2f2f; /* dark grey for odd rows */
+}
