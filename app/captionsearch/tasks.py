@@ -82,9 +82,9 @@ def add_captions(course_id, decoded_file):
     # # Let's create the captions
     for i, row in decoded_file.iterrows():
         # add delay of 0.5 sec
-        time.sleep(0.5)
+
         
-        add_caption.delay(course_id, row.to_dict())
+        add_caption(course_id, row.to_dict())
     
     return "Done"
 
