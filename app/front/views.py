@@ -6,7 +6,7 @@ import random
 from .forms import ContactForm
 
 from .forms import RegistrationForm
-from .models import Event, Registration, Resource, Portfolio, VideoBackground
+from .models import Event, Registration, Resource, Portfolio, VideoBackground, Tool
 import random
 
 def promo(request, event_id):
@@ -22,7 +22,7 @@ def index(request):
 
     events = Event.objects.all().order_by('date')
     portfolios = Portfolio.objects.filter(tool=False).order_by('-datetime')
-    tools = Portfolio.objects.filter(tool=True).order_by('title')
+    tools = Tool.objects.all()
 
     # Only get events in the future
     events = [event for event in events if event.date >= datetime.date.today()]

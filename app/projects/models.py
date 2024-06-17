@@ -112,6 +112,7 @@ class Student(models.Model):
 
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE, null=True, blank=True)
     admin_dept = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
+    submitted_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     class Meta:
         constraints = [

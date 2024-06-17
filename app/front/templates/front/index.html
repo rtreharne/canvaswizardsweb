@@ -119,9 +119,29 @@
         </h3>
         <hr style="border: none; height: 2px; background-color: white;">
       
-        {% for tool in tools %}
-        <p><a href="{{ tool.url }}">{{ tool.title }}</a></p>            
-        {% endfor %}
+        <div class="row">
+            {% for tool in tools %}
+            
+            <div class="col-md-4 event">
+                <div class="event-item">
+                    <span class="thumb-span">
+                        
+                        <a href = "{{ tool.url }}">
+                            <img class="event-thumb-img" src="{{ tool.image.url }}" alt="{{ event.name }}">
+                        </a>
+                    </span>
+                    <div class="event-summary">
+                        
+                        <h2><a href="{{ tool.url }}">{{ tool.name }}</a></h2>
+                        
+                        <p>{{ tool.short_description }}</p>
+                        
+                    </div>
+                </div>
+            </div>
+            
+            
+            {% endfor %}
         </div>
     </section>
 </div>

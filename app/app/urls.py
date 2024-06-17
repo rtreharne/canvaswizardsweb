@@ -32,6 +32,7 @@ urlpatterns = [
     path('ilo/', include('ilo.urls')),
     path('expertise/', include('ilo.urls')),
     path('captionsearch/', include('captionsearch.urls')),
+    path('tools/', include('tools.urls')),
     
 ]
 

@@ -44,6 +44,16 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+        
+    
+class Tool(models.Model):
+    name = models.CharField(max_length=100)
+    short_description = models.TextField()
+    image = models.FileField(upload_to='events/')
+    url = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 class Contact(models.Model):
     last_name = models.CharField(max_length=100)
