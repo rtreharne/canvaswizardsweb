@@ -24,9 +24,11 @@
             <br>
             <!-- Events button-->
             <p>
+
+                <a href="#tools" class="btn btn-primary btn-primary">Tools</a>
                 {% if events %}<a href="#events" class="btn btn-primary">Register for Events</a>{% endif %}
                 {% if portfolios %}<a href="#portfolio" class="btn btn-primary">Blog</a>{% endif %}
-                <a href="#tools" class="btn btn-primary btn-primary">Tools</a>
+                
                 <a href="#contact" class="btn btn-primary btn-white">Contact</a></p>
             <p><a class="twitter-link" href="https://twitter.com/robtreharne" target="_blank">Follow me on X</a></p>
         </span>
@@ -92,24 +94,6 @@
 
 {% endif %}
 
-{% if portfolios %}
-
-<div class="page-section" id="portfolio">
-    <section class="container">
-        <h3>Blog</h3>
-        <hr style="border: none; height: 2px; background-color: white;">
-      
-        {% for portfolio in portfolios %}
-        <p><a href="/portfolio/{{ portfolio.id }}">{{ portfolio.datetime|date:"D d M Y" }} - {{ portfolio.title }}</a></p>            
-        {% endfor %}
-        </div>
-    </section>
-</div>
-
-{% endif %}
-
-
-
 {% if tools %}
 
 <div class="page-section" id="tools">
@@ -142,6 +126,22 @@
             
             
             {% endfor %}
+        </div>
+    </section>
+</div>
+
+{% endif %}
+
+{% if portfolios %}
+
+<div class="page-section" id="portfolio">
+    <section class="container">
+        <h3>Blog</h3>
+        <hr style="border: none; height: 2px; background-color: white;">
+      
+        {% for portfolio in portfolios %}
+        <p><a href="/portfolio/{{ portfolio.id }}">{{ portfolio.datetime|date:"D d M Y" }} - {{ portfolio.title }}</a></p>            
+        {% endfor %}
         </div>
     </section>
 </div>
