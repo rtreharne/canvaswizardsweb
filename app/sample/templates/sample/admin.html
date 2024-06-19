@@ -1,0 +1,160 @@
+{% extends "front/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block css %}
+<!-- My CSS -->
+<link rel="stylesheet" href="{% static 'css/report.css' %}">
+<link rel="stylesheet" href="{% static 'css/sample.css' %}">
+
+<!-- Include Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- Include Flatpickr JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+{% endblock %}
+
+{% block content %}
+
+<header class="page-section" id="sample">
+
+    <div class="container" >
+        <a href="/"><img class="logo" src="{% static 'img/site-logo-2.png' %}" alt="Canvas Wizards Logo"></a>
+        <h1><a href="{% url 'sample:index' %}">Data Spell</a></h1>
+        <h3><a href="{% url 'sample:sample' obj.label %}">{{obj.label}}</a></h3>
+        <br>
+        <div class="row">
+            
+            <div class="col-md-6 ">
+                
+                {% if guidance %}
+                <p>
+                    {{guidance}}
+                </p>
+                {% endif %}
+                <br>
+                <!-- Report Request Form. Allow files upload -->
+                
+                <form method="post" enctype="multipart/form-data">                    
+            
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if message %}
+                        <p>{{message}}</p>
+                        </br>
+                    {% endif %}
+
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            
+            
+            <!-- <div class="col-md-6">
+           
+                <h3 id="myreports">Guidance</h3>
+                <hr style="border: none; height: 2px; background-color: white; ">
+
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe width="800" height="315" src="https://www.youtube.com/embed/k8-1a6_Y_I4?si=XsFu1td3ZcfDfxN6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div> -->
+            
+                
+        </div>
+
+    </div>
+</header>
+
+<header class="page-section" id="toc">
+
+    <div class="container" >
+        <h2>Terms and Conditions for Canvas Wizards Data Spell </h2>
+        <hr style="border: none; height: 2px; background-color: white; ">
+        <br>
+        <div class="row">
+            <div class="col-md-12">
+    
+                <h3>Introduction</h3>
+                <p>Access to and use of the Canvas Wizards Data Spell tool is governed by these Terms and Conditions. Agreement to these terms is required for usage of the service.</p>
+            
+                <h3>Use of Service</h3>
+                <p>Canvas Wizards Data Spell tool is designed to generate a sample .csv based on a unique ID number from an uploaded master .csv file. </p>
+            
+                <h3>User Information and Privacy</h3>
+                <ul>
+                    <li><strong>Account Information:</strong> This tool does not request user information.</li>
+                    <li><strong>User Information:</strong> This tool asks for a unique ID to generate a sample of data from a saved file. This unique ID is not stored.</li>
+                    <li><strong>Data:</strong> Data files uploaded are saved and stored for a maximum of 1 year after the set "close at" date. After this the files, and associated Data Spells are automatially deleted.</li>
+                </ul>
+            
+                <h3>Responsibility for Use</h3>
+                <p>Users are responsible for the proper use of this tool. Liability for misuse of the Canvas Wizards Data Spell tool is not assumed.</p>
+            
+                <h3>Limitation of Liability</h3>
+                <p>Liability for any direct, indirect, incidental, special, consequential, or exemplary damages, including but not limited to, damages for loss of profits, goodwill, use, data, or other intangible losses, resulting from the use or the inability to use the service or any other matter relating to the service, is not borne by the owners, employees, and affiliates of Canvas Wizards.</p>
+            
+                <h3>No Warranty</h3>
+                <p>The service is provided "as is" without any warranty or condition, express, implied, or statutory. No guarantee is made that the service will be uninterrupted, timely, secure, or error-free.</p>
+            
+                <h3>Changes to Terms</h3>
+                <p>The right to modify these terms at any time is reserved. Continued use of the service after such changes constitutes acceptance of the new terms.</p>
+            
+                <h3>Contact</h3>
+                <p>For questions regarding these Terms and Conditions, contact is to be made.</p>
+            </div>
+        
+        </div>
+    </div>
+</header>
+
+
+
+{% endblock %}
+
+{% block footer %}
+<footer id="footer" style="text-align: left;">
+    <div class="container">
+        <h3>About</h3>
+        <hr style="border: none; height: 2px; background-color: white; ">
+        <div class="row">
+            <div class="col-md-6">
+                <p>
+                    This neat little app was built by <a href="/">Dr. Robert Treharne</a>. The original Canvas Wizard.
+                <br>
+                
+
+            </div>
+            <!-- <div class="col-md-6">
+                <img style="border: 2px solid white; max-width: 300px" src="{% static 'img/profile-pic.jpg' %}">
+            </div>   -->
+        </div>
+    </div>
+    <br>
+</footer>
+{% endblock %}
+
+<!-- Extend block js -->
+{% block js %}
+<!-- Include jQuery and jQuery UI -->
+<script>
+    flatpickr(".datetimepicker", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+    });
+    </script>
+{% endblock %}

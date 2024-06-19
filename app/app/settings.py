@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'ilo',
     'captionsearch',
     'tools',
+    'sample',
 ]
 
 MIDDLEWARE = [
