@@ -178,6 +178,17 @@ def get_rubric_score(rubric, rubric_assessment):
         
     return ratings_list
 
+def last_viewed_date(attachments):
+    dates = []
+    for x in attachments:
+        dates.append(x.updated_at_date)
+
+    if len(dates) == 0:
+        return None
+
+    return max(dates).replace(tzinfo=None)
+
+
 def read_annotations(CANVAS_URL, CANVAS_TOKEN, course_id, assignment_id, user_id):
     # Define the base URL
     base_url = f"{CANVAS_URL}/api/v1/courses"
@@ -204,10 +215,18 @@ def build_submission_string(CANVAS_URL, CANVAS_TOKEN, canvas, course_id, assignm
         list: A list containing the row of data for the submission, including student information,
               submission details, grading information, and rubric ratings and scores.
     """
-    try:
-        student_viewed_feedback = read_annotations(CANVAS_URL, CANVAS_TOKEN, course_id, assignment_id, submission.user_id)
-    except:
-        student_viewed_feedback = ""
+    # try:
+    #     student_viewed_feedback = read_annotations(CANVAS_URL, CANVAS_TOKEN, course_id, assignment_id, submission.user_id)
+    # except:
+    #     student_viewed_feedback = ""
+
+    #try:
+    if submission.attachments:
+        student_viewed_feedback = last_viewed_date(submission.attachments)
+    else:
+        student_viewed_feedback = None
+    #except:
+    #student_viewed_feedback = ""
 
     if enrollments:
 
