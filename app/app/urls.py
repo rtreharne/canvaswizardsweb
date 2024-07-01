@@ -33,7 +33,7 @@ urlpatterns = [
     path('expertise/', include('ilo.urls')),
     path('captionsearch/', include('captionsearch.urls')),
     path('tools/', include('tools.urls')),
-    path('dataspell/', include('sample.urls'))
+    path('dataspell/', include('sample.urls')),
     
 ]
 

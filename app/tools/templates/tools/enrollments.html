@@ -15,7 +15,7 @@
 
     <div class="container" >
         <a href="/"><img class="logo" src="{% static 'img/site-logo-2.png' %}" alt="Canvas Wizards Logo"></a>
-        <h1>Enrollment Enchanter</h1>
+        <h1>Enrolment Enchanter</h1>
         <br>
         <div class="row">
             
@@ -66,6 +66,78 @@
                 </form>
                 <br>
             </div>
+
+            <div class="col-md-6">
+                {% if requests %}
+                    <h3 id="myreports">My Reports</h3>
+                    <hr style="border: none; height: 2px; background-color: white; ">
+                        <div class="quota-exceeded">
+                            {% if profile.downloads >= profile.max_downloads %}
+                            <div class="alert alert-white" role="alert">
+                                You have exceeded your free download quota. Please <a href="/#contact">contact Canvas Wizards</a> to continue using this tool.
+                            </div>
+                            {% endif %}
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Course</th>
+                                    <th>Assignment</th>
+                                    <th>Requested at</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for r in requests %}
+                                <tr>
+                                    <td>{{ r.course_code|truncatechars:120}}</td>
+                                    <td>{{ r.assignment_name|truncatechars:20 }}</td>
+                                    <td>{{ r.created|date:"Y-m-d H:i" }}</td>
+                                    <td>
+                                        {% if r.completed %}
+                                            
+                                            {% if r.downloaded %}
+                                                <a href="" class="downloaded">[Downloaded]</a>
+    
+                                            {% else %}
+                                                {% if profile.max_downloads >=  profile.downloads %}
+                                                    <a href="#" class="download-link" data-id="{{ r.id }}">[Download]</a>
+                                                {% else %}
+                                                <a href="#" class="downloaded">[Download]</a>
+    
+                                                {% endif %}
+                                            {% endif %}
+                                            
+                                        {% else %}
+                                            Pending
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+           
+                    
+                <br>
+                <br>
+                {% endif %}
+                <h3 id="myreports">Guidance</h3>
+                    <hr style="border: none; height: 2px; background-color: white; ">
+    
+                    
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <iframe width="800" height="315" src="https://www.youtube.com/embed/1oAZaHZ51i4?si=oJbhRHgsirNFV1Mc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                        </div>
+                <br>
+                <h3 id="kudos">Kudos</h3>
+                <hr style="border: none; height: 2px; background-color: white; ">
+                    <p>Thanks to the following people for helping me make this tool better:</p>
+                    <p>
+                        <strong>Sarah Wood</strong> - School of the Arts, University of Liverpool<br>
+                    </p>
+                </br>
+                    
+            </div>
             
             
             <!-- <div class="col-md-6">
@@ -87,17 +159,17 @@
 <header class="page-section" id="toc">
 
     <div class="container" >
-        <h2>Terms and Conditions for Canvas Wizards Enrollment Enchanter tool</h2>
+        <h2>Terms and Conditions for Canvas Wizards Enrolment Enchanter tool</h2>
         <hr style="border: none; height: 2px; background-color: white; ">
         <br>
         <div class="row">
             <div class="col-md-12">
     
                 <h3>Introduction</h3>
-                <p>Access to and use of the Canvas Wizards Enrollment Enchanter tool is governed by these Terms and Conditions. Agreement to these terms is required for usage of the service.</p>
+                <p>Access to and use of the Canvas Wizards Enrolment Enchanter tool is governed by these Terms and Conditions. Agreement to these terms is required for usage of the service.</p>
             
                 <h3>Use of Service</h3>
-                <p>Canvas Wizards Enrollment Enchanter tool is designed for the creation of Canvas course enrollments from a .xlsx spreadsheet file. A valid Canvas API key is to be provided by the user for the creation/deletion of enrollments. This key is utilised solely for accessing necessary information and is not retained on the servers.</p>
+                <p>Canvas Wizards Enrolment Enchanter tool is designed for the creation of Canvas course enrollments from a .xlsx spreadsheet file. A valid Canvas API key is to be provided by the user for the creation/deletion of enrollments. This key is utilised solely for accessing necessary information and is not retained on the servers.</p>
             
                 <h3>User Information and Privacy</h3>
                 <ul>
@@ -107,7 +179,7 @@
                 </ul>
             
                 <h3>Responsibility for Use</h3>
-                <p>Users are responsible for the proper use of their Canvas API key and the secure management of their account information. The sharing of the API key and generated reports must be done responsibly. Liability for misuse of the API key or generated reports by Canvas Wizards Enrollment Enchanter tool is not assumed.</p>
+                <p>Users are responsible for the proper use of their Canvas API key and the secure management of their account information. The sharing of the API key and generated reports must be done responsibly. Liability for misuse of the API key or generated reports by Canvas Wizards Enrolment Enchanter tool is not assumed.</p>
             
                 <h3>Limitation of Liability</h3>
                 <p>Liability for any direct, indirect, incidental, special, consequential, or exemplary damages, including but not limited to, damages for loss of profits, goodwill, use, data, or other intangible losses, resulting from the use or the inability to use the service or any other matter relating to the service, is not borne by the owners, employees, and affiliates of Canvas Wizards.</p>
