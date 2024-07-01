@@ -61,7 +61,8 @@
                     {% endif %}
                     {% csrf_token %}
                     {{ form|crispy }}
-                    <button type="submit" class="btn btn-primary">Generate Report</button>
+                    <button id="submit-button" type="submit" class="btn btn-primary">Submit</button>
+                    <div id="spinner" class="spinner" style="display: none;"></div>
                 </form>
                 <br>
             </div>
@@ -174,4 +175,12 @@
     });
 });
     </script>
+<script>
+$(document).ready(function() {
+    $('#submit-button').on('click', function() {
+        $(this).hide();
+        $('#spinner').show();
+    });
+});
+</script>
 {% endblock %}

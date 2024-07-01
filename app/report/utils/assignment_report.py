@@ -116,6 +116,7 @@ def get_headers(rubric):
         "posted_at",
         "score",
         "grader",
+        "graded_at",
         "comments",
         "student_viewed_feedback",]
 
@@ -282,6 +283,8 @@ def build_submission_string(CANVAS_URL, CANVAS_TOKEN, canvas, course_id, assignm
         grader = canvas.get_user(submission.grader_id).sortable_name
     except:
         grader = ""
+
+    graded_at = submission.graded_at
     
     if rubric:
         try:
@@ -312,6 +315,7 @@ def build_submission_string(CANVAS_URL, CANVAS_TOKEN, canvas, course_id, assignm
         posted_at,
         score,
         grader,
+        graded_at,
         comments,
         student_viewed_feedback,
     ]

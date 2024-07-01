@@ -17,7 +17,7 @@ class EnrollmentsForm(forms.Form):
         )
     )
     action = forms.ChoiceField(label='Action', choices=[('add', 'Add enrollments'), ('delete', 'Delete enrollments')], initial='add')
-    notify = forms.BooleanField(label='Notify users', initial=True)
+    notify = forms.BooleanField(label='Notify users', initial=False, required=False)
     # Make sure file is a .tsv file
 
     def clean_file(self):
@@ -35,7 +35,7 @@ class EnrollmentsForm(forms.Form):
         # Split the first line into headers 
         headers = df.columns.tolist()
         # Check if the headers are as expected
-        expected_headers = ['course_code', 'user_id', 'enrollment_type']
+        expected_headers = ['course_code', 'email', 'enrollment_type']
         if len(headers) != len(expected_headers):
             raise ValidationError('The headers in the file are not as expected.')
         
