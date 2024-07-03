@@ -19,7 +19,7 @@ def account_user(canvas, user, API_TOKEN):
     accounts = [x for x in canvas.get_accounts()]
 
     for a in accounts:
-        response = user_search(a.id, "treharne@liverpool.ac.uk", API_TOKEN)
+        response = user_search(a.id, user, API_TOKEN)
         print(response.status_code)
         if response.status_code == 200:
             return response.json()

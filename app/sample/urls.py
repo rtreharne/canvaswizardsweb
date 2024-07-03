@@ -10,5 +10,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('<int:instance_id>/', views.index, name='update_index'),
     path('<str:name>/', views.sample, name='sample'),
-    path('<str:name>/admin', views.admin, name='admin')
+    path('<str:name>/admin', views.admin, name='admin'),
+    path('<str:name>/<int:unique_id>', views.dataspell, name='dataspell')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

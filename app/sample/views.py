@@ -153,6 +153,7 @@ def sample(request, name):
             # Write the DataFrame to the response
             df.to_csv(path_or_buf=response, index=False)
             
+            
             return response
 
         else:
@@ -170,3 +171,33 @@ def sample(request, name):
         context["error"] = error
 
     return render(request, 'sample/sample.html', context)
+
+def dataspell(request, name, unique_id):
+
+    try:
+        data_obj = Data.objects.get(label=name)
+    except:
+        return redirect('/')
+    
+    try:
+        df = pd.read_csv(data_obj.file)
+
+        np.random.seed(unique_id)
+
+        sample_size = data_obj.sample_size
+        
+        if len(df) > sample_size:
+            df = df.sample(n=data_obj.sample_size)
+
+        response = HttpResponse(content_type='text/csv')
+
+        fname = f"{data_obj.label}_{unique_id}.csv"
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(fname)
+
+        # Write the DataFrame to the response
+        df.to_csv(path_or_buf=response, index=False)
+
+        return response
+    except Exception as e:
+        # Handle exceptions or errors
+        return HttpResponse(f"Error generating file: {str(e)}", status=500)
