@@ -29,8 +29,8 @@ class SupervisorSetForm(forms.ModelForm):
         model = SupervisorSet
         fields = '__all__'
 
-    available_for_ug = forms.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)], initial=3)
-    available_for_pg = forms.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)], initial=1)
+    available_for_ug = forms.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], initial=0)
+    available_for_pg = forms.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], initial=0)
 
     
 
@@ -68,7 +68,16 @@ class SupervisorSetForm(forms.ModelForm):
         self.fields['keywords'].queryset = ProjectKeyword.objects.filter(admin_dept=self.admin_department).order_by('name')
 
 
+    # Make sure that sum of available_for_ug and available_for_pg is greater than 1
+    def clean(self):
+        cleaned_data = super(SupervisorSetForm, self).clean()
+        available_for_ug = cleaned_data.get('available_for_ug')
+        available_for_pg = cleaned_data.get('available_for_pg')
 
+        if available_for_ug + available_for_pg < 1:
+            raise ValidationError('The total number of projects available must be at least 1.')
+
+        return cleaned_data
 
 
 class InstitutionForm(forms.Form):

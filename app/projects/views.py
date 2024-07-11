@@ -100,9 +100,22 @@ def supervisor_dash(request, institution_slug, admin_department_slug, supervisor
 
             supervisor_set.save()
 
+            message = "Project saved. You can add more projects or delete existing ones."
+
             supervisor_set.keywords.set(project_keywords)
         
             supervisor_sets = SupervisorSet.objects.filter(supervisor=supervisor)
+
+            context['supervisor_sets'] = supervisor_sets
+            context['message'] = message
+            context['form'] = SupervisorSetForm(initial={
+                'supervisor': supervisor,
+                'institution': institution,
+                'admin_dept': admin_department,
+                'prerequisite': sorted([x for x in ProjectKeyword.objects.filter(admin_dept=admin_department)], key=lambda x: x.name),
+            }, admin_department=admin_department)
+
+            return render(request, 'projects/supervisor_dash.html', context)
             return redirect('projects:supervisor-dash', institution_slug=institution.slug, admin_department_slug=admin_department.slug, supervisor_username=supervisor.username)
 
 

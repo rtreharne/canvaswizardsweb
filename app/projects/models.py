@@ -171,8 +171,8 @@ class SupervisorSet(models.Model):
     keywords = models.ManyToManyField('ProjectKeyword', blank=True,  related_name='supervisor_set_keywords')
     type = models.ForeignKey('ProjectType', blank=True, null=True, on_delete=models.CASCADE, related_name='supervisor_set_types')
     prerequisite = models.ForeignKey('Prerequisite', blank=True, null=True, on_delete=models.CASCADE, related_name='supervisor_set_prerequisites')
-    available_for_ug = models.PositiveIntegerField(default=3, verbose_name='Available for UG')
-    available_for_pg = models.PositiveIntegerField(default=1, verbose_name='Available for PG')
+    available_for_ug = models.PositiveIntegerField(default=0, verbose_name='Available for UG')
+    available_for_pg = models.PositiveIntegerField(default=0, verbose_name='Available for PG')
     active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):

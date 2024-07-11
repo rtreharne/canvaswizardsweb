@@ -28,6 +28,11 @@
                             {{ error }}
                         </div>
                     {% endif %}
+                    {% if message %}
+                        <div class="alert alert-success" role="success">
+                            {{ message }}
+                        </div>
+                    {% endif %}
                     {% csrf_token %}
                     {{ form|crispy }}
                     <button type="submit" class="btn btn-primary">Submit</button>
