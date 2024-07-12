@@ -259,6 +259,7 @@ def students(request, institution_slug, admin_department_slug):
             prerequisites = ','.join(x.name for x in form.cleaned_data['prerequisites'])
             mbiolsci = form.cleaned_data['mbiolsci']
             priority = form.cleaned_data['allocation_priority']
+            comment = form.cleaned_data['comment']
 
 
             student = Student(
@@ -274,7 +275,8 @@ def students(request, institution_slug, admin_department_slug):
                 admin_dept = admin_department,
                 institution = institution,
                 allocation_round = round,
-                mbiolsci = mbiolsci
+                mbiolsci = mbiolsci,
+                comment=comment
             )
 
             try:

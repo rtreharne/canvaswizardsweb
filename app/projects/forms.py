@@ -187,7 +187,7 @@ class StudentForm(forms.Form):
     # create a choice field to ask the question: "Allocation priority?" with options "Prioritise by project type", "Prioritise by topic", "No preference"
     allocation_priority = forms.ChoiceField(choices=[('type', 'Prioritise by project type'), ('topic', 'Prioritise by project topic'), ('none', 'No preference')], label='Allocation priority', help_text='Select your preference for project allocation.', initial='none')
 
-
+    comment = forms.CharField(label='Comments', widget=forms.Textarea, help_text='Please provide any additional information that you think may be relevant to your project allocation.', required=False)
 
     # Make sure student selects at least 5 prerequisites
     def clean_prerequisites(self):

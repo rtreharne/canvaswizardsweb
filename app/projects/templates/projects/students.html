@@ -36,6 +36,7 @@
                     <li>Project Type Preferences: {{ student.project_types }}</li>
                     <li>Project Keyword Preferences: {{ student.project_keywords }}</li>
                     <li>Prerequisites: {{ student.prerequisites }}</li>
+                    <li>Comments: {{ student.comment }}</li>
                 </ul>
                 <p>Please save this page as your receipt.</p>
 
@@ -94,6 +95,12 @@
                             <p><strong>Hold down Ctrl (CMD on Mac) to select multiple keywords.</strong></p>
 
                             {{ form.prerequisites }}
+                            
+                            <legend>Comments</legend>
+                            <hr style="margin-top: 0; margin-bottom: 1rem; border-top: 1px solid #e9ecef;">
+                            <p>Please provide any additional information that you think may be relevant to your project allocation.</p>
+
+                            {{ form.comment }}
                         </fieldset>
                         
                         <button type="submit" class="btn btn-primary">Submit</button>

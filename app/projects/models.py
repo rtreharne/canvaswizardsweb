@@ -108,6 +108,7 @@ class Student(models.Model):
 
     prerequisites = models.CharField(max_length=1000, null=True, blank=True)
 
+    comment = models.TextField(max_length=2000, null=True, blank=True, verbose_name='Comments', help_text='Please provide any additional information that you think may be relevant to your project allocation.')
     mbiolsci = models.CharField(max_length=128, null=True, blank=True)
 
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE, null=True, blank=True)
