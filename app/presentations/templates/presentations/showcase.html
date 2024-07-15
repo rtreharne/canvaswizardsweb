@@ -1,0 +1,267 @@
+{% extends "presentations/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/report.css' %}">
+<link rel="stylesheet" href="{% static 'css/showcase.css' %}">
+{% endblock %}
+
+{% block content %}
+<style>
+
+
+</style>
+
+<header class="page-section" id="report">
+
+
+    <div class="container" >
+        <a href="/"><img class="logo" src="{% static 'img/site-logo-2.png' %}" alt="Canvas Wizards Logo"></a>
+        <h1>{{ report_request.assignment_name }}</h1>
+        <!-- <p>
+            This list of presentations is generated from the Canvas course. You can download the presentations by clicking the download link next to each presentation.
+        </p> -->
+        <br>
+        <div class="row">
+            
+            <div class="col-md-3 ">
+
+                <!-- Put a search bar here -->
+                <form id="searchForm">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="search" placeholder="Search">
+                        <div class="input-group-append">
+                        </div>
+                    </div>
+                </form>
+
+
+                <!-- Navigation links for 'set' values, with placeholders for 'group' values as their children -->
+                <div id="navigation">
+                    <div id="setLinks">
+                        <!-- Links will be dynamically inserted here -->
+                    </div>
+                </div>
+
+
+                
+            </div>
+            
+            
+            <div class="col-md-9">
+                {{ report_request.html|safe }}
+            </div>                
+        </div>
+
+    </div>
+</header>
+
+
+
+
+{% endblock %}
+
+<!-- Extend block js -->
+{% block js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var searchInput = document.querySelector('#searchForm input[name="search"]'); // Select the search input field
+        searchInput.addEventListener('keypress', function(event) {
+            if (event.keyCode === 13) { // 13 is the keycode for Enter
+                event.preventDefault(); // Prevent form submission
+                // Optional: Trigger the desired action here, e.g., manually invoking the search functionality
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+    var setColumnIndex = -1;
+    var groupColumnIndex = -1;
+
+    // Find indexes of 'set' and 'group' columns
+    $('.dataframe th').each(function(index) {
+        var headerText = $(this).text().trim().toLowerCase();
+        if (headerText === 'set') {
+            setColumnIndex = index + 1; // +1 because nth-child is 1-based
+        } else if (headerText === 'group') {
+            groupColumnIndex = index + 1; // +1 because nth-child is 1-based
+        }
+    });
+
+    // If 'set' column found, hide it
+    if (setColumnIndex !== -1) {
+        $('.dataframe th:nth-child(' + setColumnIndex + '), .dataframe td:nth-child(' + setColumnIndex + ')').hide();
+    }
+
+    // If 'group' column found, hide it
+    if (groupColumnIndex !== -1) {
+        $('.dataframe th:nth-child(' + groupColumnIndex + '), .dataframe td:nth-child(' + groupColumnIndex + ')').hide();
+    }
+});
+    
+    $(document).ready(function() {
+        $('input[name="search"]').on('input', function() {
+            var searchQuery = $(this).val().toLowerCase(); // Get the current value of the input
+
+            var nameColumnIndex = -1;
+            var setColumnIndex = -1;
+            $('.dataframe th').each(function(index) {
+                var text = $(this).text().trim().toLowerCase();
+                if (text === 'name') {
+                    nameColumnIndex = index + 1; // +1 because nth-child is 1-based
+                } else if (text === 'set') {
+                    setColumnIndex = index + 1;
+                }
+                if (nameColumnIndex !== -1 && setColumnIndex !== -1) {
+                    return false; // Break the loop if both indices are found
+                }
+            });
+
+            if (nameColumnIndex === -1 || setColumnIndex === -1) {
+                console.log("Required columns not found.");
+                return; // Exit if either column wasn't found
+            }
+
+            // Filter rows based on the search query and "All Students" in the "set" column
+            $('.dataframe tbody tr').each(function() {
+                var row = $(this);
+                var nameText = row.find('td:nth-child(' + nameColumnIndex + ')').text().toLowerCase();
+                var setText = row.find('td:nth-child(' + setColumnIndex + ')').text().trim();
+                if (nameText.includes(searchQuery) && setText === "All Students") {
+                    row.show();
+                } else {
+                    row.hide();
+                }
+            });
+        });
+    });
+    
+
+    $(document).ready(function() {
+    var setColumnIndex = 1; // 'set' is in the second column
+    var groupColumnIndex = 2; // 'group' is in the third column
+
+    // Function to collect unique combinations of sets and groups
+    function collectSetsAndGroups() {
+        let setGroups = {};
+        $('.dataframe tbody tr').each(function() {
+            let setValue = $(this).find('td').eq(setColumnIndex).text();
+            let groupValue = $(this).find('td').eq(groupColumnIndex).text();
+            if (!setGroups[setValue]) {
+                setGroups[setValue] = new Set();
+            }
+            setGroups[setValue].add(groupValue);
+        });
+        return setGroups;
+    }
+
+    // Function to create nested navigation links for sets and groups
+    // Function to create nested navigation links for sets and groups
+    // Adjusted function to create nested navigation links for sets and groups
+    function createNavLinks(setGroups) {
+        Object.keys(setGroups).forEach(function(set) {
+            let setLink = $('<h4 href="#" class="set-link" data-set="' + set + '">' + set + '</h4>');
+            $('#setLinks').append(setLink);
+            let groupList = $('<ul class="group-list" style="display: none;"></ul>'); // Start with group list hidden
+            
+            // Convert the Set of groups into an array and sort it
+            let sortedGroups = Array.from(setGroups[set]).sort();
+            
+            // Iterate over the sorted array to create and append the group links
+            sortedGroups.forEach(function(group) {
+                let groupLink = $('<li><a href="#" class="group-link" data-set="' + set + '" data-group="' + group + '">' + group + '</a></li>');
+                groupList.append(groupLink);
+            });
+            $('#setLinks').append(groupList);
+        });
+    };
+
+    // Function to toggle visibility of child group links
+    $(document).on('click', '.set-link', function(e) {
+        e.preventDefault();
+        $(this).next('.group-list').toggle(); // Toggle visibility of the next sibling element with class 'group-list'
+    });
+
+    // Function to filter table rows based on the selected set and group
+    function filterTableBySetAndGroup(selectedSet, selectedGroup) {
+        $('.dataframe tbody tr').each(function() {
+            var rowSet = $(this).find('td').eq(setColumnIndex).text();
+            var rowGroup = $(this).find('td').eq(groupColumnIndex).text();
+            if ((rowSet === selectedSet || selectedSet === "All") && (rowGroup === selectedGroup || selectedGroup === "All")) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
+
+    // Collect sets and groups and create navigation links
+    let setGroups = collectSetsAndGroups();
+    createNavLinks(setGroups);
+
+    // Event listener for set link clicks
+    $(document).on('click', '.set-link', function(e) {
+        e.preventDefault();
+        var selectedSet = $(this).attr('data-set');
+        filterTableBySetAndGroup(selectedSet, "All");
+    });
+
+    // Event listener for group link clicks
+    $(document).on('click', '.group-link', function(e) {
+        e.preventDefault();
+        var selectedSet = $(this).attr('data-set');
+        var selectedGroup = $(this).attr('data-group');
+        filterTableBySetAndGroup(selectedSet, selectedGroup);
+    });
+
+    $('.group-link[data-group="All Students"]').click(); // Select "All Students" by default
+    });
+
+    
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Select all rows in the table body
+        var rows = document.querySelectorAll('tbody tr');
+    
+        rows.forEach(function(row) {
+            // Get the 'file' column cell, which is the fourth cell in each row
+            var fileCell = row.cells[3];
+            var markerCell = row.cells[4];
+    
+            // Create an anchor element
+            var link = document.createElement('a');
+            link.href = fileCell.textContent; // Set href to the content of the cell
+            link.textContent = 'Download'; // Set link text
+            // add download attribute
+            link.download = 'Download';
+
+            // Create an anchor element
+            var marker = document.createElement('a');
+            marker.href = markerCell.textContent; // Set href to the content of the cell
+            marker.textContent = 'SpeedGrader'; // Set link text
+            // Also add target='_blank' to open in a new tab
+            marker.target = '_blank';
+
+
+            // Clear the cell and append the anchor element
+            fileCell.innerHTML = '';
+            fileCell.appendChild(link);
+
+            // Clear the cell and append the anchor element
+            markerCell.innerHTML = '';
+            markerCell.appendChild(marker);
+        });
+    });
+</script>
+
+
+
+{% endblock %}

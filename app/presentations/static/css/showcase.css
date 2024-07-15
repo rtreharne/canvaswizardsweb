@@ -1,0 +1,64 @@
+.group-links {
+    margin-left: 20px; /* Indent group links */
+}
+
+.group-link {
+    display: block; /* Make group links appear on new lines */
+    margin: 2px 0; /* Add some spacing between group links */
+}
+
+.set-link {
+    cursor: pointer; /* Change cursor to indicate clickable */
+}
+.set-column, .group-column {
+display: none;
+}
+
+
+.dataframe {
+    width: 100%;
+    border-collapse: collapse;
+    color: white; /* Ensures text is visible against a dark background */
+}
+
+.dataframe th,
+.dataframe td {
+    text-align: left;
+    padding: 12px; /* Generous padding */
+    border: none; /* No cell borders */
+    background-color: #000; /* Default background color set to black */
+}
+
+.dataframe th {
+    font-weight: bold; /* Headers in bold */
+    background-color: #333; /* Slightly darker background for headers */
+}
+
+input.form-control {
+    width: 100%;
+    /* round borders */
+    border-radius: 5px !important;
+}
+
+.set-link {
+    font-size: 1.2em;
+    /* put line underneath */
+    border-bottom: solid 1px #ffffff;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+a.group-link {
+    list-style-type: none !important;
+    padding-left: 10px;
+}
+
+.group-list {
+    list-style-type: none !important;
+    padding-left: 10px;
+}
+
+.alert-success a {
+    color: #3e10d1;
+}

@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['*', ] if DEBUG else os.environ.get("DJANGO_ALLOWED_HOSTS").spl
 
 if DEBUG:
     SITE_ID = 1
+    ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
 
 else:
     SITE_ID = 3
@@ -74,6 +75,7 @@ INSTALLED_APPS = [
     'captionsearch',
     'tools',
     'sample',
+    'presentations',
 ]
 
 MIDDLEWARE = [
