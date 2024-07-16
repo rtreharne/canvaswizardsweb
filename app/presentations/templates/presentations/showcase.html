@@ -6,6 +6,7 @@
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/report.css' %}">
 <link rel="stylesheet" href="{% static 'css/showcase.css' %}">
+<link rel="stylesheet" href="{% static 'css/loader.css' %}">   
 {% endblock %}
 
 {% block content %}
@@ -51,7 +52,18 @@
             
             
             <div class="col-md-9">
-                {{ report_request.html|safe }}
+
+                <div class="loader">
+                    <div class="wand"></div>
+                    <div class="spark spark1"></div>
+                    <div class="spark spark2"></div>
+                    <div class="spark spark3"></div>
+                    <div class="spark spark4"></div>
+                    <div class="spark spark5"></div>
+                </div>
+                <div class="table-responsive">
+                    {{ report_request.html|safe }}
+                </div>
             </div>                
         </div>
 
@@ -260,8 +272,29 @@
             markerCell.appendChild(marker);
         });
     });
-</script>
 
+    
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // This function runs when the DOM is fully loaded
+
+        // Hide the loader and show the table-responsive
+        const loader = document.querySelector('.loader');
+        const tableResponsive = document.querySelector('.table-responsive');
+
+        // Simulate a delay to see the loader, for example, fetching data
+        // Remove setTimeout if you're not simulating a delay
+        setTimeout(() => {
+            if (loader) {
+                loader.style.display = 'none'; // Hide loader
+            }
+            if (tableResponsive) {
+                tableResponsive.style.display = 'block'; // Show table-responsive
+            }
+        }, 1000); // Adjust time as needed, or remove setTimeout if not simulating a delay
+    });
+</script>
 
 
 {% endblock %}

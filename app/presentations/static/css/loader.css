@@ -1,0 +1,107 @@
+.loader {
+    position: relative;
+    /* width: 100px; */
+    height: 100px;
+}
+
+.loader::before,
+.loader::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid white;
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+}
+
+.loader::before {
+    width: 80px;
+    height: 80px;
+}
+
+.loader::after {
+    width: 60px;
+    height: 60px;
+    animation: spin 1.5s linear infinite reverse;
+}
+
+.wand {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 50px;
+    background-color: white;
+    transform-origin: bottom;
+    animation: wave 1s linear infinite;
+}
+
+.spark {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: white;
+    border-radius: 50%;
+    animation: sparkle 1s linear infinite;
+}
+
+.spark1 {
+    top: 20%;
+    left: 40%;
+    animation-delay: 0s;
+}
+
+.spark2 {
+    top: 10%;
+    left: 60%;
+    animation-delay: 0.2s;
+}
+
+.spark3 {
+    top: 30%;
+    left: 70%;
+    animation-delay: 0.4s;
+}
+
+.spark4 {
+    top: 40%;
+    left: 20%;
+    animation-delay: 0.6s;
+}
+
+.spark5 {
+    top: 50%;
+    left: 80%;
+    animation-delay: 0.8s;
+}
+
+@keyframes spin {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@keyframes wave {
+    0%, 100% {
+        transform: translate(-50%, -50%) rotate(-20deg);
+    }
+    50% {
+        transform: translate(-50%, -50%) rotate(20deg);
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.5);
+    }
+}

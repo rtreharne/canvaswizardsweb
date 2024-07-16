@@ -62,3 +62,7 @@ a.group-link {
 .alert-success a {
     color: #3e10d1;
 }
+
+.table-responsive {
+    display: none;
+}
