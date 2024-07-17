@@ -115,10 +115,10 @@ class Student(models.Model):
     admin_dept = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     submitted_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['student_id', 'allocation_round'], name='unique_student_round')
-        ]
+    # class Meta:
+    #     constraints = [
+    #         models.UniqueConstraint(fields=['student_id', 'allocation_round'], name='unique_student_round')
+    #     ]
     
     def __str__(self):
         return f'{self.last_name}, {self.first_name}'
