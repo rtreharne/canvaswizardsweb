@@ -9,6 +9,7 @@ app_name = 'projects'
 urlpatterns = [
     path('', views.index, name='index'),
     #path('<str:institution_slug>/', views.admin_department, name='admin-department'),
+    path('<str:institution_slug>/<str:admin_department_slug>/topics', views.topics, name='topics'),
     path('<str:institution_slug>/<str:admin_department_slug>/supervisor', views.supervisors, name='supervisor'),
     path('<str:institution_slug>/<str:admin_department_slug>/supervisor/<str:supervisor_username>', views.supervisor_dash, name='supervisor-dash'),
     path('<str:institution_slug>/<str:admin_department_slug>/student', views.students, name='students'),

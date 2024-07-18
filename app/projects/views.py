@@ -298,3 +298,16 @@ def students(request, institution_slug, admin_department_slug):
     context['form'] = form
 
     return render(request, 'projects/students.html', context)
+
+def topics(request, institution_slug, admin_department_slug):
+
+    topics = ProjectKeyword.objects.filter(admin_dept__slug=admin_department_slug).order_by('name')
+
+
+    context = {
+        'topics': topics,
+        'institution': Institution.objects.get(slug=institution_slug),
+        'admin_department': Department.objects.get(slug=admin_department_slug),
+    }
+
+    return render(request, 'projects/topics.html', context)

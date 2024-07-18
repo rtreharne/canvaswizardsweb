@@ -257,9 +257,13 @@ class ProjectTypeAdmin(AdminBase):
     search_fields = ('name',)
     
 class ProjectKeywordAdmin(AdminBase):
-    list_display = ('name','department','institute', 'ug_only', 'pg_only')
+    list_display = ('name','department','description', 'institute', 'ug_only', 'pg_only')
     search_fields = ('name',)
     actions = ['export_csv']
+
+    # include description in list_display but truncate to 20 characters
+    def description(self, obj):
+        return obj.description[:20]
 
 
     change_list_template = "projects/keywords_changelist.html"
