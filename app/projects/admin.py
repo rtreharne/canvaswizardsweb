@@ -410,9 +410,12 @@ class ProjectAdmin(AdminBase):
         'active',
         )
     
+    actions = ['export_csv']
+    
     list_filter = ('round', 'active', 'ug_or_pg', 'active')
     list_editable = ('active',)
     search_fields = ('supervisor_set__supervisor__first_name', 'supervisor_set__supervisor__last_name')
+    
     def primary(self, obj):
          return f'{obj.supervisor_set.supervisor.last_name}, {obj.supervisor_set.supervisor.first_name}'
     
@@ -423,6 +426,32 @@ class ProjectAdmin(AdminBase):
 
     def type(self, obj):
         return obj.supervisor_set.type.name
+    
+    def export_csv(self, request, queryset):
+        meta = self.model._meta
+        field_names = [field.name for field in meta.fields] + ['keywords', 'type']
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename={meta}.csv'
+        writer = csv.writer(response)
+
+        writer.writerow(field_names)
+        for obj in queryset:
+            row = []
+            for field in field_names:
+                if field == 'keywords':
+                    keywords = obj.supervisor_set.keywords.all()
+                    keywords_str = ', '.join([keyword.name for keyword in keywords])
+                    row.append(keywords_str)
+                elif field == 'type':
+                    row.append(obj.supervisor_set.type if obj.supervisor_set else '')
+                else:
+                    row.append(getattr(obj, field, ''))
+            writer.writerow(row)
+
+        return response
+
+    export_csv.short_description = "Export Selected to CSV"
 
 class DepartmentAdmin(admin.ModelAdmin):
     list_display = ('name', 'institute')
