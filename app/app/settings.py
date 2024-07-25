@@ -39,7 +39,6 @@ if DEBUG:
 else:
     SITE_ID = 3
     ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
-    DEBUG=True
 
 
 LOGIN_REDIRECT_URL = '/'
