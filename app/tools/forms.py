@@ -16,7 +16,7 @@ class EnrollmentsForm(forms.Form):
             .format(static('template_files/enrollments_template.xlsx'))
         )
     )
-    action = forms.ChoiceField(label='Action', choices=[('add', 'Add enrolments'), ('delete', 'Delete enrolments')], initial='add')
+    action = forms.ChoiceField(label='Action', choices=[('add', 'Add enrolments'), ('conclude', 'Conclude enrolments'), ('delete', 'Delete enrolments')], initial='add')
     notify = forms.BooleanField(label='Notify users', initial=False, required=False)
     # Make sure file is a .tsv file
 

@@ -92,6 +92,15 @@ def enrollments(request):
                     else:
                         status.append("Error")
                         detail.append("User enrollment not found.")
+                elif action == "conclude":
+                    enrollment = get_enrollments_by_user_id(course, user['id'], row["enrollment_type"])
+                    if enrollment:
+                        enrollment.deactivate(task="conclude")
+                        status.append("Success")
+                        detail.append("User enrollment concluded.")
+                    else:
+                        status.append("Error")
+                        detail.append("User enrollment not found.")
 
             df["status"] = status
             df["detail"] = detail
