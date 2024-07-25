@@ -447,7 +447,10 @@ class ProjectAdmin(AdminBase):
                     row.append(obj.supervisor_set.type if obj.supervisor_set else '')
                 else:
                     row.append(getattr(obj, field, ''))
-            writer.writerow(row)
+            try:
+                writer.writerow(row)
+            except:
+                continue
 
         return response
 
