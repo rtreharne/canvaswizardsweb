@@ -150,9 +150,10 @@ class RoundAdmin(AdminBase):
     search_fields = ('name',)
 
 class StudentAdmin(AdminBase):
-    list_display = ('student_id', 'last_name', 'first_name', 'email', 'programme', 'mbiolsci', 'project_keywords', 'project_types', 'priority', 'allocation_round')
+    list_display = ('student_id', 'last_name', 'first_name', 'email', 'programme', 'mbiolsci', 'project_keywords', 'project_types', 'priority', 'allocation_round', 'submitted_at')
     list_filter = ('programme', 'mbiolsci', 'allocation_round', 'priority')
     search_fields = ('last_name', 'first_name', 'email')
+    actions = ['export_csv']
 
     # Default filter by most recent allocation round
     def get_queryset(self, request):
@@ -166,6 +167,28 @@ class StudentAdmin(AdminBase):
         except Exception as e:
             messages.error(request, f"An error occurred: {e}")
             return qs
+        
+    def export_csv(self, request, queryset):
+        meta = self.model._meta
+        field_names = [field.name for field in meta.fields]
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename={meta}.csv'
+        writer = csv.writer(response)
+
+        writer.writerow(field_names)
+        for obj in queryset:
+            row = []
+            for field in field_names:
+                row.append(getattr(obj, field, ''))
+            try:
+                writer.writerow(row)
+            except:
+                continue
+
+        return response
+
+    export_csv.short_description = "Export Selected to CSV"
 
 class PrerequisiteAdmin(AdminBase):
     list_display = ('name',)
