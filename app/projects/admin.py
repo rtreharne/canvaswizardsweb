@@ -60,6 +60,8 @@ class SupervisorAdmin(AdminBase):
     search_fields = ('username', 'last_name', 'first_name', 'email')
     list_editable = ('projects_UG', 'projects_PG', 'active')
 
+    actions = ['export_csv']
+
     change_list_template = "projects/supervisors_changelist.html"
 
     def get_urls(self):
@@ -136,6 +138,28 @@ class SupervisorAdmin(AdminBase):
         return render(
             request, "forms/csv_form.html", payload
         )
+    
+    def export_csv(self, request, queryset):
+        meta = self.model._meta
+        field_names = [field.name for field in meta.fields]
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename={meta}.csv'
+        writer = csv.writer(response)
+
+        writer.writerow(field_names)
+        for obj in queryset:
+            row = []
+            for field in field_names:
+                row.append(getattr(obj, field, ''))
+            try:
+                writer.writerow(row)
+            except:
+                continue
+
+        return response
+
+    export_csv.short_description = "Export Selected to CSV"
     
 
 
