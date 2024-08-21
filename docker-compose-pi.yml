@@ -28,12 +28,11 @@ services:
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASS} 
+      - POSTGRES_PASSWORD=${DB_PASS}
 
   proxy:
     build:
       context: ./docker/proxy
-      platform: linux/arm64
     restart: always
     depends_on:
       - app
@@ -71,7 +70,6 @@ services:
     restart: 'no'
     build:
       context: .
-      platform: linux/arm64
     command: >
       sh -c "celery -A app worker -l INFO"
     volumes:
