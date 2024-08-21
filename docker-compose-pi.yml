@@ -1,0 +1,97 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+    restart: always
+    volumes:
+      - static-data:/vol/web/
+    environment:
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - SECRET_KEY=${SECRET_KEY}
+      - DJANGO_ALLOWED_HOSTS=${DOMAIN}
+    depends_on:
+      - db
+      - redis
+    container_name: app
+
+  db:
+    image: postgres:13-alpine
+    platform: linux/arm64
+    restart: always
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS} 
+
+  proxy:
+    build:
+      context: ./docker/proxy
+      platform: linux/arm64
+    restart: always
+    depends_on:
+      - app
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - certbot-web:/vol/www
+      - static-data:/vol/static
+      - proxy-dhparams:/vol/proxy
+      - certbot-certs:/etc/letsencrypt
+    environment:
+      - DOMAIN=${DOMAIN}
+
+  certbot:
+    image: certbot/certbot:arm32v7-latest
+    command: echo "Skipping..."
+    environment:
+      - EMAIL=${ACME_DEFAULT_EMAIL}
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - certbot-web:/vol/www
+      - certbot-certs:/etc/letsencrypt/
+    depends_on:
+      - proxy
+
+  redis:
+    image: redis:alpine
+    platform: linux/arm64
+    container_name: redis
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+
+  celery:
+    restart: 'no'
+    build:
+      context: .
+      platform: linux/arm64
+    command: >
+      sh -c "celery -A app worker -l INFO"
+    volumes:
+      - static-data:/vol/web/
+    container_name: celery
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DJANGO_ALLOWED_HOSTS=${DOMAIN}
+    depends_on:
+      - db
+      - redis
+      - app 
+     
+volumes:
+  postgres-data:
+  static-data:
+  certbot-web:
+  proxy-dhparams:
+  certbot-certs:
