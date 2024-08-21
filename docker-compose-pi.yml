@@ -40,10 +40,8 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - certbot-web:/vol/www
       - static-data:/vol/static
       - proxy-dhparams:/vol/proxy
-      - certbot-certs:/etc/letsencrypt
     environment:
       - DOMAIN=${DOMAIN}
 
