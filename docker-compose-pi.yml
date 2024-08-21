@@ -47,17 +47,6 @@ services:
     environment:
       - DOMAIN=${DOMAIN}
 
-  certbot:
-    image: certbot/certbot:arm32v7-latest
-    command: echo "Skipping..."
-    environment:
-      - EMAIL=${ACME_DEFAULT_EMAIL}
-      - DOMAIN=${DOMAIN}
-    volumes:
-      - certbot-web:/vol/www
-      - certbot-certs:/etc/letsencrypt/
-    depends_on:
-      - proxy
 
   redis:
     image: redis:alpine
@@ -90,6 +79,4 @@ services:
 volumes:
   postgres-data:
   static-data:
-  certbot-web:
   proxy-dhparams:
-  certbot-certs:
