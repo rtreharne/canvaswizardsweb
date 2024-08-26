@@ -48,8 +48,8 @@ services:
       - DOMAIN=${DOMAIN}
 
   certbot:
-    image: certbot/certbot:arm64v8-latest  # Use a multi-architecture image that supports ARM
-    entrypoint: ["sh", "/opt/certify-init.sh"]  # Override the entrypoint to run the script
+    build:
+      context: ./docker/certbot
     environment:
       - EMAIL=${ACME_DEFAULT_EMAIL}
       - DOMAIN=${DOMAIN}
@@ -58,7 +58,6 @@ services:
       - certbot-certs:/etc/letsencrypt/
     depends_on:
       - proxy
-    
 
 
   redis:

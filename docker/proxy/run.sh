@@ -1,7 +1,5 @@
 #!/bin/bash
 
-sleep 60
-
 set -e
 
 echo "Checking for dhparams.pem"
