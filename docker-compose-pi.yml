@@ -61,8 +61,8 @@ services:
     volumes:
       - certbot-web:/config
     ports:
-      - 80:80
-      - 443:443
+      - 8081:80
+      - 8444:443
     restart: unless-stopped
 
 
