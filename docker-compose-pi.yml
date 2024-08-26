@@ -59,7 +59,7 @@ services:
       - EMAIL=${ACME_DEFAULT_EMAIL}
       - ONLY_SUBDOMAINS=false
     volumes:
-      - certbot-web:/config
+      - certbot-web:/config/www
     ports:
       - 8081:80
       - 8444:443
