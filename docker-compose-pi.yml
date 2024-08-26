@@ -48,8 +48,8 @@ services:
       - DOMAIN=${DOMAIN}
 
   certbot:
-    build:
-      context: ./docker/certbot
+    image: certbot/certbot:arm32v7-latest  # Use ARM-compatible image for Raspberry Pi
+    command: sh /opt/certify-init.sh       # Run the script directly
     environment:
       - EMAIL=${ACME_DEFAULT_EMAIL}
       - DOMAIN=${DOMAIN}
