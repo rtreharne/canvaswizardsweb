@@ -48,7 +48,7 @@ services:
       - DOMAIN=${DOMAIN}
 
   certbot:
-    image: linuxserver/certbot  # Use ARM-compatible image
+    image: certbot/certbot:arm64v8-latest  # Use a multi-architecture image that supports ARM
     environment:
       - EMAIL=${ACME_DEFAULT_EMAIL}
       - DOMAIN=${DOMAIN}
@@ -57,7 +57,7 @@ services:
       - certbot-certs:/etc/letsencrypt/
     depends_on:
       - proxy
-    command: sh /opt/certify-init.sh  # Ensure the script runs as expected
+    command: sh /opt/certify-init.sh
 
 
   redis:
