@@ -38,7 +38,6 @@ services:
       - app
     ports:
       - 80:80
-      - 443:443
     volumes:
       - static-data:/vol/static
       - proxy-dhparams:/vol/proxy
