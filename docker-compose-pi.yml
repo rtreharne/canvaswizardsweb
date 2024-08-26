@@ -50,6 +50,8 @@ services:
   certbot:
     build:
       context: ./docker/certbot
+      args:
+        TARGETARCH: arm  # Use arm for Raspberry Pi
     command: sh /opt/certify-init.sh  # Run the certify-init.sh script
     environment:
       - EMAIL=${ACME_DEFAULT_EMAIL}
