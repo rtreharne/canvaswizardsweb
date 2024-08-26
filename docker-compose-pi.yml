@@ -48,25 +48,17 @@ services:
       - DOMAIN=${DOMAIN}
 
   certbot:
-    image: linuxserver/letsencrypt:arm32v7-latest
-    container_name: certbot
+    build:
+      context: ./docker/certbot
+    command: sh /opt/certify-init.sh  # Run the certify-init.sh script
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-      - URL=${DOMAIN}
-      - VALIDATION=http
       - EMAIL=${ACME_DEFAULT_EMAIL}
-      - ONLY_SUBDOMAINS=false
-      - EXTRA_DOMAINS=
-      - VALIDATION=http
-      - DNSPLUGIN=
+      - DOMAIN=${DOMAIN}
     volumes:
-      - certbot-web:/config/www
-    ports:
-      - 8081:80
-      - 8444:443
-    restart: unless-stopped
+      - certbot-web:/vol/www
+      - certbot-certs:/etc/letsencrypt/
+    depends_on:
+      - proxy
 
 
   redis:
