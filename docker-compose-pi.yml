@@ -48,16 +48,23 @@ services:
       - DOMAIN=${DOMAIN}
 
   certbot:
-    image: certbot/certbot:arm32v7-latest
-    command: certonly --webroot --webroot-path=/var/www/certbot --agree-tos --email ${ACME_DEFAULT_EMAIL} --no-eff-email --force-renewal -d ${DOMAIN}
-    volumes:
-      - certbot-web:/var/www/certbot
-      - certbot-certs:/etc/letsencrypt
+    image: linuxserver/letsencrypt:arm32v7-latest
+    container_name: certbot
     environment:
-      - DOMAIN=${DOMAIN}
-      - ACME_DEFAULT_EMAIL=${ACME_DEFAULT_EMAIL}
-    depends_on:
-      - proxy
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - URL=${DOMAIN}
+      - VALIDATION=http
+      - EMAIL=${ACME_DEFAULT_EMAIL}
+      - ONLY_SUBDOMAINS=false
+    volumes:
+      - certbot-web:/config
+    ports:
+      - 80:80
+      - 443:443
+    restart: unless-stopped
+
 
   redis:
     image: redis:alpine
