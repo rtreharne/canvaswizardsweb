@@ -48,8 +48,7 @@ services:
       - DOMAIN=${DOMAIN}
 
   certbot:
-    image: certbot/certbot:arm32v7-latest  # Use ARM-compatible image for Raspberry Pi
-    command: sh /opt/certify-init.sh       # Run the script directly
+    image: linuxserver/certbot  # Use ARM-compatible image
     environment:
       - EMAIL=${ACME_DEFAULT_EMAIL}
       - DOMAIN=${DOMAIN}
@@ -58,6 +57,7 @@ services:
       - certbot-certs:/etc/letsencrypt/
     depends_on:
       - proxy
+    command: sh /opt/certify-init.sh  # Ensure the script runs as expected
 
 
   redis:
