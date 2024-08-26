@@ -48,14 +48,14 @@ services:
       - DOMAIN=${DOMAIN}
 
   certbot:
-    build:
-      context: ./docker/certbot
-    environment:
-      - EMAIL=${ACME_DEFAULT_EMAIL}
-      - DOMAIN=${DOMAIN}
+    image: certbot/certbot:arm32v7-latest
+    command: certonly --webroot --webroot-path=/var/www/certbot --agree-tos --email ${ACME_DEFAULT_EMAIL} --no-eff-email --force-renewal -d ${DOMAIN}
     volumes:
-      - certbot-web:/vol/www
-      - certbot-certs:/etc/letsencrypt/
+      - certbot-web:/var/www/certbot
+      - certbot-certs:/etc/letsencrypt
+    environment:
+      - DOMAIN=${DOMAIN}
+      - ACME_DEFAULT_EMAIL=${ACME_DEFAULT_EMAIL}
     depends_on:
       - proxy
 
