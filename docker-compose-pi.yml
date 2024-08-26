@@ -58,6 +58,9 @@ services:
       - VALIDATION=http
       - EMAIL=${ACME_DEFAULT_EMAIL}
       - ONLY_SUBDOMAINS=false
+      - EXTRA_DOMAINS=
+      - VALIDATION=http
+      - DNSPLUGIN=
     volumes:
       - certbot-web:/config/www
     ports:
