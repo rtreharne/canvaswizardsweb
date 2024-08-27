@@ -1,4 +1,3 @@
-# Redirect all HTTP requests to HTTPS
 server {
     listen 80;
     server_name ${DOMAIN} www.${DOMAIN} pi.${DOMAIN};
@@ -8,39 +7,27 @@ server {
     }
 
     location / {
-        # Redirect all HTTP traffic to HTTPS
         return 301 https://$host$request_uri;
     }
 }
 
-# Redirect www.${DOMAIN} and pi.${DOMAIN} to non-www HTTPS
-server {
-    listen 443 ssl;
-    server_name www.${DOMAIN} pi.${DOMAIN};
-
-    # Redirect to non-www domain
-    return 301 https://${DOMAIN}$request_uri;
-}
-
-# Handle HTTPS requests for ${DOMAIN}
 server {
     listen      443 ssl;
-    server_name ${DOMAIN};
+    server_name ${DOMAIN} www.${DOMAIN} pi.${DOMAIN};
 
     ssl_certificate     /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
 
     include     /etc/nginx/options-ssl-nginx.conf;
+
     ssl_dhparam /vol/proxy/ssl-dhparams.pem;
 
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
-    # Static file serving
     location /static {
         alias /vol/static;
     }
 
-    # Proxy requests to the application server
     location / {
         uwsgi_pass           ${APP_HOST}:${APP_PORT};
         include              /etc/nginx/uwsgi_params;
