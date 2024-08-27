@@ -11,6 +11,8 @@ done
 
 echo "Getting certificate..."
 
+echo "Getting certificates for both ${DOMAIN} and www.${DOMAIN}..."
+
 certbot certonly \
     --webroot \
     --webroot-path "/vol/www/" \
