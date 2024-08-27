@@ -9,6 +9,8 @@ services:
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=changeme
     container_name: canvaswizards-db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
   app:
     build:
@@ -64,7 +66,7 @@ services:
       - redis
       - app
 
-
-
+volumes:
+  postgres-data:
 
       

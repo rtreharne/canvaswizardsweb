@@ -190,6 +190,71 @@ In case you want to force stop and remove all containers (warning, will remove d
 docker rm $(docker ps -a -q)
 ```
 
+# Creating Database Backups
+
+To create a backup of a postgres database on an AWS ece instances of the webapp and restore it locally:
+
+1. SSH into server and cd into app directory
+```bash
+ssh ec2-user@xxxxxxxxx ...
+cd app_directory
+```
+
+2. Dump the database to backups dir.
+
+Don't forget to replace MYPASS with your actual password.
+
+```bash
+docker-compose -f docker-compose-deploy.yml run --rm -v ${PWD}/backups:/backups -e PGPASSWORD=MYPASS db sh -c 'pg_dump -h db -U $POSTGRES_USER -d $POSTGRES_DB -F c -b -v -f /backups/full_database_backup.dump'
+```
+
+3. Exit server and transfer dumped file
+
+Exit the ssh session.
+
+Assuming that you are in the main app directory:
+
+```bash
+scp ec2-user@xxxxxxx:appdir/backups/full_database_backup.dump backups/.
+```
+
+4. Restore the database
+
+**WARNING: THIS WILL OVERWRITE ANY EXISTING DATA**
+
+Don't forget to replace MYLOCALPASS with your actual password (which will be different from the one used above).
+
+```bash
+docker-compose run --rm -v ${PWD}/backups:/backups -e PGPASSWORD=MYLOCALPASS db sh -c 'pg_restore -h db -U $POSTGRES_USER -d $POSTGRES_DB --clean -v /backups/full_database_backup.dump'
+```
+
+# Backing up media files
+
+To backup and restore media files from AWS ec2 instance:
+
+1. Create tarball
+
+Assuming that you've ssh'd into the server and are in the app directory
+
+```bash
+docker-compose -f docker-compose-deploy.yml run --rm --user root -v $(pwd)/backups:/backups app sh -c 'tar -czvf /backups/media_backups.tar.gz /vol/web/media'
+```
+
+2. Exit server and transfer dumped file
+
+Exit the ssh session.
+
+Assuming that you are in the main app directory:
+
+```bash
+scp ec2-user@xxxxxxx:appdir/backups/media_backups.tar.gz backups/.
+```
+
+3. Extract tarball to local container
+
+```bash
+docker-compose run --rm -v $(PWD)/backups:/backups app sh -c 'tar -xzvf /backups/media_backup.tar.gz --strip-components=3 -C /vol/web/media/'
+```
 
 
 

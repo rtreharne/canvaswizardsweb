@@ -139,3 +139,5 @@ report.csv
 
 data/
 .ipynb
+
+backups/
