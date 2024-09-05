@@ -33,7 +33,7 @@ DEBUG = bool(int(os.environ.get('DEBUG', 0)))
 ALLOWED_HOSTS = ['*', ] if DEBUG else os.environ.get("DJANGO_ALLOWED_HOSTS").split(',')
 
 if DEBUG:
-    SITE_ID = 1
+    SITE_ID = 3
     ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
 
 else:

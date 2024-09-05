@@ -249,7 +249,7 @@ class ProjectKeyword(models.Model):
         return self.name
 
 class Project(models.Model):
-    supervisor_set = models.ForeignKey(SupervisorSet, on_delete=models.CASCADE)
+    supervisor_set = models.ForeignKey(SupervisorSet, on_delete=models.CASCADE, null=True, blank=True)
     primary_supervisor = models.ForeignKey(Supervisor, on_delete=models.CASCADE, null=True, blank=True, related_name='primary_supervisor')
     second_supervisor = models.ForeignKey(Supervisor, on_delete=models.CASCADE, null=True, blank=True, related_name='second_supervisor')
     round = models.ForeignKey(Round, on_delete=models.CASCADE, null=True, blank=True, related_name='round')

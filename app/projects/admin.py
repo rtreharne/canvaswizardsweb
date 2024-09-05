@@ -438,6 +438,8 @@ class SupervisorSetsAdmin(AdminBase):
 
     list_editable = ('active', 'available_for_ug', 'available_for_pg')
 
+    actions = ['export_csv']
+
     def kw(self, obj):
         keywords = [str(keyword.name) for keyword in obj.keywords.all()]
         return keywords
@@ -445,6 +447,34 @@ class SupervisorSetsAdmin(AdminBase):
 
     # rename kw
     kw.short_description = 'Keywords'
+
+    def export_csv(self, request, queryset):
+        meta = self.model._meta
+        field_names = [field.name for field in meta.fields] + ['keywords']
+        print("FIELD NAMES:", field_names)
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename={meta}.csv'
+        writer = csv.writer(response)
+
+        writer.writerow(field_names)
+        for obj in queryset:
+            row = []
+            for field in field_names:
+                if field == 'keywords':
+                    keywords = obj.keywords.all()
+                    keywords_str = ', '.join([keyword.name for keyword in keywords])
+                    row.append(keywords_str)
+                else:
+                    row.append(getattr(obj, field, ''))
+            try:
+                writer.writerow(row)
+            except:
+                continue
+
+        return response
+
+    export_csv.short_description = "Export Selected to CSV"
 
 class ProjectAdmin(AdminBase):
     list_display = (
