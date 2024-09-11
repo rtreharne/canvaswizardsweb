@@ -9,7 +9,7 @@ echo "Taking down the existing Docker containers..."
 docker compose -f docker-compose-pi.yml down
 
 echo "Building the app..."
-docker compose -f docker-compose-pi.yml build app
+docker compose -f docker-compose-pi.yml build app --no-cache
 
 echo "Building celery..."
 docker compose -f docker-compose-deploy.yml pi celery

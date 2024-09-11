@@ -44,9 +44,10 @@ def allocate(allocation_id):
     # Calculate type scores
     print("Calculating type scores ...")
     type_scores = student_project_scores("types", projects, students)
+    print(type_scores)
 
     # Combine scores and normalize
-    scores = normalize_2d_array(keyword_scores + type_scores)
+    scores = normalize_2d_array(keyword_scores) + normalize_2d_array(type_scores)
 
     # Prerequisite filter
     print("Filtering prerequisites ...")

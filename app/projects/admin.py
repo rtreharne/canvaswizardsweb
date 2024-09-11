@@ -8,8 +8,36 @@ from django.urls import path, include, reverse
 from django.http import HttpResponse
 import datetime
 from .tasks import allocate
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 
+from django.contrib.admin import SimpleListFilter
+
+class UndersupplyFilter(SimpleListFilter):
+    title = 'undersupply'
+    parameter_name = 'undersupply'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('yes', 'Yes'),
+            ('no', 'No'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'yes':
+            return queryset.filter(id__in=[
+                obj.id for obj in queryset if self.model_admin.undersupply(obj)
+            ])
+        if self.value() == 'no':
+            return queryset.exclude(id__in=[
+                obj.id for obj in queryset if self.model_admin.undersupply(obj)
+            ])
+        return queryset
+
+    def __init__(self, request, params, model, model_admin):
+        super().__init__(request, params, model, model_admin)
+        self.model_admin = model_admin
 
 class AdminBase(admin.ModelAdmin):
     readonly_fields = ('institution', 'admin_dept')
@@ -56,14 +84,38 @@ class LocationAdmin(AdminBase):
     search_fields = ('name',)
 
 class SupervisorAdmin(AdminBase):
-    list_display = ('username', 'last_name', 'email', 'department', 'projects_UG', 'projects_PG', 'active')
-    list_filter = ('department', 'active',)
+    list_display = ('username', 'last_name', 'email', 'department', 'projects_UG', 'projects_PG', 'active', 'undersupply_link')
+    list_filter = ('department', 'active', UndersupplyFilter,)
     search_fields = ('username', 'last_name', 'first_name', 'email')
     list_editable = ('projects_UG', 'projects_PG', 'active')
 
     actions = ['export_csv']
 
     change_list_template = "projects/supervisors_changelist.html"
+
+    # create 'undersupply' column that is calculated
+
+    def undersupply(self, obj):
+        # get all related supervisor sets using the supervisor
+        sets = SupervisorSet.objects.filter(supervisor=obj)
+
+        # sum all of the available_for_ug
+        ug = sum([set.available_for_ug for set in sets])
+
+        # return True if the sum is less than the projects_UG
+        return ug < obj.projects_UG
+    
+    def undersupply_link(self, obj):
+        if self.undersupply(obj):
+            url = reverse('admin:projects_supervisorset_changelist') + f'?supervisor={obj.id}'
+            return format_html('<a href="{}" target="_blank">Yes</a>', url)
+        else:
+            return 'No'
+    undersupply_link.short_description = 'Undersupply'  # Column header name
+    undersupply_link.allow_tags = True  # Allow HTML tags
+
+    
+    
 
     def get_urls(self):
         urls = super().get_urls()
@@ -545,6 +597,13 @@ class AllocationAdmin(admin.ModelAdmin):
 
     # read only fields
     readonly_fields = ('user', 'status', 'created_at', 'output')
+
+    # When adding a new allocation I only want user to see Round field
+    def add_view(self, request, form_url='', extra_context=None):
+        self.fields = ('round',)
+        return super().add_view(request, form_url, extra_context)
+    
+    
 
     def save_model(self, request, obj, form, change):
         if not obj.pk:  # Only set the user during the first save.

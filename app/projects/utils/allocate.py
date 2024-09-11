@@ -30,7 +30,7 @@ def create_projects_list(sets):
                         "email": set.supervisor.email,
                         "department": set.supervisor.department,
                         "keywords": ",".join([x.name for x in set.keywords.all()]),
-                        "types": set.type,
+                        "types": set.type.name,
                         "prerequisites": prerequisite
                     }
 
