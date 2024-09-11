@@ -136,6 +136,9 @@ config.py
 adjustments.xlsx
 report.csv
 .pickle
+.pkl
+.xlsx
+.xls
 
 data/
 .ipynb

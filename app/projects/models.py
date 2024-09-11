@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.crypto import get_random_string
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
 class Institution(models.Model):
     name = models.CharField(max_length=255)
@@ -143,7 +144,7 @@ class Supervisor(models.Model):
     email = models.EmailField(null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE, null=True, blank=True)
-    admin_dept = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='upervisor_admin_dept', null=True, blank=True)
+    admin_dept = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='supervisor_admin_dept', null=True, blank=True)
     active = models.BooleanField(default=False)
     projects_UG = models.IntegerField(default=3)
     projects_PG = models.IntegerField(default=1)
@@ -270,6 +271,17 @@ class Project(models.Model):
 
     def __str__(self):
         return self.supervisor_set.supervisor.email
+    
+class Allocation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    round = models.ForeignKey(Round, on_delete=models.CASCADE)
+    output = models.FileField(upload_to='allocations/')
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=255, default='Pending')
+     
+    def __str__(self):
+        # combine round and created_at
+        return f'{self.round.slug} - {self.created_at}'
 
     
 

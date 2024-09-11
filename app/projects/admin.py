@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.urls import path, include, reverse
 from django.http import HttpResponse
 import datetime
+from .tasks import allocate
 
 
 
@@ -538,6 +539,21 @@ class DepartmentAdmin(admin.ModelAdmin):
     list_filter = ('institute',)
     search_fields = ('name',)
 
+class AllocationAdmin(admin.ModelAdmin):
+    list_display = ('round', 'user', 'status', 'created_at', 'output')
+    list_filter = ('round', 'status', 'user')
+
+    # read only fields
+    readonly_fields = ('user', 'status', 'created_at', 'output')
+
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:  # Only set the user during the first save.
+            obj.user = request.user
+        super().save_model(request, obj, form, change)
+        allocate.delay(obj.id)
+        
+
+
 admin.site.register(Institution)
 admin.site.register(Institute)
 admin.site.register(Department, DepartmentAdmin)
@@ -552,5 +568,6 @@ admin.site.register(Admin, AdminAdmin)
 admin.site.register(ProjectType, ProjectTypeAdmin)
 admin.site.register(ProjectKeyword, ProjectKeywordAdmin)
 admin.site.register(Project, ProjectAdmin)
+admin.site.register(Allocation, AllocationAdmin)
 
 # Register your models here.
