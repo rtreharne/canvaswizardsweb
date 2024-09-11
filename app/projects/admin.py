@@ -435,7 +435,7 @@ class SupervisorSetsAdmin(AdminBase):
         'prerequisite',
         'active'
     )
-    search_fields = ('supervisor',)
+    search_fields = ('supervisor__username',)
 
     list_editable = ('active', 'available_for_ug', 'available_for_pg')
 
