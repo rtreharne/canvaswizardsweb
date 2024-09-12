@@ -5,7 +5,7 @@ import numpy as np
 from .models import Allocation, SupervisorSet, Student
 from django.utils.datetime_safe import datetime
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from io import StringIO
+from io import StringIO, BytesIO
 import time
 from .utils.allocate import *
 import pickle
@@ -63,15 +63,23 @@ def allocate(allocation_id):
 
     output = prepare_output(result, student_project, projects, students)
 
+    # Get unallocated by cross-referencing id_project of output with id of projects
+    unallocated = projects[~projects["id"].isin(output["id_project"])]
+
     # Save output on allocation object file field
     print("Saving output ...")
-    output_file = StringIO()
-    output.to_csv(output_file, index=False)
+    output_file = BytesIO()
+
+    with pd.ExcelWriter(output_file, engine='xlsxwriter') as writer:
+        # Write each DataFrame to a different worksheet
+        output.to_excel(writer, sheet_name='allocation', index=False)
+        unallocated.to_excel(writer, sheet_name='unallocated', index=False)
+
     output_file.seek(0)
 
     # Create filename with timestamp
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    filename = f"output_{timestamp}.csv"
+    filename = f"output_{timestamp}.xlsx"
     allocation.output.save(filename, output_file)
 
     allocation.status = "Completed."
