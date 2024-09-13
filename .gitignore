@@ -139,7 +139,7 @@ report.csv
 .pkl
 .xlsx
 .xls
-.csv
+*.csv
 
 data/
 .ipynb
