@@ -6,7 +6,11 @@ import itertools
 import re
 from scipy.optimize import linear_sum_assignment
 
-def create_projects_list(sets):
+def transpose_array(array):
+    transposed_array = [list(row) for row in zip(*array)]
+    return transposed_array
+
+def create_projects_list(sets, ranking=None):
 
     rows = []
     available = {}
@@ -41,21 +45,26 @@ def create_projects_list(sets):
 
     df = pd.DataFrame(rows)
 
-    subset = []
+    if ranking is not None:
+        df["average_ranking"] = ranking
 
-    print("Making sure no more projects than expected for each supervisor ...")
-    for key, value in available.items():
+        subset = []
 
-        super_set = df[df["username"] == key]
+        print("Making sure no more projects than expected for each supervisor ...")
+        for key, value in available.items():
 
+            super_set = df[df["username"] == key]
 
-        # randomly select projects from supervisor's available projects
-        if len(super_set) > value:
-            super_set = super_set.sample(n=value)
-        
-        subset.append(super_set)
+            # order ascending by average ranking
+            super_set = super_set.sort_values(by="average_ranking")
 
-    df = pd.concat(subset)
+            if len(super_set) > value:
+                # select top n projects
+                super_set = super_set.head(value)
+            
+            subset.append(super_set)
+
+        df = pd.concat(subset)
 
     # reset index
     df.reset_index(drop=True, inplace=True)
@@ -80,6 +89,7 @@ def create_students_list(students):
                 "types": student.project_types,
                 "keywords": student.project_keywords,
                 "prerequisites": student.prerequisites,
+                "comments": student.comment,
                 "mbiolsci": student.mbiolsci
             }
         )

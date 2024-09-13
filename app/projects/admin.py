@@ -227,10 +227,11 @@ class RoundAdmin(AdminBase):
     search_fields = ('name',)
 
 class StudentAdmin(AdminBase):
-    list_display = ('student_id', 'last_name', 'first_name', 'email', 'programme', 'mbiolsci', 'project_keywords', 'project_types', 'priority', 'allocation_round', 'submitted_at')
+    list_display = ('student_id', 'last_name', 'first_name', 'active', 'email', 'programme', 'mbiolsci', 'project_keywords', 'project_types', 'priority', 'allocation_round', 'submitted_at')
     list_filter = ('programme', 'mbiolsci', 'allocation_round', 'priority')
     search_fields = ('last_name', 'first_name', 'email')
     actions = ['export_csv']
+    list_editable = ('active',)
 
     # Default filter by most recent allocation round
     def get_queryset(self, request):

@@ -22,7 +22,7 @@ def allocate(allocation_id):
     "Creating the projects list ..."
     projects = create_projects_list(sets)
 
-    students = Student.objects.filter(allocation_round=allocation.round)
+    students = Student.objects.filter(allocation_round=allocation.round, active=True)
     students = students.order_by('student_id', '-submitted_at').distinct('student_id')
     students = create_students_list(students)
 
@@ -44,7 +44,6 @@ def allocate(allocation_id):
     # Calculate type scores
     print("Calculating type scores ...")
     type_scores = student_project_scores("types", projects, students)
-    print(type_scores)
 
     # Combine scores and normalize
     scores = normalize_2d_array(keyword_scores) + normalize_2d_array(type_scores)
@@ -54,6 +53,41 @@ def allocate(allocation_id):
     scores = prerequisite_filter(scores, students, projects)
 
     # Rank scores
+    print("Ranking projects ...")
+    student_project = rank_student_projects(scores)
+
+    print("Transposing array ...")
+    project_student = transpose_array(student_project)
+
+    average_ranking = [np.mean(x) for x in project_student]
+
+    print("Re-reating projects list ...")
+    projects = create_projects_list(sets, ranking=average_ranking)
+
+    print(f"Projects: {len(projects)}", f"Students: {len(students)}")
+
+    if len(projects) < len(students):
+        allocation.status = "Insufficient projects available."
+        allocation.save()
+        return "Insufficient projects available."
+
+     # Calculate keywords scores
+    print("Calculating keywords scores ...")
+    keyword_scores = student_project_scores("keywords", projects, students)
+
+    # Calculate type scores
+    print("Calculating type scores ...")
+    type_scores = student_project_scores("types", projects, students)
+
+    # Combine scores and normalize
+    scores = normalize_2d_array(keyword_scores) + normalize_2d_array(type_scores)
+
+    # Prerequisite filter
+    print("Filtering prerequisites ...")
+    scores = prerequisite_filter(scores, students, projects)
+
+    # Rank scores (again)
+    print("Ranking projects ...")
     student_project = rank_student_projects(scores)
 
     allocation.status = "Allocating projects ..."
