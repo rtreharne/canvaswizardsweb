@@ -12,7 +12,7 @@ echo "Building the app..."
 docker compose -f docker-compose-pi.yml build app --no-cache
 
 echo "Building celery..."
-docker compose -f docker-compose-deploy.yml pi celery
+docker compose -f docker-compose-deploy.yml pi celery --no-cache
 
 echo "Bringing up the Docker containers in detached mode..."
 docker compose -f docker-compose-pi.yml up -d
