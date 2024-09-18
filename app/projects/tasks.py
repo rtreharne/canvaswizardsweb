@@ -16,7 +16,7 @@ import pickle
 def allocate(allocation_id):
     "Running the allocation algorithm ..."
     allocation = Allocation.objects.get(id=allocation_id)
-    sets = SupervisorSet.objects.filter(admin_dept=allocation.round.admin_dept, active=True)
+    sets = SupervisorSet.objects.filter(admin_dept=allocation.round.admin_dept, active=True, supervisor__active=True)
 
     # Create Projects List
     "Creating the projects list ..."
