@@ -28,6 +28,7 @@ def create_projects_list(sets, ranking=None):
                 
                 rows.append(
                     {
+                        "set_id": set.id,
                         "username": set.supervisor.username,
                         "last_name": set.supervisor.last_name,
                         "first_name": set.supervisor.first_name,
