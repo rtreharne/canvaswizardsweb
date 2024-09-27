@@ -14,17 +14,18 @@
 <div class="jumbotron" id="event">
     <section class="loop container">
 
-        <h2><a href="/">
+        <h2>
             <p class="roboto-black center">
                 <span>Likerty</span><span class="roboto-regular-italic">Split</span><sup class="registered-trademark superscript">&reg;</sup>
             </p>
-        </a></h2>
+        </h2>
         <br>
         <h3>Share Your Survey</h3>
         <br>
-
-        <a href="{% url 'likerty:dash' %}" class="btn btn-primary btn-primary">My Surveys</a>
-        <a href="{% url 'likerty:create' %}" class="btn btn-primary btn-primary">Create Another Survey</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'likerty:dash' %}" class="btn btn-primary btn-primary">My Surveys</a>
+            <a href="{% url 'likerty:create' %}" class="btn btn-primary btn-primary">Create Another Survey</a>
+        {% endif %}
 
         <div class="center-content row">
 
@@ -50,9 +51,11 @@
                             <span id="qrcode"></span>
                         </div>
                         <br>
+                        {% if user.is_authenticated %}
                         <p class="center">Run on Loop Link:</p>
+                        
                         <p class="center"><a href="{% url 'likerty:response_loop' survey.label|lower %}">{% url 'likerty:response_loop' survey.label|lower %}</a></p>
-
+                        {% endif %}
 
                     </div>
                 </div>
