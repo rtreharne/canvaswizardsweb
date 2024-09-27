@@ -1,0 +1,112 @@
+{% extends "likerty/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/create.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dash.css' %}">
+</head>
+
+
+<div class="jumbotron" id="event">
+    <section class="loop container">
+
+        <h2><a href="{% url 'likerty:index' %}">
+            <p class="roboto-black center">
+                <span>Likerty</span><span class="roboto-regular-italic">Split</span><sup class="registered-trademark superscript">&reg;</sup>
+            </p>
+        </a></h2>
+        <br>
+        <h3>Create a Survey</h3>
+        <br>
+        {% if thanks %}
+            <a href="{% url 'likerty:dash' %}" class="btn btn-primary btn-primary">My Surveys</a>
+            <a href="{% url 'likerty:create' %}" class="btn btn-primary btn-primary">Create Another Survey</a>
+
+        {% endif %}
+
+        <div class="center-content row">
+
+
+            <div class="col-md-6">
+
+                <div class="event-summary">
+                    
+
+                    {% if thanks %}
+                    <div class="share center">
+                        <hr>
+                        <br>
+                        <p class="center">Share Link:</p>
+
+                        <p class="center"><a href="{% url 'likerty:response' survey.label|lower %}">{% url 'likerty:response' survey.label|lower %}</a></p>
+                        <br>
+                        <p class="center">Embed code:</p>
+                        <div class="embed center">
+                            <textarea style="text-align: left" rows="2" cols="25"><iframe src="{% url 'likerty:response' survey.label|lower %}" width="400" height="400"></iframe></textarea>
+                        </div>
+                        <br>
+                        <p class="center">QR Code:</p>
+                        <div style="display: flex; justify-content: center; margin: 20px;">
+                            <span id="qrcode"></span>
+                        </div>
+                        <br>
+                        <p class="center">Run on Loop Link:</p>
+                        <p class="center"><a href="{% url 'likerty:response_loop' survey.label|lower %}">{% url 'likerty:response_loop' survey.label|lower %}</a></p>
+
+
+                    </div>
+
+
+
+
+
+                    {% else %} 
+                    <form class="registration-form" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        
+                        {% if dash %}
+                        <a href="{% url 'likerty:dash'%}#{{dash}}" class="btn btn-primary btn-primary">Back</a>
+                        {% elif summary %}
+                        <a href="{% url 'likerty:summary' survey.label %}" class="btn btn-primary btn-primary">Back</a>
+                        {% else %}
+                        <a href="{% url 'likerty:dash' %}" class="btn btn-primary btn-primary">My Surveys</a>
+                        {% endif %}
+                        
+                        <button type="submit" class="btn btn-primary">{% if update %}Save{% else %}Create{% endif %}</button>
+                    </form>
+                    {% endif %}
+            
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+
+    
+        var url = '{{ base_url }}/{{ survey.label }}';
+        var qrcode = new QRCode(document.getElementById("qrcode"), {
+            text: url,
+            width: 150,
+            height: 150
+        });
+
+
+    });
+
+</script>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

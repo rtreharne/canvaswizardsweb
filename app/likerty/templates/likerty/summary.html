@@ -1,0 +1,290 @@
+{% extends "likerty/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load filters %}
+{% csrf_token %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/dash.css' %}">
+
+</head>
+
+
+<div class="jumbotron page-section" id="event">
+    <section class="loop container">
+
+        <h2><a href="{% url 'likerty:index' %}">
+            <p class="roboto-black center">
+                <span>Likerty</span><span class="roboto-regular-italic">Split</span><sup class="registered-trademark superscript">&reg;</sup>
+            </p>
+        </a></h2>
+
+        <br>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'likerty:dash' %}" class="btn btn-primary btn-primary">My Surveys</a>
+        {% endif %}
+
+        <br>
+
+        <div class="center-content row">
+            
+            
+            <div class="col-md-8 center-content">
+                
+
+                <div class="center-content row">
+                    <hr>
+
+                    <div class="col-lg-6 summary-item">
+
+                        <div class="survey left">
+                            <h3 class="left"><a href="{% url 'likerty:response' survey.label %}">/{{ survey.label }}</a></h3>
+                            {% if survey.question %}
+                                <h4>{{ survey.question }}</h4>
+                            {% endif %}
+                            <p>Avg. rating: {{ avg_rating|floatformat:1 }}</p>
+                            <p>Responses: {{ response_count }} ({{ comment_count }} {% if comment_count == 1 %}comment{% else %}comments{% endif %})</p>
+                            <p>Last response: {{ last_response_date }}</p>
+                            
+                            {% if user == survey.user %}
+                                <a href="{% url 'likerty:edit' survey.label %}?summary=true" class="btn btn-primary btn-primary">Edit</a>
+                            {% endif %}
+
+                            <a href="{% url 'likerty:response_loop' survey.label %}" class="btn btn-primary btn-primary">Run on loop</a>
+                            <a href="{% url 'likerty:share' survey.label %}" class="btn btn-primary btn-primary">Share</a>
+                        </div>
+                        
+                    <br>
+                    </div>
+
+
+                    <div class="col-lg-6 summary-item center">
+            
+                        <div class="survey-summary center">
+                            
+                            <table class="table-summary center">
+                                <tr>
+                                    <td>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                    </td>
+                                    <td><div class="solid-div" style="width: {{ fivestarwidth }}px"></div></td>
+                                        <td>({{ fivestar }})</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                        <i class="empty fa fa-star star-icon" ></i>
+
+                        
+                                    </td>
+                                    <td><div class="solid-div" style="width: {{ fourstarwidth }}px"></div></td>
+                                    <td>({{ fourstar }})</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                        <i class="empty fa fa-star star-icon" ></i>
+                                        <i class="empty fa fa-star star-icon" ></i>
+
+                                    </td>
+                                    <td><div class="solid-div" style="width: {{ threestarwidth }}px"></div></td>
+                                        <td>({{ threestar }})</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                        <i class="empty fa fa-star star-icon" ></i>
+                                        <i class="empty fa fa-star star-icon" ></i>
+                                        <i class="empty fa fa-star star-icon" ></i>
+
+                                    </td>
+                                    <td><div class="solid-div" style="width:{{ twostarwidth }}px;"></div></td>
+                                        <td>({{ twostar }})</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="full fa fa-star star-icon" ></i>
+                                        <i class="empty fa fa-star star-icon" ></i>
+                                        <i class="empty fa fa-star star-icon" ></i>
+                                        <i class="empty fa fa-star star-icon" ></i>
+                                        <i class="empty fa fa-star star-icon" ></i>
+                                    </td>
+                                    <td><div class="solid-div" style="width: {{ onestarwidth }}px"></div></td>
+                                        <td>({{ onestar }})</td>
+                                </tr>
+                            </table> 
+                    
+                        </div>
+                        <br>
+                    </div>
+                    <hr>
+                </div> 
+                 
+            </div>
+            
+        </div>
+
+        <div class="row center-content">
+            <div class="col-md-8 center-content">
+                
+                
+                <div class="comments">
+                    {% for response in responses %}
+                        {% if response.comment %}
+                            {% if not response.hidden or user == survey.user %}
+                                <div class="comment">
+                                    <div id="comment_id_{{ response.id}}" class="comment-text">{{ response.comment }}</div>
+                                    <div class="comment-rating">
+                                        
+                                            <span>
+                                                {% for i in 1|times:response.response %}
+                                                <i class="fa fa-star star-icon"></i>
+                                                {% endfor %}
+                                                - {{ response.created_at }}
+                                            </span>
+                                        
+                                    </div>
+                                    <div class="comment-buttons">
+                                        <a id="like_{{ response.id }}" href="" class="btn btn-user-action btn-primary btn-primary"><i class="fas fa-thumbs-up"></i> ({{ response.likes }})</a>
+                                        <a id="dislike_{{ response.id }}" href="" class="btn btn-user-action btn-primary btn-primary"><i class="fas fa-thumbs-down"></i> ({{ response.dislikes }})</a>
+                                        {% if user != survey.user %}
+                                            <a id="abuse_{{ response.id }}" href="" class="btn btn-user-action btn-primary btn-primary">Report as abuse</a>
+                                        {% endif %}
+                                        {% if user == survey.user %}
+                                            
+                                            {% if response.hidden %}
+                                                <a id="unhide_{{ response.id }}" href="" class="permanently-selected btn btn-admin-action btn-primary btn-primary"><i class="fas fa-eye-slash"></i></a>
+                                            {% else %}
+                                                <a id="hide_{{ response.id }}" href="" class="btn btn-admin-action btn-primary"><i class="fas fa-eye-slash"></i></a>
+
+                                            {% endif %}
+                                            <a id="delete_{{ response.id }}" href="" class="btn btn-admin-action btn-primary"><i class="fas fa-trash-alt"></i></a>
+                                            <p>Reports of abuse: {{ response.abuse }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}  
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <br>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.btn-user-action').click(function(event) {
+            event.preventDefault();
+            var id = $(this).attr('id').split('_')[1];
+            var action = $(this).attr('id').split('_')[0];
+            var url = '/likertysplit/' + action + '_response/';
+            console.log(url);
+            $.ajax({
+                type: 'POST',
+                url: url,
+                
+                data: {
+                    'response_id': id,
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (action != 'abuse') {
+                        if (action == 'like') {
+                            $('#' + action + '_' + id).html('<i class="fas fa-thumbs-up"></i> (' + data.number + ')');
+                            // remove id tag from element
+                            $('#' + action + '_' + id).addClass('permanently-selected');
+                            $('#' + action + '_' + id).removeAttr('id');
+                            // add "selected" class to element
+                        
+                        } else {
+                            $('#' + action + '_' + id).html('<i class="fas fa-thumbs-down"></i> (' + data.number + ')');
+                            // remove id tag from element
+                            $('#' + action + '_' + id).addClass('permanently-selected');
+                            $('#' + action + '_' + id).removeAttr('id');
+                            // add "selected" class to element
+                            
+                        }
+
+                    }
+                    else {
+                        // Make text of associated comment red
+                        $('#comment_id_' + id).css('color', '#e50064');
+                        $('#' + action + '_' + id).remove()
+                    }
+                },
+                error: function(data) {
+                    console.log("error: ", data);
+                },
+            });
+            console.log("response: ", action, "id: ", id);
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function() {
+        $('.btn-admin-action').click(function(event) {
+            event.preventDefault();
+            var id = $(this).attr('id').split('_')[1];
+            var action = $(this).attr('id').split('_')[0];
+            var url = '/likertysplit/' + action + '_response/';
+            console.log(url);
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'response_id': id,
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (action == 'hide') {
+                        // remove id tag from element
+                        $('#' + action + '_' + id).addClass('permanently-selected');
+                        $('#' + action + '_' + id).attr('id', "unhide" + '_' + id);
+                    }; 
+                    if (action == 'unhide') {
+                        // remove id tag from element
+                        $('#' + action + '_' + id).removeClass('permanently-selected');
+                        $('#' + action + '_' + id).attr('id', "hide" + '_' + id);
+
+                    }
+                    if (action == 'delete') {
+                        $('#' + action + '_' + id).remove();
+                        // remove parent div too
+                        $('#comment_id_' + id).parent().remove();
+                        
+                    }
+                },
+                error: function(data) {
+                    console.log("error: ", data);
+                },
+            });
+            console.log("response: ", action, "id: ", id);
+            $(this).blur(); // Add this line to remove focus from the button after it's clicked
+        });
+  
+    });
+</script>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

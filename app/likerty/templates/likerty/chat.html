@@ -1,0 +1,211 @@
+{% extends "likerty/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load filters %}
+
+{% block content %}
+
+{% csrf_token %}
+<meta name="csrf-token" content="{{ csrf_token }}">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+</head>
+
+<div class="input-box center">
+    <input type="text" placeholder="Type a message...">
+    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+</div>
+
+<div class="jumbotron" id="event">
+    <section class="loop container">
+
+        <h2>
+            <a href="{% url 'likerty:index' %}">
+                <p class="roboto-black center">
+                    <span>Likerty</span><span class="roboto-regular-italic">Split</span><sup class="registered-trademark superscript">&reg;</sup>
+                </p>
+            </a>
+        </h2>
+        <br>
+        <div style="text-align: center;" class="center">
+            <p class="center">{{ response.created_at }}</p>
+        </div>
+
+        
+
+        
+        <div class="center-content row">
+            
+            <div class="col-md-6 screen">
+
+                
+
+                <div class="chat-box">
+                    <div class="message-box left">
+                        <div class="message owner">
+                            <p class="message-name"><strong>{{ survey.user.first_name }}</strong></p>
+                            <p class="message-text hide">Thanks for your feedback! You can see the responses and comments of others <strong></strong><u><a href="summary/">here</a></u></strong>.</p>
+                            <p class="message-text-ellipsis"></p>
+
+                        </div>
+                    </div>
+
+                    <!-- <div class="message-box left">
+                        <div class="message owner">
+                            <p class="message-name"><strong>{{ survey.user.first_name }}</strong></p>
+                            <p class="message-text">You can view other people's responses and comments <a href="../summary/">here</a>.</a></p>
+                        </div>
+                    </div> -->
+
+                    <div class="message-box left">
+                        <div class="message owner">
+                            <p class="message-name"><strong>{{ survey.user.first_name }}</strong></p>
+                            <p class="message-text hide">Do you have any other comments? I'd love to hear them (good or bad). Your thoughts will help me improve things in the future.</p>
+                            <p class="message-text-ellipsis"></p>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+    </section>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    
+    $(document).ready(function() {
+        // $(".message.owner").first().fadeIn(500);
+
+        // Show the first .message.owner
+        $(".message.owner").first().fadeIn(500);
+
+        // Remove the hide class from the .message-text in .message.owner
+        // and remove ellipsis element after 2 seconds
+        setTimeout(function() {
+
+            $(".message.owner").first().find(".message-text").removeClass("hide");
+            $(".message.owner").first().find(".message-text-ellipsis").remove();
+
+        }, 3000);
+
+           // Show the second .message.owner after another 1 second wait
+        setTimeout(function() {
+
+            $(".message.owner").eq(1).fadeIn(500);
+
+            // Remove the hide class from the .message-text in .message.owner
+            // and remove ellipsis element after 2 seconds
+            setTimeout(function() {
+
+                $(".message.owner").eq(1).find(".message-text").removeClass("hide");
+                $(".message.owner").eq(1).find(".message-text-ellipsis").remove();
+
+            }, 3000);
+        
+
+
+        }, 4000);
+
+        function sendMessage() {
+            var userMessage = $('.input-box input').val();
+
+            if (userMessage) {
+                var newMessage = `
+                    <div class="message-box right">
+                        <div class="message owner user">
+                            <p class="message-name"><strong>Me</strong></p>
+                            <p class="message-text">${userMessage}</p>
+                        </div>
+                    </div>
+                `;
+
+                $('.message-box:last').after(newMessage);
+
+                $('.input-box input').val('');
+
+                $('.chat-box').scrollTop($('.chat-box')[0].scrollHeight);
+                
+
+                // Collect all user messages into the comment variable
+                var comment = '';
+                $('.message.owner.user .message-text').each(function() {
+                    comment += $(this).text() + ' | ';
+                });
+
+                // remove the last (| ) from the comment
+                comment = comment.slice(0, -2);
+
+                // Send a POST request to the serve
+                $.ajaxSetup({
+                    headers: { "X-CSRFToken": $('meta[name="csrf-token"]').attr('content') }
+                });
+                $.ajax({
+                    url: "{% url 'likerty:update_comment' %}",
+                    type: 'POST',
+                    data: {
+                        response_id: '{{ response.id }}',
+
+                        
+                        
+                        comment: comment.trim()
+                    },
+                    success: function(response) {
+                        console.log(response);
+                    }
+                });
+
+                setTimeout(function() {
+                    var newMessageOwner = `
+                        <div class="message-box left">
+                            <div class="message owner">
+                                <p class="message-name"><strong>{{ survey.user.first_name }}</strong></p>
+                                <p class="message-text hide">Thanks! You're awesome. Have a great day.</p>
+                                <p class="message-text-ellipsis"></p>
+                            </div>
+                        </div>
+                    `;
+
+                    $('.chat-box').append(newMessageOwner);
+
+                    // fade in
+                    $(".message.owner").last().fadeIn(500);
+
+                    setTimeout(function() {
+
+                    $(".message.owner").last().find(".message-text").removeClass("hide");
+                    $(".message.owner").last().find(".message-text-ellipsis").remove();
+
+                    }, 3000);
+
+                    $('.chat-box').scrollTop($('.chat-box')[0].scrollHeight);
+                }, 1000);
+            }
+        }
+
+        $('.input-box button').on('click', function(e) {
+            e.preventDefault();
+            sendMessage();
+        });
+
+        $('.input-box input').on('keydown', function(e) {
+            if (e.key == 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+
+    });
+
+    var screen = document.querySelector('.screen');
+    screen.scrollTop = screen.scrollHeight;
+</script>
+
+
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

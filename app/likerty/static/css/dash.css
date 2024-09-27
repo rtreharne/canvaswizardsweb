@@ -1,0 +1,95 @@
+/* style table with white font */
+
+.center {
+    text-align: center;
+
+}
+
+.table {
+    color: white;
+}
+
+.left {
+    text-align: left;
+}
+
+div.survey p {
+    margin: 2px;
+}
+
+.jumbotron {
+    /* height:auto; */
+    min-height: 100vh;
+    height: auto;
+}
+
+.btn {
+    margin-top: 10px;
+}
+
+/* hr: style as solid white line */
+hr {
+    border-top: 1px solid white;
+    width: 100%;
+    margin: 5px;
+}
+
+.comment {
+    padding: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.center-content{
+    min-width: 80%;
+    width: auto;
+    text-align: center;
+}
+
+.survey-summary {
+    padding: 10px;
+}
+
+.table-summary {
+    display: inline-block;
+}
+
+.permanently-selected {
+    /* permanent white background */
+    background-color: white;
+    color: black;
+}
+
+.selected:active {
+    background-color: white;
+}
+
+.btn-primary:active {
+    background-color: white;
+}
+
+
+.inactive {
+    /* prevent all interaction */
+    pointer-events: none;
+    cursor: default;
+
+}
+
+.small-throb {
+    animation: throb 2s 3;
+    color: white;
+}
+
+@keyframes throb {
+    0% { background-color: initial; }
+    50% { background-color: rgb(204, 66, 66); }
+    100% { background-color: initial; }
+}
+@media (max-width: 991px) {
+    .summary-item {
+        width: auto;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+}

@@ -35,6 +35,7 @@ urlpatterns = [
     path('tools/', include('tools.urls')),
     path('dataspell/', include('sample.urls')),
     path('showcase/', include('presentations.urls')), 
+    path('likertysplit/', include('likerty.urls'))
 ]
 
 if settings.DEBUG:

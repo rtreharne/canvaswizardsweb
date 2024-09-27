@@ -1,0 +1,134 @@
+{% extends "likerty/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+
+<div class="jumbotron" id="event">
+
+    <video class="youtube-video" autoplay muted>
+        <source src="{% static background %}" type="video/mp4">
+    </video>
+
+    <section class="loop container">
+
+        <h3>
+            <p class="roboto-black center">
+                <span>Likerty</span><span class="roboto-regular-italic">Split</span><sup class="registered-trademark superscript">&reg;</sup>
+            </p>
+        </h3>
+       
+
+        <div class="row">
+
+
+            <div class="col-md-12">
+
+                <div class="survey">
+
+                    {% if survey.question %}
+                    <h1>{{ survey.question }}</h1>
+                    {% endif %}
+                    <br>
+                    <br>
+
+                
+                        <div id="star-container">
+                            {% for value, text in form.response.field.choices %}
+                                <i class="fa fa-star star-icon" data-value="{{ value }}"></i>
+                            {% endfor %}
+                        </div>
+   
+                        <form class="hidden registration-form" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+
+                        
+                </div>
+                <br>
+                <br>
+                <div class="loop loop-options">
+                    <span><small>Want to leave a comment?</small></span>
+                    <br>
+                    <span><strong>{{ base_url }}/{{ survey.label }}</strong></span>
+                    <div style="display: flex; justify-content: center; margin: 20px;">
+                        <span class="loop" id="qrcode"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+
+        var clickable = true;
+
+        $('.star-icon').click(function() {
+            var value = $(this).data('value');
+            $('input[name=response][value=' + value + ']').prop('checked', true);
+
+            clickable = false;
+            setTimeout(function() {
+                clickable = true;
+            }, 2000);
+
+            $(this).prevAll().addBack().addClass('throb');
+            setTimeout(function() {
+                $(this).prevAll().addBack().removeClass('throb');
+            }.bind(this), 2000);
+
+            $(this).nextAll().animate({opacity: 0}, 2000);
+            setTimeout(function() {
+                $('.star-icon').animate({opacity: 1}, 2000);
+            }, 2000);
+    
+            // Prevent the form from being submitted in the default way
+            event.preventDefault();
+    
+            // Submit the form with AJAX
+            $.ajax({
+                url: $('.registration-form').attr('action'),
+                type: $('.registration-form').attr('method'),
+                data: $('.registration-form').serialize(),
+                success: function(data) {
+                    // Handle the response here
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // This function is called if the request fails
+                    alert('An error occurred during the request: ' + textStatus + ' ' + errorThrown);
+                }
+            });
+        });
+    
+        var url = '{{ base_url }}/{{ survey.label }}';
+        var qrcode = new QRCode(document.getElementById("qrcode"), {
+            text: url,
+            width: 150,
+            height: 150
+        });
+    });
+
+    var video = document.querySelector('.youtube-video');
+
+    video.addEventListener('ended', function() {
+        location.reload();
+    });
+
+</script>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

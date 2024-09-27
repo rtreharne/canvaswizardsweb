@@ -1,0 +1,64 @@
+{% extends "likerty/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/dash.css' %}">
+</head>
+
+
+<div class="jumbotron" id="event">
+    <section class="loop container">
+
+        <h2><a href="{% url 'likerty:index' %}">
+            <p class="roboto-black center">
+                <span>Likerty</span><span class="roboto-regular-italic">Split</span><sup class="registered-trademark superscript">&reg;</sup>
+            </p>
+        </a></h2>
+        <br>
+        <h3>My Surveys</h3>
+        <br>
+        <a href="{% url 'likerty:create' %}" class="btn btn-primary btn-primary">Create New Survey</a>
+        <a href="{% url 'likerty:logout' %}" class="btn btn-primary btn-primary">Logout</a>
+
+        <br>
+        
+
+        <div class="center-content row">
+
+
+            <div class="col-md-8">
+                <hr>
+
+                        {% for survey in surveys %}
+
+                        <div id="{{ survey.survey.label }}" class="survey left">
+                            <h3 class="left"><a href="{% url 'likerty:response' survey.survey.label %}">/{{ survey.survey.label }}</a></h3>
+                            {% if survey.survey.question %}
+                                <h4>{{ survey.survey.question }}</h4>
+                            {% endif %}
+                            <p>Avg. rating: {{ survey.avg_rating|floatformat:1 }}</p>
+                            <p>Responses: {{ survey.response_count }} ({{ survey.comment_count }} {% if survey.comment_count == 1 %}comment{% else %}comments{% endif %})</p>
+                            <p>Last response: {{ survey.last_response_date }}</p>
+                            <a href="{% url 'likerty:summary' survey.survey.label %}" class="btn btn-primary btn-primary">Summary</a>
+                            <a href="{% url 'likerty:edit' survey.survey.label %}?dash=true" class="btn btn-primary btn-primary">Edit</a>
+                            <a href="{% url 'likerty:response_loop' survey.survey.label %}" class="btn btn-primary btn-primary">Run on loop</a>
+                            <a href="{% url 'likerty:share' survey.survey.label %}" class="btn btn-primary btn-primary">Share</a>
+                        </div>
+                        <hr>
+
+                        {% endfor %}
+
+            </div>
+
+        </div>
+    </section>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

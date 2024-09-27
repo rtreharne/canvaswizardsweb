@@ -1,0 +1,109 @@
+{% extends "likerty/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+
+<div class="jumbotron page-section" id="event">
+    <section class="loop container">
+
+        <h3>
+            <p class="roboto-black center">
+                <span>Likerty</span><span class="roboto-regular-italic">Split</span><sup class="registered-trademark superscript">&reg;</sup>
+            </p>
+        </h3>
+
+        <div class="row">
+
+
+            <div class="col-md-12">
+
+                <div class="survey">
+
+                    {% if thanks %}
+                    <p>Thanks for your feedback!</p>
+                    <p><a href="{% url 'likerty:response' survey.slug %}">Submit another response</a> | <a href="{% url 'likerty:summary' survey.slug %}">View responses</a></p>
+
+                    {% else %}
+                        {% if survey.question %}
+                            <h1>{{ survey.question }}</h1>
+                        {% endif %}
+                            
+                        <br>
+
+                        {% if feedback %}
+                        <form class="registration-form fade-in" method="post" action="" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button type="submit" class="btn btn-primary" data-value="submit">Submit</button>
+                            {% if survey.redirect_url %}
+                            <a href="{{ survey.redirect_url }}" class="btn btn-primary">Continue</a>
+                            {% endif %}
+
+                        </form>
+                        {% else %}
+                        <div id="star-container">
+
+                            {% for value, text in form.response.field.choices %}
+                                <i class="fa fa-star star-icon" data-value="{{ value }}"></i>
+                            {% endfor %}
+                        </div>
+
+
+                                
+                        <form class="hidden registration-form" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                        {% endif %}
+
+                    {% endif %}
+            
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('.star-icon').click(function() {
+            var value = $(this).data('value');
+            $('input[name=response][value=' + value + ']').prop('checked', true);
+
+            clickable = false;
+            setTimeout(function() {
+                clickable = true;
+            }, 2000);
+
+            $(this).addClass('throb');
+            setTimeout(function() {
+                $(this).removeClass('throb');
+            }.bind(this), 2000);
+
+            $('.star-icon').not(this).css('color', 'transparent');
+            
+
+            // wait for two seconds then click submit
+            setTimeout(function() {
+                $('.registration-form button').click();
+            }, 2000);
+
+            
+        });
+
+
+    });
+    </script>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

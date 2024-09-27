@@ -1,0 +1,55 @@
+{% extends "likerty/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load socialaccount %}
+
+{% block content %}
+
+
+
+<header class="jumbotron page-section" id="home">
+    <video class="youtube-video" autoplay muted>
+        <source src="{% static background %}" type="video/mp4">
+    </video>
+    {% if thanks %}
+        <span></span><h2 class="thanks">{{ thanks }}</h2></span>
+    {% endif %}
+    <div class="container" >
+            <h1 class="title">
+                <p class="roboto-black">
+                    <span>Likerty</span><span class="roboto-regular-italic">Split</span><sup class="registered-trademark superscript">&reg;</sup>
+                </p>
+            </h1>
+            <h2>Listen. Improve. Succeed.</h2>
+            <br>
+            <!-- Events button-->
+            {% if user.is_authenticated %}
+                <a href="{% url 'likerty:dash' %}" class="btn btn-primary btn-primary">My Surveys</a>
+                <a href="{% url 'likerty:create' %}" class="btn btn-primary btn-primary">Create New Survey</a>
+
+
+
+            {% else %}
+                <!-- <form id='login-form' action="{% provider_login_url 'google' next='/' %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-primary social-btn"type="submit">Login via Google</button>
+                </form>
+                <script>
+                    if (window.self !== window.top) {
+                        // The page is in an iframe
+                        document.getElementById('login-form').style.display = 'none';
+                    }
+                </script> -->
+            {% endif %}
+        </span>
+    </div>
+</header>
+
+
+
+
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

@@ -1,0 +1,13 @@
+.jumbotron {
+    height: auto;
+    min-height: 100vh;
+}
+
+.control-group {
+    text-align: left;
+}
+
+.help-block {
+    width: 100%;
+    max-width:100%;
+}

@@ -1,0 +1,167 @@
+/* style chat-box so that it fills height of page but hide overflow */
+.chat-box {
+    height: 65vh;
+    width: 100%;
+    padding-bottom: 100px;
+
+    /* id like to scroll to see hidden content */
+    overflow-y: auto;
+
+    /* grey background */
+    background-color: #000000;
+}
+
+.section.loop.container, .screen {
+    padding: 0px;
+}
+
+
+
+/* Webkit browsers like Chrome, Safari */
+.chat-box::-webkit-scrollbar {
+    width: 5px; /* width of the entire scrollbar */
+}
+
+.chat-box::-webkit-scrollbar-track {
+    background: transparent; /* color of the tracking area */
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+    background-color: white; /* color of the scroll thumb */
+    border-radius: 20px; /* roundness of the scroll thumb */
+    border: 3px solid transparent; /* creates padding around scroll thumb */
+}
+
+
+
+.jumbotron {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.message-box.left {
+    width: 100%;
+    text-align: left;
+}
+
+.message-box.right {
+    width: 100%;
+    text-align: right;
+}
+
+.message.owner {
+    display: inline-block;
+    background-color: #2f00ff; /* Light green background */
+    border-radius: 0 10px 10px 10px; /* Rounded corners except top-left */
+    padding: 10px 20px; /* Padding around the text */
+    padding-top: 22px;
+    max-width: 60%; /* Maximum width is 75% of the parent element's width */
+    align-self: flex-start; /* Align to the left */
+    margin: 5px 5px; /* Add some margin around the messages */
+
+    word-wrap: break-word; /* Break words to prevent overflow */
+    color: white;
+    position: relative; /* Needed for the :after pseudo-element */
+    display: none;
+}
+
+.message.user {
+    display: inline-block;
+    border-radius: 10px 0px 10px 10px; /* Rounded corners except top-left */
+    background-color: #20be00; /* Light green background */
+    padding: 10px 20px; /* Padding around the text */
+    padding-top: 22px;
+    max-width: 60%; /* Maximum width is 75% of the parent element's width */
+    align-self: flex-start; /* Align to the left */
+    margin: 5px 5px; /* Add some margin around the messages */
+
+
+}
+
+.message-name {
+    font-weight: bold; /* Bold text */
+    margin-bottom: 0px; /* Add some margin below the name */
+}
+
+.message-text .message-text-ellipsis {
+    margin: 0px;
+    margin-right: 2px;
+    margin-bottom: 1px;
+}
+
+.message-text-ellipsis::before {
+    content: ' ';
+    visibility: visible;
+    animation: ellipsis 3s;
+    margin: 0px;
+}
+
+.message-text:after{
+    margin: 0px;
+}
+
+@keyframes ellipsis {
+    0% { content: '.'; }
+    10% { content: '..'; }
+    20% { content: '...'; }
+    30% { content: '....'; }
+    40% { content: '.'; }
+    50% { content: '..'; }
+    60% { content: '...'; }
+    70% { content: '....'; }
+    80% { content: '.'; }
+    90% { content: '.. '; }
+    100% { content: '...'; }
+
+}
+
+.message-text.hide {
+    display: none;
+}
+
+.input-box {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* make element above everything */
+    z-index: 100;
+    /* black shadow */
+    background-color: #000000;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+.input-box input {
+    flex-grow: 1;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    outline: none;
+    margin-right: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin: 0px;
+    height: 50px;
+    min-width: 50%;
+}
+
+.input-box button {
+    background-color: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 30px;
+    cursor: pointer;
+
+}
+
+.input-box button:focus {
+    outline: none;
+}
+
+
+
+
+

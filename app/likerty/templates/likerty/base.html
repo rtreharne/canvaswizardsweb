@@ -1,0 +1,89 @@
+<!-- FILEPATH: /c:/Users/treharne/Documents/canvaswizzards/app/app/templates/app/index.html -->
+{% load static %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Likerty Split</title>
+    <meta name="description" content="A web app to get feedback quickly.">
+    <meta name="keywords" content="Survery, Likert, Feedback.">
+    <link rel="canonical" href="https://canvaswizards.co.uk/likertysplit/">
+
+    <meta property="og:title" content="Likerty Split">
+    <meta property="og:description" content="A web app to get feedback quickly.">
+    <meta property="og:image" content="">
+    <meta property="og:url" content="www.likertysplit.com">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/likerty.css' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+
+    <!-- Include Popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+    <!-- Include Bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Confetti-->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script> -->
+
+    
+</head>
+
+<body data-spy="scroll" data-target=".navbar">
+    
+    {% block content %}
+    {% endblock %}
+
+    {% block footer %}
+    <footer id="footer" style="text-align: left;">
+        <div class="container">
+
+            
+            <div class="row">
+    
+                <div class="col-md-6">
+                    <p>
+                        Copyright &copy; 2024
+                    </p>
+                    <br>
+                    
+    
+                </div>
+               
+            </div>
+        </div>
+        <br>
+    </footer>
+    {% endblock %}
+
+    <script>
+        
+
+        document.querySelectorAll('a.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                let target = document.querySelector(this.getAttribute('href'));
+                window.scrollTo({
+                    top: target.offsetTop,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+
+    {% block js %}
+    {% endblock %}
+</body>
+
+</html>

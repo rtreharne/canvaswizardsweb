@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.github',
+    #'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.google',
     'front',
     'choices',
@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'tools',
     'sample',
     'presentations',
+    'likerty'
 ]
 
 MIDDLEWARE = [
