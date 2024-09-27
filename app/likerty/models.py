@@ -58,7 +58,7 @@ class Response(models.Model):
 
     abuse = models.IntegerField(default=0)
 
-    hidden = models.BooleanField(default=False)
+    hidden = models.BooleanField(default=True)
 
 
     def __str__(self):
