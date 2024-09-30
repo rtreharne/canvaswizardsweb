@@ -49,7 +49,7 @@
 
                 <hr style="border: none; height: 2px; background-color: white;">
                 
-                {% if rules|filter_by_year:year %}
+                {% if rules %}
                 <div class="rules">
 
                     <h3>Rules</h3>
@@ -71,7 +71,7 @@
 
                 {% for module in modules %}
                     {% if module.year == year %}
-                        {% if "xjtlu"|in_string:programme.slug and year == 2%}
+                        {% if "xjtlu" in programme.slug and year == 2%}
                             {% if module.semester != "Semester 2" %}
                                 <div id="{{module.code}}" class="module {% if module.compulsory %}selected compulsory{% endif %}" data-toggle="tooltip" data-html="true" alt-title='Required: ' title='{{module.title}}<br>Required: ' credits="{{module.credits}}" semester="{{module.semester}}">{{ module.code }} - {{ module.title|truncatechars:20 }} {% if module.practical %}[P]{% endif %} ({{ module.credits}})</div>
                             {% endif %}
@@ -94,7 +94,7 @@
                 <hr style="border: none; height: 2px; background-color: white;">
                 {% for module in modules %}
                     {% if module.year == year %}
-                        {% if "xjtlu"|in_string:programme.slug and year == 2%}
+                        {% if "xjtlu" in programme.slug and year == 2%}
                             {% if module.semester == "Semester 2" %}
                                 <div id="{{module.code}}" class="module {% if module.compulsory %}selected compulsory{% endif %}" data-toggle="tooltip" data-html="true" alt-title='Required: ' title='{{module.title}}<br>Required: ' credits="{{module.credits}}" semester="{{module.semester}}">{{ module.code }} - {{ module.title|truncatechars:20 }} {% if module.practical %}[P]{% endif %} ({{ module.credits}})</div>
                             {% endif %}
