@@ -13,6 +13,8 @@ except ImportError:
     pass
 
 def get_course_set(canvas, dt=None):
+
+    print(dt)
     
     # Get my accounts
     print("Getting accounts ...")
