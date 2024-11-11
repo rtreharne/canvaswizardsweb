@@ -21,8 +21,8 @@ def index(request):
     context = {}
 
     events = Event.objects.all().order_by('date')
-    portfolios = Portfolio.objects.filter(tool=False).order_by('-datetime')
-    tools = Tool.objects.all()
+    portfolios = Portfolio.objects.filter(tool=False, visible=True).order_by('-datetime')
+    tools = Tool.objects.filter(visible=True)
 
     # Only get events in the future
     events = [event for event in events if event.date >= datetime.date.today()]
@@ -162,6 +162,9 @@ def register(request, event_id):
 def portfolio(request, portfolio_id):
         
         portfolio = Portfolio.objects.get(id=portfolio_id)
+
+        if not portfolio.visible:
+            return render(request, 'front/index.html')
     
         context = {"portfolio": portfolio}
     

@@ -9,6 +9,7 @@ class Portfolio(models.Model):
     url = models.CharField(max_length=128, null=True, blank=True)
     datetime = models.DateTimeField(null=True, blank=True)
     tool = models.BooleanField(default=False)
+    visible = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
@@ -51,6 +52,7 @@ class Tool(models.Model):
     short_description = models.TextField()
     image = models.FileField(upload_to='events/')
     url = models.CharField(max_length=100)
+    visible = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name

@@ -421,21 +421,21 @@ class ProjectKeywordAdmin(AdminBase):
                 for row in reader:
                     print(row["keyword"])
                     institutes = Institute.objects.filter(institution = institution)
-                    try:
-                        department_slug = row["department"].strip().lower()
-                        keyword = ProjectKeyword(
-                            name = row["keyword"].strip().capitalize(),
-                            
-                            admin_dept=admin_department,
-                            institution=institution,
-                            description = row["description"].strip(),
-                            department = Department.objects.get(slug=department_slug, institute__in=institutes)
-                        )
+                    #try:
+                    department_slug = row["department"].strip().lower()
+                    keyword = ProjectKeyword(
+                        name = row["keyword"].strip().capitalize(),
+                        
+                        admin_dept=admin_department,
+                        institution=institution,
+                        description = row["description"].strip(),
+                        department = Department.objects.get(slug=department_slug, institute__in=institutes)
+                    )
 
 
-                        keyword.save()
-                    except:
-                        error_string += f"Error creating keyword: {row['keyword']}.\n"
+                    keyword.save()
+                    #except:
+                        #error_string += f"Error creating keyword: {row['keyword']}.\n"
 
             else:
                 print("form not valid", form.errors)
