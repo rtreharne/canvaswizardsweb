@@ -166,11 +166,17 @@ class StudentForm(forms.Form):
             field_name = f'project_keyword_{i+1}'
             self.fields[field_name] = forms.ModelChoiceField(queryset=ProjectKeyword.objects.filter(admin_dept=self.department).order_by('name'), label=f'Project topic {i+1}')
 
-        self.fields['prerequisites'] = forms.ModelMultipleChoiceField(
-            queryset=Prerequisite.objects.filter(admin_dept=self.department), 
-            label='Prerequisites met', 
-            help_text='Select a minimum of 5 modules that you have completed. Hold down Ctrl (CMD on Mac) to select multiple keywords.',
-            required=True)
+        if self.round.prerequisites_on:
+            self.fields['prerequisites'] = forms.ModelMultipleChoiceField(
+                queryset=Prerequisite.objects.filter(admin_dept=self.department), 
+                label='Prerequisites met', 
+                help_text='Select a minimum of 5 modules that you have completed. Hold down Ctrl (CMD on Mac) to select multiple keywords.',
+                required=True)
+            
+        if self.round.priority_on:
+            # create a choice field to ask the question: "Allocation priority?" with options "Prioritise by project type", "Prioritise by topic", "No preference"
+            self.fields['allocation_priority'] = forms.ChoiceField(choices=[('type', 'Prioritise by project type'), ('topic', 'Prioritise by project topic'), ('none', 'No preference')], label='Allocation priority', help_text='Select your preference for project allocation.', initial='none')
+            
         
         self.fields['programme'] = forms.ModelChoiceField(queryset=Programme.objects.filter(admin_dept=self.department).order_by('name'), label='Programme/Pathway', help_text='Select your programme (or pathway if MBiolSci).')
         
@@ -184,8 +190,7 @@ class StudentForm(forms.Form):
     mbiolsci = forms.ChoiceField(choices=[('', '---------'), ('yes', 'Yes'), ('no', 'No')], label='Are you a 4th year MBiolSci student?', required=True, initial=None)
     programme = forms.ModelChoiceField(queryset=Programme.objects.all(), label='Programme/Pathway', help_text='Select your programme (or pathway if MBiolSci).')
 
-    # create a choice field to ask the question: "Allocation priority?" with options "Prioritise by project type", "Prioritise by topic", "No preference"
-    allocation_priority = forms.ChoiceField(choices=[('type', 'Prioritise by project type'), ('topic', 'Prioritise by project topic'), ('none', 'No preference')], label='Allocation priority', help_text='Select your preference for project allocation.', initial='none')
+    
 
     comment = forms.CharField(label='Comments', widget=forms.Textarea, help_text='Please provide any additional information that you think may be relevant to your project allocation.', required=False)
 

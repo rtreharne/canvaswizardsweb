@@ -74,6 +74,8 @@
                             {% for field in project_type_fields %}
                                 {{ form|get_field:field|as_crispy_field }}
                             {% endfor %}
+
+                            
                    
                             <legend>Project Topic Preferences</legend>
                             
@@ -84,17 +86,24 @@
                                 {{ form|get_field:field|as_crispy_field }}
                             {% endfor %}
                             <br>
+
+                            {% if form.allocation_priority %}
                             <legend>Allocation Priority</legend>
                             <hr style="margin-top: 0; margin-bottom: 1rem; border-top: 1px solid #e9ecef;">
                             <p>How would you like us to prioritise the allocation of your project?</p>
                             {{ form.allocation_priority }}
                             <br>
+
+                            {% endif %}
+
+                            {% if form.prerequisites %}
                             <legend>Prerequisite Modules</legend>
                             <hr style="margin-top: 0; margin-bottom: 1rem; border-top: 1px solid #e9ecef;">
                             <p>Select the second year modules that you have completed. Select a minimum of 5 modules.</p>
                             <p><strong>Hold down Ctrl (CMD on Mac) to select multiple keywords.</strong></p>
 
                             {{ form.prerequisites }}
+                            {% endif %}
                             
                             <legend>Comments</legend>
                             <hr style="margin-top: 0; margin-bottom: 1rem; border-top: 1px solid #e9ecef;">

@@ -222,7 +222,7 @@ class AdminAdmin(admin.ModelAdmin):
     search_fields = ('last_name', 'first_name', 'email')
 
 class RoundAdmin(AdminBase):
-    list_display = ('name', 'slug', 'start_date', 'end_date')
+    list_display = ('name', 'slug', 'start_date', 'end_date', 'prerequisites_on', 'priority_on')
     list_filter = ('name',)
     search_fields = ('name',)
 

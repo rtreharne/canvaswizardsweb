@@ -83,6 +83,9 @@ class Round(models.Model):
     end_date = models.DateField()
     admin_dept = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='round_admin_dept', null=True, blank=True)
 
+    prerequisites_on = models.BooleanField(default=False)
+    priority_on = models.BooleanField(default=False)
+
     # Add constraint. Name is unique for institution and admin_dept
     class Meta:
         constraints = [

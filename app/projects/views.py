@@ -256,9 +256,15 @@ def students(request, institution_slug, admin_department_slug):
             programme = form.cleaned_data['programme']
             project_types = ','.join([form.cleaned_data[field].name for field in context['project_type_fields']])
             project_keywords = ','.join([form.cleaned_data[field].name for field in context['project_keyword_fields']])
-            prerequisites = ','.join(x.name for x in form.cleaned_data['prerequisites'])
+            try:
+                prerequisites = ','.join(x.name for x in form.cleaned_data['prerequisites'])
+            except:
+                prerequisites = None
             mbiolsci = form.cleaned_data['mbiolsci']
-            priority = form.cleaned_data['allocation_priority']
+            try:
+                priority = form.cleaned_data['allocation_priority']
+            except:
+                priority = None
             comment = form.cleaned_data['comment']
 
 
