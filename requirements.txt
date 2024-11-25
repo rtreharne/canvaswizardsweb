@@ -18,4 +18,3 @@ msoffcrypto-tool==5.3.1
 pulp==2.7.0
 scipy==1.11.4
 beautifulsoup4==4.10.0
-lxml==4.8.0
