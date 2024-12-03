@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="main" class="container">
+    <div id="search">
+         <h2>Directory</h2>
+
+    </div>
+    <hr>
+
+    {% if results %}
+    <div id="results">
+
+
+
+
+    {% endif %}
+
+    
+    <div class="department-names lvl1">
+    {% for department in departments %}
+        {% if institute == department.institute %}
+
+                <span><h4>{{department.name}}</h4></span>
+                <div class="profile-list lvl2">
+                    <ul class="no-bullets">
+                    {% for profile in profiles %}
+                        {% if department == profile.department %}
+                            <li class="profile-listing"><a href="{{profile.url}}" target="_blank">{{profile.last_name}}, {{profile.first_name}}</a>{% if profile.role %} - {{ profile.role|truncatechars:100 }}{% endif %}</li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                </div>
+
+
+        {% endif %}
+    {% endfor %}
+    </div>
+         
+
+</div>
+{% endblock %}

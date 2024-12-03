@@ -77,7 +77,8 @@ INSTALLED_APPS = [
     'sample',
     'presentations',
     'likerty',
-    'peerreview'
+    'peerreview',
+    'staffsearch',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="main" class="container">
+    <div id="search">
+         <h2>Keywords</h2>
+         <p>The list below shows the most common key words shared by all staff profiles in HLS.</p>
+
+    </div>
+    <hr>
+
+    <div id="loader" style="text-align: center; height: 200px;">
+        <img style="width: 200px" src="https://i.pinimg.com/originals/07/24/88/0724884440e8ddd0896ff557b75a222a.gif">
+    </div>
+
+
+    <div id="results">
+        <div>
+            <ol>
+            {% for keyword in keywords %}
+                <li class="keyword"><a href="/search?keyword={{ keyword }}">{{ keyword }}</a></li>
+            {% endfor %}
+            </ol>
+        </div>
+
+    </div>
+
+
+
+</div>
+{% endblock %}

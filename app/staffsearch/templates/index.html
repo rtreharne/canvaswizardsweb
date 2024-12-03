@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="main" class="container">
+    <div id="search">
+         <h2>Search</h2>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form }}
+
+            <input id="form-submit" type="submit" value="Submit">
+        </form>
+    </div>
+    <hr>
+
+    <div id="loader" style="text-align: center; height: 200px;">
+        <img style="width: 200px" src="https://i.pinimg.com/originals/07/24/88/0724884440e8ddd0896ff557b75a222a.gif">
+    </div>
+
+    <div id="results">
+
+
+        {% if results %}
+        <h2>{{ keyword }} ...</h2>
+
+            {% if results|length > 0 %}
+
+                {% for result in results %}
+                <div class="result">
+                    <h3><a href="{{ result.url }}" target="_blank">{{ result.last_name }}, {{ result.first_name }}</a></h3>
+                    <h4>{{ result.role }}</h4>
+                    <p>{{ result.department }}</p>
+                    <p><a href="mailto:{{ result.email }}">{{ result.email }}</a></p>
+                    <p class="relevance">Relevance: {{ result.rank|floatformat:0 }}%</p>
+                </div>
+                {% endfor %}
+
+            {% else %}
+                <div id="result">
+                    <h4>Your search returned no results.</h4>
+                </div>
+            {% endif %}
+        <hr>
+        {% endif %}
+    </div>
+
+
+    <!--
+    {% for institute in institutes %}
+        <div class="institute-name lvl1">
+            <span><h2>{{institute.name}}</h2></span>
+            <div class="department-names lvl2">
+            {% for department in departments %}
+                {% if institute == department.institute %}
+
+                        <span><h3>{{department.name}}</h3></span>
+                        <div class="profile-list lvl3">
+                            {% for profile in profiles %}
+                                {% if department == profile.department %}
+                                    <li><a href="{{profile.url}}" target="_blank">{{profile.last_name}}, {{profile.first_name}}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            </ul>
+                        </div>
+
+
+                {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+    -->
+</div>
+{% endblock %}
