@@ -46,7 +46,7 @@ class URLScrape:
         return links
 
     def get_staff_urls(self, root):
-        urls = [x for x in self.get_links_from_url(root) if "/staff/" in x]
+        urls = [x for x in self.get_links_from_url(root) if "/staff/" in x or "/people/" in x]
         return urls
 
     def get_staff_spider(self, root, save=[]):
@@ -74,6 +74,8 @@ class Staff:
     def __init__(self, url):
         self.url = url
         self.get_redirected_url(url)
+
+        
 
         self.soup = self.get_soup_from_url(self.url)
 
@@ -140,6 +142,10 @@ class Staff:
 
     def get_redirected_url(self,url):
         try:
+
+            if not url.startswith("https://www.liverpool.ac.uk"):
+                url = f"https://www.liverpool.ac.uk{url}"
+                
             # Make the request with redirection enabled (default behavior)
             response = requests.get(url, allow_redirects=True)
             
